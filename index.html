@@ -1,215 +1,602 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pedro Oliveira</title>
-<meta name="description" content="Business intelligence e governança financeira de TI. Pipelines de dados em Databricks com dado público da CVM.">
+<title>Pedro Oliveira — Engenharia de dados</title>
+
+<meta name="robots" content="index, follow">
 <meta name="author" content="Pedro Oliveira da Silva">
+<meta name="description" content="Engenharia de dados em Databricks. Pipeline de demonstrações financeiras de companhias abertas e skills para assistente de código, com decisões registradas e hipóteses testadas.">
 <link rel="canonical" href="https://1pedroosilva.github.io/">
-<meta name="robots" content="noindex, nofollow">
 
 <meta property="og:type" content="profile">
-<meta property="og:title" content="Pedro Oliveira">
-<meta property="og:description" content="Business intelligence e governança financeira de TI. Pipelines de dados em Databricks com dado público da CVM.">
-<meta property="og:url" content="https://1pedroosilva.github.io/">
 <meta property="og:locale" content="pt_BR">
-<meta name="twitter:card" content="summary">
+<meta property="og:url" content="https://1pedroosilva.github.io/">
+<meta property="og:title" content="Pedro Oliveira — Engenharia de dados">
+<meta property="og:description" content="Transformo dado público em informação confiável. Decisões registradas, premissas testadas.">
+<meta property="og:image" content="https://1pedroosilva.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
 :root{
-  --ink:#16191b;
-  --ink-2:#5c6560;
-  --paper:#ffffff;
-  --accent:#1e5340;
-  --rule:#e0e4dc;
-  --serif:"Instrument Serif",Georgia,serif;
-  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace;
+  --paper:#E4E7E3; --panel:#EDEFEC; --panel-deep:#D9DDD8;
+  --ink:#16201C; --ink-soft:#5A6560; --rule:#BFC6C0;
+  --accent:#0F4C42;
+  --serif:"Newsreader",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --col:60ch; --step:220ms;
 }
-@media (prefers-color-scheme:dark){
-  :root{--ink:#e8ebe6;--ink-2:#9aa39c;--paper:#14171a;--accent:#6fbf9c;--rule:#2a2f33}
+@media (prefers-reduced-motion:reduce){
+  :root{--step:1ms}
+  *,*::before,*::after{animation-duration:1ms!important;transition-duration:1ms!important}
 }
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
 body{
   margin:0;background:var(--paper);color:var(--ink);
-  font-family:var(--sans);font-size:17px;line-height:1.65;
-  -webkit-font-smoothing:antialiased;
+  font-family:var(--serif);font-size:17px;line-height:1.62;
+  font-optical-sizing:auto;-webkit-font-smoothing:antialiased;
 }
-.wrap{max-width:660px;margin:0 auto;padding:0 24px}
-a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--rule)}
-a:hover{border-bottom-color:var(--accent)}
-a:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-code{font-family:var(--mono);font-size:0.88em}
+a{color:var(--accent);text-underline-offset:.22em;text-decoration-thickness:.055em}
+a:hover{color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
 
-.topbar{
-  display:flex;gap:18px;flex-wrap:wrap;padding:28px 0 0;
-  font-family:var(--mono);font-size:13px;
-}
-.topbar a{border-bottom:none;color:var(--ink-2)}
-.topbar a:hover{color:var(--accent)}
-
-.hero{padding:60px 0 48px}
-.hero h1{
-  font-family:var(--serif);font-weight:400;
-  font-size:clamp(38px,7vw,54px);line-height:1.1;
-  letter-spacing:-0.01em;margin:0 0 20px;
-}
-.hero p{margin:0 0 10px;color:var(--ink-2);max-width:54ch}
-.hero p:last-child{margin-bottom:0}
-
-section{padding:40px 0;border-top:1px solid var(--rule)}
-.eyebrow{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin:0 0 18px}
-h2{font-family:var(--serif);font-weight:400;font-size:26px;line-height:1.25;margin:0 0 14px}
-p{margin:0 0 15px}
+h1,h2,h3{font-weight:500;line-height:1.18;letter-spacing:-.012em;margin:0}
+h1{font-size:clamp(2.4rem,7vw,3.9rem);font-weight:400}
+h2{font-size:clamp(1.5rem,4vw,2rem)}
+h3{font-size:1rem;font-weight:600}
+p{margin:0 0 1em;max-width:var(--col)}
 p:last-child{margin-bottom:0}
+code{font-family:var(--mono);font-size:.85em}
 
-.schema{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);margin:0 0 18px;line-height:1.9}
-ul{margin:0 0 18px;padding-left:19px;color:var(--ink-2)}
-li{margin-bottom:9px}
-.links{display:flex;gap:20px;flex-wrap:wrap;font-size:15px;margin:0}
-
-dl{display:grid;grid-template-columns:118px 1fr;gap:9px 22px;margin:0;font-size:15.5px;align-items:baseline}
-dt{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);padding-top:3px}
-dd{margin:0}
-
-.row{display:flex;gap:22px;margin-bottom:15px;align-items:baseline}
-.row .yr{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);flex:0 0 84px}
-.row .b{flex:1;font-size:15.5px}
-.row .b span{color:var(--ink-2);display:block;font-size:14.5px;line-height:1.5}
-
-footer{padding:40px 0 72px;border-top:1px solid var(--rule);font-size:15px;color:var(--ink-2)}
-
-@media (max-width:520px){
-  body{font-size:16px}
-  dl{grid-template-columns:1fr;gap:2px 0}
-  dd{margin-bottom:12px}
-  .row{flex-direction:column;gap:2px}
-  .row .yr{flex:none}
+.shell{max-width:1180px;margin:0 auto;padding:0 clamp(1.15rem,4vw,3rem);display:grid;grid-template-columns:1fr}
+@media (min-width:1000px){.shell{grid-template-columns:172px minmax(0,1fr);column-gap:4rem}}
+.index{display:none}
+@media (min-width:1000px){
+  .index{display:block;position:sticky;top:0;align-self:start;height:100vh;padding-top:8.5rem}
+  .index ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule)}
+  .index a{
+    display:block;padding:.34rem 0 .34rem .85rem;margin-left:-1px;border-left:1px solid transparent;
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.04em;color:var(--ink-soft);
+    text-decoration:none;transition:color var(--step),border-color var(--step);
+  }
+  .index a[aria-current="true"]{color:var(--ink);border-left-color:var(--accent)}
+  .index a:hover{color:var(--ink)}
 }
-@media print{
-  body{font-size:11pt;color:#000;background:#fff}
-  .wrap{max-width:100%}
-  .topbar{display:none}
-  section{padding:16pt 0;break-inside:avoid}
-  .hero{padding:0 0 16pt}
-  a{color:#000;border:none}
-  a[href^="http"]::after{content:" (" attr(href) ")";font-size:8pt;color:#555}
+.railbar{
+  position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:.6rem;
+  padding:.55rem clamp(1.15rem,4vw,3rem);
+  background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--rule);
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--ink-soft);
 }
+.railbar .bar{flex:1;height:1px;background:var(--rule);position:relative}
+.railbar .bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);width:0;transition:width 90ms linear}
+@media (min-width:1000px){.railbar{display:none}}
+
+main{padding-bottom:5rem}
+section{padding:4.2rem 0;border-top:1px solid var(--rule)}
+section:first-of-type{border-top:0}
+.marker{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:.55rem}
+.marker b{color:var(--ink);font-weight:500}
+.lede{font-size:1.06rem;color:var(--ink-soft);max-width:58ch}
+
+.hero{padding:7.5rem 0 4.2rem}
+.hero h1{margin-bottom:1.1rem}
+.hero .role{font-family:var(--mono);font-size:.8rem;letter-spacing:.05em;color:var(--accent);margin-bottom:2rem}
+.hero .stmt{font-size:1.2rem;max-width:54ch;margin-bottom:2.4rem}
+.reveal{opacity:0;transform:translateY(9px);animation:rise .66s cubic-bezier(.2,.7,.3,1) forwards}
+.reveal:nth-child(1){animation-delay:.02s}
+.reveal:nth-child(2){animation-delay:.10s}
+.reveal:nth-child(3){animation-delay:.18s}
+.reveal:nth-child(4){animation-delay:.26s}
+@keyframes rise{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;animation:none}}
+.links{display:flex;flex-wrap:wrap;gap:1.4rem;font-family:var(--mono);font-size:.78rem}
+
+.arm{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.05em;color:var(--ink);
+  margin:2.8rem 0 .9rem;padding-bottom:.4rem;border-bottom:1px solid var(--rule);max-width:var(--col);
+}
+.arm span{color:var(--ink-soft)}
+.hint{font-family:var(--mono);font-size:.67rem;color:var(--ink-soft);margin-top:.6rem}
+
+/* etapas */
+.steps{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.6rem}
+.steps button{
+  font-family:var(--mono);font-size:.73rem;padding:.5rem .85rem;cursor:pointer;
+  background:transparent;color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
+  transition:background var(--step),color var(--step),border-color var(--step);
+}
+.steps button:hover{color:var(--ink);border-color:var(--ink-soft)}
+.steps button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.steps .st{opacity:.85;margin-right:.42rem}
+.stepbody{margin-top:.8rem;padding:1.4rem;background:var(--panel);border:1px solid var(--rule);border-radius:2px;min-height:210px}
+.stepbody h3{margin-bottom:.5rem}
+.stepbody p{max-width:60ch;font-size:.98rem}
+.stepbody .tech{
+  margin-top:1rem;padding-top:.85rem;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:.7rem;line-height:1.85;color:var(--ink-soft);
+}
+.stepbody .tech b{color:var(--ink);font-weight:500}
+.stepbody.swap{animation:fadein var(--step) ease-out}
+@keyframes fadein{from{opacity:.4}to{opacity:1}}
+.planned{
+  display:inline-block;margin-top:.6rem;padding:.22rem .5rem;
+  font-family:var(--mono);font-size:.67rem;color:var(--ink-soft);
+  border:1px solid var(--rule);border-radius:2px;
+}
+
+/* tabela de versões */
+.vtable{margin-top:1.5rem;border:1px solid var(--rule);border-radius:2px;background:var(--panel);overflow-x:auto}
+.vtable table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.71rem;min-width:430px}
+.vtable th{
+  text-align:left;font-weight:400;color:var(--ink-soft);letter-spacing:.03em;
+  padding:.65rem .8rem;border-bottom:1px solid var(--rule);white-space:nowrap;
+}
+.vtable td{padding:.6rem .8rem;border-bottom:1px solid var(--rule);color:var(--ink-soft);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vtable tr:last-child td{border-bottom:0}
+.vtable tr.live td{color:var(--ink)}
+.vtable td .mk{color:var(--accent)}
+.vnote{font-family:var(--mono);font-size:.68rem;line-height:1.8;color:var(--ink-soft);margin-top:.8rem;max-width:56ch}
+
+/* grade de hipóteses */
+.hyp{margin-top:1.5rem;border-top:1px solid var(--rule)}
+.hyp .hrow{
+  display:grid;gap:.3rem 1.4rem;padding:.85rem 0;border-bottom:1px solid var(--rule);
+  font-family:var(--mono);font-size:.71rem;line-height:1.7;
+}
+@media (min-width:700px){.hyp .hrow{grid-template-columns:1.35fr 1fr .95fr;align-items:baseline}}
+.hyp .claim{color:var(--ink)}
+.hyp .act{color:var(--ink-soft)}
+.hyp .res{color:var(--accent)}
+.hyp .hhead{color:var(--ink-soft);letter-spacing:.04em;padding-bottom:.5rem;border-bottom:1px solid var(--rule)}
+@media (min-width:700px){.hyp .hhead{display:grid;grid-template-columns:1.35fr 1fr .95fr;gap:1.4rem}}
+@media (max-width:699px){.hyp .hhead{display:none}}
+.hyp .lbl{display:inline;color:var(--ink-soft)}
+@media (min-width:700px){.hyp .lbl{display:none}}
+
+/* acordeão */
+details{border-bottom:1px solid var(--rule)}
+details.first{border-top:1px solid var(--rule)}
+summary{cursor:pointer;list-style:none;padding:.85rem 0;display:flex;gap:.9rem;align-items:baseline}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;color:var(--ink-soft);font-family:var(--mono);font-size:.9rem}
+details[open] summary::after{content:"\2212";color:var(--accent)}
+summary:hover{color:var(--accent)}
+.dbody{padding:0 0 1.25rem;max-width:var(--col)}
+.dbody p{font-size:.95rem}
+.date{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);flex:0 0 auto}
+.tech-note{
+  font-family:var(--mono);font-size:.69rem;line-height:1.8;color:var(--ink-soft);
+  margin-top:.75rem;padding-left:.85rem;border-left:2px solid var(--rule);
+}
+.tech-note b{color:var(--ink);font-weight:500}
+
+/* rows simples */
+.rows{margin-top:1.3rem}
+.row{display:grid;gap:.25rem 2rem;padding:.85rem 0;border-top:1px solid var(--rule)}
+@media (min-width:640px){.row{grid-template-columns:152px 1fr}}
+.row .k{font-family:var(--mono);font-size:.71rem;color:var(--ink-soft);letter-spacing:.03em;padding-top:.22em}
+.row .v{max-width:var(--col)}
+.row .v small{display:block;color:var(--ink-soft);font-size:.9rem}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.1rem}
+.chips button{
+  font-family:var(--mono);font-size:.7rem;padding:.38rem .62rem;cursor:pointer;
+  background:transparent;color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
+  transition:background var(--step),color var(--step),border-color var(--step);
+}
+.chips button:hover{color:var(--ink);border-color:var(--ink-soft)}
+.chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
+.chipbody{margin-top:.75rem;padding:1rem 1.1rem;background:var(--panel);border:1px solid var(--rule);border-radius:2px;min-height:120px}
+.chipbody .dom{font-family:var(--mono);font-size:.67rem;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:.3rem}
+.chipbody p{margin:.35rem 0 0;font-size:.95rem;max-width:56ch}
+.chipbody.swap{animation:fadein var(--step) ease-out}
+
+footer{border-top:1px solid var(--rule);padding:2.4rem 0 4rem;font-family:var(--mono);font-size:.73rem;color:var(--ink-soft)}
+footer .links{margin-bottom:1rem}
 </style>
 </head>
+
 <body>
-<div class="wrap">
 
-  <header class="topbar">
-    <a href="https://www.linkedin.com/in/1pedroosilva/">linkedin</a>
-    <a href="https://github.com/1pedroosilva">github</a>
-    <a href="mailto:1pedro.osilva@gmail.com">e-mail</a>
-  </header>
-
-  <div class="hero">
-    <h1>Pedro Oliveira</h1>
-    <p>Business intelligence e governança financeira de TI. São Paulo, Brasil.</p>
-    <p>Trabalho com custos de tecnologia em controladoria. Construo pipelines de dados em Databricks, com dado público e código aberto.</p>
-  </div>
-
-  <section>
-    <p class="eyebrow">1.01 · atuação</p>
-    <h2>Hoje</h2>
-    <p>Área de Controladoria do Bradesco, com foco na redistribuição gerencial dos custos de TI entre as áreas do banco. Participei da implantação do MyABCM, ferramenta de modelagem e alocação de custos, e desenvolvo relatórios gerenciais em Power BI e Power Query.</p>
-    <p>Antes disso, seis anos em planejamento financeiro e FP&amp;A, com orçamento, forecast e análise de variações entre orçado e realizado.</p>
-  </section>
-
-  <section>
-    <p class="eyebrow">2.01 · projeto</p>
-    <h2>Pipeline DFP — CVM</h2>
-    <p class="schema">fonte: dados abertos cvm · camadas: landing, bronze, silver, gold · formato: delta · atualização: semanal</p>
-    <p>Ingestão e modelagem das demonstrações financeiras padronizadas de companhias abertas brasileiras, cobrindo DRE, BPA, BPP, DFC, DMPL e DVA. Dado público, código aberto.</p>
-    <ul>
-      <li>Quatro campos da fonte alteram o significado do valor sem sinalizar: escala da moeda, ordem do exercício, versão do arquivo e código da conta. Todos são tratados de forma explícita na camada Silver.</li>
-      <li>A CVM republica arquivos ao longo do ano. A Bronze retém o histórico completo; a Silver resolve qual versão prevalece por chave de negócio.</li>
-      <li>Download condicionado ao cabeçalho HTTP <code>Last-Modified</code>, em vez de reprocessamento integral a cada execução.</li>
-      <li>Valores contábeis em <code>DECIMAL(18,2)</code>.</li>
-      <li>A camada Gold valida a soma de saída contra a soma de entrada. Divergência interrompe a carga.</li>
-    </ul>
-    <p class="links">
-      <a href="https://github.com/1pedroosilva/cvm-dfp-pipeline">código</a>
-      <!-- Quando o Power BI estiver publicado, remova esta linha de comentario e a de baixo, e cole a URL:
-      <a href="COLE-A-URL-DO-POWER-BI">relatório power bi</a>
-      -->
-    </p>
-  </section>
-
-  <section>
-    <p class="eyebrow">3.01 · ferramentas</p>
-    <h2>Stack</h2>
-    <dl>
-      <dt>plataforma</dt><dd>Databricks, Delta Lake, Unity Catalog</dd>
-      <dt>processamento</dt><dd>PySpark, SQL, Python</dd>
-      <dt>modelagem</dt><dd>Arquitetura medalhão, modelagem dimensional</dd>
-      <dt>análise</dt><dd>Power BI, DAX, Power Query (M), Excel, VBA</dd>
-      <dt>custos</dt><dd>MyABCM, metodologia ABC</dd>
-    </dl>
-  </section>
-
-  <section>
-    <p class="eyebrow">4.01 · trajetória</p>
-    <h2>Experiência</h2>
-    <div class="row">
-      <span class="yr">2025 —</span>
-      <span class="b">Business intelligence · Bradesco<span>Controladoria — custos de TI</span></span>
-    </div>
-    <div class="row">
-      <span class="yr">2023 – 2025</span>
-      <span class="b">Especialista de dados · act digital<span>Alocado no cliente Bradesco</span></span>
-    </div>
-    <div class="row">
-      <span class="yr">2023</span>
-      <span class="b">Analista de planejamento financeiro · Alares Internet</span>
-    </div>
-    <div class="row">
-      <span class="yr">2017 – 2023</span>
-      <span class="b">Claro Brasil<span>Planejamento financeiro, BI e administrativo sênior</span></span>
-    </div>
-    <div class="row">
-      <span class="yr">2016</span>
-      <span class="b">Analista administrativo sênior · Walmart</span>
-    </div>
-  </section>
-
-  <section>
-    <p class="eyebrow">5.01 · formação</p>
-    <h2>Formação</h2>
-    <div class="row">
-      <span class="yr">2019 – 2022</span>
-      <span class="b">Bacharelado em Administração · Universidade Cruzeiro do Sul</span>
-    </div>
-    <div class="row">
-      <span class="yr">2022</span>
-      <span class="b">Orçamento e Controle · FGV</span>
-    </div>
-    <div class="row">
-      <span class="yr">2016 – 2017</span>
-      <span class="b">Técnico em Administração · ETEC</span>
-    </div>
-    <div class="row">
-      <span class="yr">em curso</span>
-      <span class="b">Databricks Certified Data Engineer Associate</span>
-    </div>
-  </section>
-
-  <footer>
-    <a href="mailto:1pedro.osilva@gmail.com">1pedro.osilva@gmail.com</a> ·
-    <a href="https://www.linkedin.com/in/1pedroosilva/">linkedin</a> ·
-    <a href="https://github.com/1pedroosilva">github</a>
-  </footer>
-
+<div class="railbar">
+  <span id="railLabel">início</span>
+  <span class="bar"><i id="railFill"></i></span>
 </div>
+
+<div class="shell">
+  <nav class="index" aria-label="Índice">
+    <ol>
+      <li><a href="#cvm">1.01 dados de balanço</a></li>
+      <li><a href="#skills">2.01 genie code</a></li>
+      <li><a href="#stack">3.01 stack</a></li>
+      <li><a href="#trajetoria">4.01 trajetória</a></li>
+      <li><a href="#formacao">5.01 formação</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section class="hero" id="topo">
+      <p class="role reveal">Engenharia de dados · Databricks · Power BI</p>
+      <h1 class="reveal">Pedro Oliveira</h1>
+      <p class="stmt reveal">
+        Construo pipelines em Databricks com dado público e código aberto. Hoje atuo em
+        controladoria bancária, na governança financeira dos custos de TI.
+      </p>
+      <p class="links reveal">
+        <a href="https://www.linkedin.com/in/1pedroosilva/">linkedin</a>
+        <a href="https://github.com/1pedroosilva">github</a>
+        <a href="mailto:1pedro.osilva@gmail.com">e-mail</a>
+      </p>
+    </section>
+
+    <!-- ═══ 1.01 ═══ -->
+    <section id="cvm">
+      <p class="marker"><b>1.01</b> &nbsp;projeto</p>
+      <h2>Balanços de companhias abertas</h2>
+      <p class="lede" style="margin-top:.8rem">
+        Pipeline em Databricks sobre as demonstrações financeiras padronizadas que as
+        companhias abertas entregam à CVM. Dado público, e ainda assim hostil: pacotes
+        anuais, formato que muda ao longo dos anos e republicação silenciosa sempre que uma
+        companhia corrige um número já divulgado.
+      </p>
+      <p style="margin-top:1.2rem">
+        Quatro etapas, cada uma com uma responsabilidade só.
+      </p>
+
+      <div class="steps" role="tablist" aria-label="Etapas do processo">
+        <button role="tab" aria-selected="true"  data-step="captura"><span class="st">&#9679;</span>captura</button>
+        <button role="tab" aria-selected="false" data-step="historico"><span class="st">&#9679;</span>histórico</button>
+        <button role="tab" aria-selected="false" data-step="tratamento"><span class="st">&#9679;</span>tratamento</button>
+        <button role="tab" aria-selected="false" data-step="entrega"><span class="st">&#9675;</span>entrega</button>
+      </div>
+      <div class="stepbody" id="stepbody" role="tabpanel" aria-live="polite"></div>
+      <p class="hint">&#9679; em funcionamento &nbsp;·&nbsp; &#9675; ainda não construído</p>
+
+      <p class="arm">o problema da republicação</p>
+      <p>
+        A DFP de um exercício é entregue no ano seguinte, e pode ser reentregue várias vezes
+        depois disso. Guardar só a primeira entrega deixa o valor desatualizado; sobrescrever
+        a cada nova entrega apaga o fato de que houve correção, e o tamanho dela.
+      </p>
+
+      <div class="vtable">
+        <table>
+          <thead>
+            <tr><th>exercício</th><th>arquivo entregue em</th><th>versão</th><th>lucro divulgado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2024</td><td>12 mar 2025</td><td>1</td><td>1.198.402</td></tr>
+            <tr><td>2024</td><td>04 jul 2025</td><td>2</td><td>1.221.870</td></tr>
+            <tr class="live"><td>2024</td><td>18 nov 2025</td><td>3</td><td>1.234.567 <span class="mk">&#9679; vigente</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="vnote">
+        As três entregas ficam armazenadas. A base entrega a versão 3 e mantém as anteriores
+        consultáveis, com a data em que chegaram.
+      </p>
+
+      <p class="arm">o que sustenta a execução autônoma</p>
+      <p>
+        Um pipeline agendado precisa falhar de forma visível quando algo sai do previsto. O
+        modo de falha caro não é a interrupção, é a carga que termina bem e entrega número
+        errado.
+      </p>
+
+      <div style="margin-top:1.2rem">
+        <details class="first">
+          <summary><span>Interrupção antes da gravação, não depois</span></summary>
+          <div class="dbody">
+            <p>A checagem de estrutura acontece antes da escrita. Faltando informação
+            essencial, a execução para na etapa em que o problema nasceu, e não três camadas
+            adiante, onde a causa já se perdeu.</p>
+            <p class="tech-note">Validações de ingestão e de transformação com falha explícita, processamento granular por período e rastreamento de erro. A documentação inclui uma seção sobre <b>quando não usar guardrail</b> — nem toda verificação compensa o custo de manter.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>Verificação automática a cada alteração de código</span></summary>
+          <div class="dbody">
+            <p>Alteração de código só é aceita depois de passar por uma bateria automática.
+            A quebra aparece no momento da mudança, não na execução agendada.</p>
+            <p class="tech-note">GitHub Actions em cada push e pull request na main: <b>Ruff</b> para padrão de código e <b>pytest</b> para os testes. Testes unitários das funções puras de configuração, mais um teste de integração ponta a ponta em job separado.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>Ambiente reproduzível a partir do repositório</span></summary>
+          <div class="dbody">
+            <p>O ambiente está declarado em arquivo versionado, com separação entre
+            desenvolvimento, integração e produção. Clonar o repositório é suficiente para
+            recriar a mesma execução.</p>
+            <p class="tech-note"><b>Databricks Asset Bundles</b> com targets de desenvolvimento, integração contínua e produção. Jobs declarados em YAML, com notificação de falha por e-mail.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>Reprocessamento sem duplicação</span></summary>
+          <div class="dbody">
+            <p>Reexecutar um exercício já processado devolve o mesmo resultado, sem linha
+            duplicada e sem janela em que a tabela fique parcialmente escrita.</p>
+            <p class="tech-note">Sobrescrita atômica por predicado sobre a partição de ano (<b>replaceWhere</b>), substituindo a estratégia anterior de apagar e reinserir, que deixava uma janela com a tabela incompleta.</p>
+          </div>
+        </details>
+      </div>
+
+      <p class="arm">o que mudou de ideia no caminho</p>
+      <p>
+        Cada decisão relevante fica registrada no repositório com a data, o contexto e o que
+        se aprendeu. Inclusive as que desfizeram uma escolha anterior minha.
+      </p>
+
+      <div style="margin-top:1.2rem">
+        <details class="first">
+          <summary><span class="date">19 ago</span><span>Troquei a forma de regravar os dados</span></summary>
+          <div class="dbody">
+            <p>A forma original apagava o período e reescrevia em duas operações separadas.
+            Entre uma e outra existia um instante em que a base estava incompleta. A nova
+            faz as duas coisas de uma vez.</p>
+            <p class="tech-note">De DELETE seguido de APPEND para <b>replaceWhere</b> sobre a partição de ano.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span class="date">19 ago</span><span>Parei de configurar o ambiente na mão</span></summary>
+          <div class="dbody">
+            <p>O agendamento tinha sido montado clicando na interface. Isso não é versionável
+            nem replicável: se eu perdesse o ambiente, teria que refazer de memória.</p>
+            <p class="tech-note">Migração de job manual para <b>Databricks Asset Bundles</b>, com o ambiente descrito em arquivo e três targets.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span class="date">17 ago</span><span>Descobri que uma verificação minha estava errada</span></summary>
+          <div class="dbody">
+            <p>Uma checagem de consistência contábil vinha passando sempre. O motivo é que a
+            amostra escolhida não era representativa: ela não conseguia falhar. Verificação
+            que não pode falhar não verifica nada, só produz confiança.</p>
+            <p class="tech-note">Premissa oculta em validação hierárquica, encontrada na análise exploratória. A correção exigiu identificar antes uma amostra em que a hierarquia pudesse de fato ser testada.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span class="date">15 ago</span><span>Separei um pedaço em projeto próprio</span></summary>
+          <div class="dbody">
+            <p>As instruções que eu escrevia para o assistente de código nasceram dentro
+            deste projeto. Como servem para qualquer projeto e evoluem em outro ritmo,
+            passaram a viver sozinhas.</p>
+            <p class="tech-note">Extração das skills para repositório independente, com ciclo de vida e público próprios.</p>
+          </div>
+        </details>
+      </div>
+
+      <p style="margin-top:2.2rem">
+        A investigação de qualidade da base registra quinze achados numerados, incluindo os
+        que ainda não foram resolvidos. Dois deles estão abertos e documentados: valores que
+        chegam em escalas diferentes sem conversão, e contas contábeis ainda sem
+        classificação de hierarquia.
+      </p>
+
+      <p style="margin-top:1.6rem"><a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros">ver o projeto no github</a></p>
+    </section>
+
+    <!-- ═══ 2.01 ═══ -->
+    <section id="skills">
+      <p class="marker"><b>2.01</b> &nbsp;projeto</p>
+      <h2>Skills para o Databricks Genie Code</h2>
+      <p class="lede" style="margin-top:.8rem">
+        O Genie Code, assistente de programação do Databricks, aceita skills: instruções
+        que o orientam em domínios específicos. As nativas da plataforma cobrem notebooks,
+        Unity Catalog, dashboards e pipelines. Não cobrem critério de decisão arquitetural,
+        convenção de nomenclatura nem padrão de revisão.
+      </p>
+      <p style="margin-top:1.2rem">
+        Escrevi treze skills para essa lacuna. O problema apareceu antes de elas serem úteis.
+      </p>
+
+      <p class="arm">o erro que eu publiquei</p>
+      <p>
+        As instruções não estavam sendo acionadas. Comparei as que funcionavam com as que
+        não funcionavam, encontrei três características em comum e concluí que eram
+        exigências não documentadas da plataforma. Escrevi isso e publiquei.
+      </p>
+      <p>
+        A afirmação era sobre causa. A evidência era só uma coincidência entre coisas que já
+        estavam funcionando. Isso não se sustenta, então voltei e testei uma por uma.
+      </p>
+
+      <div class="hyp">
+        <div class="hhead"><span>o que eu afirmei</span><span>o que eu fiz para testar</span><span>resultado</span></div>
+        <div class="hrow">
+          <span class="claim">A description não pode ter acentos</span>
+          <span class="act"><span class="lbl">teste: </span>inseri 28 caracteres acentuados</span>
+          <span class="res">acionou igual &#183; refutada</span>
+        </div>
+        <div class="hrow">
+          <span class="claim">Precisa declarar o que a skill não faz</span>
+          <span class="act"><span class="lbl">teste: </span>removi o boundary negativo</span>
+          <span class="res">só a correta acionou &#183; refutada</span>
+        </div>
+        <div class="hrow">
+          <span class="claim">Precisa começar com verbo imperativo</span>
+          <span class="act"><span class="lbl">teste: </span>removi o verbo de abertura</span>
+          <span class="res">comportamento idêntico &#183; refutada</span>
+        </div>
+      </div>
+      <p class="vnote">
+        As três continuam no projeto, agora como escolha de clareza e não como exigência da
+        plataforma. A documentação publicada foi corrigida.
+      </p>
+
+      <div style="margin-top:1.6rem">
+        <details class="first">
+          <summary><span>Como os testes foram feitos</span></summary>
+          <div class="dbody">
+            <p>Uma mudança por vez, com volta ao ponto de partida entre elas. Sem isso,
+            qualquer resultado seria ambíguo.</p>
+            <p class="tech-note">Backup do estado funcional com checagem de integridade. Uma variável por teste. Dez minutos de espera para reindexação do registry. Sessão nova a cada rodada, para descartar cache. Evidência visual do resultado. Reversão ao baseline antes do teste seguinte.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span>O que isso revelou sobre a plataforma</span></summary>
+          <div class="dbody">
+            <p>O mecanismo é mais robusto do que eu supunha: entende o sentido do pedido em
+            vez de procurar palavras exatas.</p>
+            <p class="tech-note">Acionamento por compreensão semântica, com suporte a UTF-8 completo e sem exigência de formato na description. Protocolo completo e lições registradas em documentos versionados no repositório.</p>
+          </div>
+        </details>
+      </div>
+
+      <p class="arm">as treze instruções <span>&#8212; clique para ler</span></p>
+      <div class="chips" id="chips" role="group" aria-label="Catálogo"></div>
+      <div class="chipbody" id="chipbody" aria-live="polite"></div>
+
+      <p style="margin-top:2rem">
+        Em andamento: comparar como o assistente se comporta com e sem essas instruções,
+        sobre o mesmo trabalho. Nada será apresentado como resultado antes de as duas
+        condições rodarem.
+      </p>
+
+      <p style="margin-top:1.6rem"><a href="https://github.com/1pedroosilva/databricks-genie-skills">ver o projeto no github</a></p>
+    </section>
+
+    <section id="stack">
+      <p class="marker"><b>3.01</b> &nbsp;ferramentas</p>
+      <h2>Stack</h2>
+      <div class="rows">
+        <div class="row"><div class="k">plataforma</div><div class="v">Databricks, Delta Lake, Unity Catalog, Asset Bundles</div></div>
+        <div class="row"><div class="k">engenharia</div><div class="v">PySpark, SQL, Python, Git, GitHub Actions, pytest, Ruff</div></div>
+        <div class="row"><div class="k">modelagem</div><div class="v">Arquitetura medalhão, modelagem dimensional</div></div>
+        <div class="row"><div class="k">bi</div><div class="v">Power BI, DAX, Power Query (M), Excel, VBA</div></div>
+        <div class="row"><div class="k">custos</div><div class="v">MyABCM, metodologia ABC</div></div>
+      </div>
+    </section>
+
+    <section id="trajetoria">
+      <p class="marker"><b>4.01</b> &nbsp;trajetória</p>
+      <h2>Experiência</h2>
+      <div class="rows">
+        <div class="row"><div class="k">2025 &#8212;</div><div class="v">Business Intelligence · Bradesco<small>Controladoria. Governança financeira dos custos de TI e redistribuição gerencial entre áreas.</small></div></div>
+        <div class="row"><div class="k">2023 – 2025</div><div class="v">Especialista de dados · act digital<small>Alocado no cliente Bradesco.</small></div></div>
+        <div class="row"><div class="k">2023</div><div class="v">Analista de planejamento financeiro · Alares Internet</div></div>
+        <div class="row"><div class="k">2017 – 2023</div><div class="v">Claro Brasil<small>Planejamento financeiro, BI e administrativo sênior.</small></div></div>
+        <div class="row"><div class="k">2016</div><div class="v">Analista administrativo sênior · Walmart</div></div>
+      </div>
+    </section>
+
+    <section id="formacao">
+      <p class="marker"><b>5.01</b> &nbsp;formação</p>
+      <h2>Formação</h2>
+      <div class="rows">
+        <div class="row"><div class="k">2019 – 2022</div><div class="v">Bacharelado em Administração · Universidade Cruzeiro do Sul</div></div>
+        <div class="row"><div class="k">2022</div><div class="v">Orçamento e Controle · FGV</div></div>
+        <div class="row"><div class="k">2016 – 2017</div><div class="v">Técnico em Administração · ETEC</div></div>
+        <div class="row"><div class="k">em curso</div><div class="v">Databricks Certified Data Engineer Associate</div></div>
+      </div>
+    </section>
+
+    <footer>
+      <p class="links">
+        <a href="mailto:1pedro.osilva@gmail.com">1pedro.osilva@gmail.com</a>
+        <a href="https://www.linkedin.com/in/1pedroosilva/">linkedin</a>
+        <a href="https://github.com/1pedroosilva">github</a>
+      </p>
+      <p>São Paulo, Brasil.</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+const STEPS = {
+  captura:{title:"Captura",lead:"Busca os arquivos na CVM",
+    body:`<p>Os pacotes anuais são baixados e guardados exatamente como vieram, sem nenhuma
+      alteração. Um registro de controle anota o que já foi baixado e quando o arquivo mudou
+      na origem, para não refazer trabalho à toa.</p>`,
+    tech:`Landing zone em volume do Unity Catalog. Tabela de controle de ingestão com o cabeçalho <b>Last-Modified</b> da origem, permitindo reprocessamento seletivo.`},
+  historico:{title:"Histórico",lead:"Guarda todas as versões, sem apagar nada",
+    body:`<p>Cada arquivo que chega vira registro novo. Nada é sobrescrito e nada é removido.
+      Se a companhia republicar o mesmo ano cinco vezes, as cinco ficam guardadas com a data
+      em que chegaram.</p>
+      <p>Esta etapa não decide qual versão vale. Perder uma versão antiga, no entanto, seria
+      irreversível.</p>`,
+    tech:`Camada bronze append-only para DRE, Balanço Patrimonial Ativo e Passivo, com colunas de controle <b>_versao_ingestao</b>, <b>_last_modified_cvm</b> e <b>_ingest_ts</b>.`},
+  tratamento:{title:"Tratamento",lead:"Escolhe a versão vigente e padroniza",
+    body:`<p>Aqui o processo decide o que publicar: para cada companhia e cada ano, a
+      divulgação mais recente. O resultado é uma base sem duplicidade, que pode ser
+      reprocessada quantas vezes for preciso sem mudar de valor.</p>
+      <p>Duas padronizações ainda faltam e estão documentadas: valores que chegam em escalas
+      diferentes e contas contábeis sem classificação de hierarquia.</p>`,
+    tech:`Camada silver com filtro de versão mais recente por registro e gravação atômica por predicado (<b>replaceWhere</b>) sobre a partição de ano.`},
+  entrega:{title:"Entrega",lead:"Base pronta para análise",
+    body:`<p>Indicadores calculados e organizados para consumo direto, sem que quem for
+      analisar precise conhecer as armadilhas das etapas anteriores.</p>
+      <span class="planned">ainda não construído</span>`,
+    tech:`Camada gold com modelo dimensional. A estrutura do projeto e a declaração de ambiente já a preveem; os notebooks não existem.`}
+};
+const sbody=document.getElementById('stepbody');
+const stabs=[...document.querySelectorAll('.steps button')];
+function paintStep(k){
+  const S=STEPS[k];
+  sbody.innerHTML=`<h3>${S.title}</h3><p class="meta" style="font-family:var(--mono);font-size:.69rem;color:var(--ink-soft);margin-bottom:.8rem">${S.lead}</p>${S.body}<p class="tech">${S.tech}</p>`;
+  sbody.classList.remove('swap');void sbody.offsetWidth;sbody.classList.add('swap');
+  stabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.step===k)));
+}
+stabs.forEach(t=>t.addEventListener('click',()=>paintStep(t.dataset.step)));
+paintStep('captura');
+
+const SKILLS=[
+  ["medallion-architecture","arquitetura","Como decidir a forma de gravar cada camada, garantir que reprocessar não duplique, e versionar mudanças de regra de negócio."],
+  ["code-review","revisão","O que olhar ao revisar código: erro de lógica, suposição não verificada, trecho que virou inútil e custo desnecessário de processamento."],
+  ["notebook-structure","revisão","Como organizar um arquivo de código novo: o que vem primeiro e o que não deve se misturar."],
+  ["data-quality-guardrails","qualidade","Que verificações colocar para o processo falhar cedo e de forma visível, em vez de entregar número errado em silêncio."],
+  ["eda-and-validation","qualidade","Quando investigar a base, quando verificar, onde guardar cada coisa e como registrar o que foi descoberto."],
+  ["naming-conventions","nomenclatura","Como nomear arquivos, tabelas e variáveis de forma que o nome diga a que etapa pertence."],
+  ["unity-catalog-naming","nomenclatura","Como organizar os espaços de dados por camada, para que a origem de cada tabela seja evidente."],
+  ["artifact-documentation","documentação","Como documentar algo que já existe a partir do que está no ambiente, tratando divergências entre fontes em vez de escolher uma."],
+  ["docs-sync","documentação","Depois de mudar o código, quais documentos ficaram desatualizados e precisam acompanhar."],
+  ["technical-writing","documentação","Tom de documentação técnica: verbo no presente, sem emoji, sem adjetivo de venda."],
+  ["git-workflow","versionamento","Como dividir uma alteração em partes coerentes e escrever a descrição de cada uma."],
+  ["asset-placement","organização","Antes de criar um arquivo: a que projeto pertence, em que pasta vai e o que conferir antes."],
+  ["skill-patterns","meta","Como escrever e revisar as próprias instruções, incluindo checar se já existe algo equivalente."]
+];
+const chips=document.getElementById('chips'),chipbody=document.getElementById('chipbody');
+SKILLS.forEach(([n],i)=>{
+  const b=document.createElement('button');
+  b.type='button';b.textContent=n;b.setAttribute('aria-pressed',String(i===0));
+  b.addEventListener('click',()=>paintSkill(i));
+  chips.appendChild(b);
+});
+function paintSkill(i){
+  const [n,d,t]=SKILLS[i];
+  chipbody.innerHTML=`<p class="dom">${d}</p><h3>${n}</h3><p>${t}</p>`;
+  chipbody.classList.remove('swap');void chipbody.offsetWidth;chipbody.classList.add('swap');
+  [...chips.children].forEach((b,j)=>b.setAttribute('aria-pressed',String(j===i)));
+}
+paintSkill(0);
+
+const links=[...document.querySelectorAll('.index a')];
+const label=document.getElementById('railLabel'),fill=document.getElementById('railFill');
+const obs=new IntersectionObserver(es=>{
+  es.forEach(en=>{
+    if(!en.isIntersecting)return;
+    const id=en.target.id;
+    links.forEach(a=>a.setAttribute('aria-current',String(a.getAttribute('href')==='#'+id)));
+    const m=en.target.querySelector('.marker');
+    label.textContent=m?m.textContent.trim().replace(/\s+/g,' '):'início';
+  });
+},{rootMargin:'-45% 0px -50% 0px'});
+[...document.querySelectorAll('main section')].forEach(s=>obs.observe(s));
+addEventListener('scroll',()=>{
+  const max=document.body.scrollHeight-innerHeight;
+  fill.style.width=(max>0?(scrollY/max)*100:0)+'%';
+},{passive:true});
+</script>
 </body>
 </html>
