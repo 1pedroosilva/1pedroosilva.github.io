@@ -3,20 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pedro Oliveira — Engenharia de dados</title>
+<title>Pedro Oliveira — Engenheiro de dados em Databricks</title>
 
 <meta name="robots" content="index, follow">
-<meta name="author" content="Pedro Oliveira da Silva">
-<meta name="description" content="Engenharia de dados em Databricks. Pipeline de demonstrações financeiras de companhias abertas e skills para assistente de código, com decisões registradas e hipóteses testadas.">
+<meta name="author" content="Pedro Oliveira">
+<meta name="description" content="Engenheiro de dados em Databricks: pipeline das demonstrações financeiras padronizadas da Comissão de Valores Mobiliários (CVM) em arquitetura medalhão com PySpark, Delta Lake e Unity Catalog, e skills de engenharia de dados para o agente Databricks Genie Code.">
 <link rel="canonical" href="https://1pedroosilva.github.io/">
 
 <meta property="og:type" content="profile">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://1pedroosilva.github.io/">
-<meta property="og:title" content="Pedro Oliveira — Engenharia de dados">
+<meta property="og:title" content="Pedro Oliveira — Engenheiro de dados em Databricks">
 <meta property="og:description" content="Transformo dado público em informação confiável. Decisões registradas, premissas testadas.">
 <meta property="og:image" content="https://1pedroosilva.github.io/og.png">
 <meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"Person",
+  "name":"Pedro Oliveira da Silva",
+  "alternateName":"Pedro Oliveira",
+  "url":"https://1pedroosilva.github.io/",
+  "jobTitle":"Engenheiro de dados",
+  "email":"mailto:1pedro.osilva@gmail.com",
+  "address":{"@type":"PostalAddress","addressLocality":"São Paulo","addressCountry":"BR"},
+  "knowsAbout":["Engenharia de dados","Databricks","PySpark","Delta Lake","Unity Catalog",
+    "Databricks Asset Bundles","Arquitetura medalhão","CVM","Demonstrações financeiras padronizadas",
+    "Databricks Genie Code","Agent Skills","Power BI","DAX"],
+  "sameAs":["https://github.com/1pedroosilva","https://www.linkedin.com/in/1pedroosilva/"]
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -107,6 +124,7 @@ section:first-of-type{border-top:0}
 }
 .arm span{color:var(--ink-soft)}
 .hint{font-family:var(--mono);font-size:.67rem;color:var(--ink-soft);margin-top:.6rem}
+.pstatus{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);letter-spacing:.03em;margin:.7rem 0 0}
 
 /* etapas */
 .steps{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.6rem}
@@ -126,13 +144,36 @@ section:first-of-type{border-top:0}
   font-family:var(--mono);font-size:.7rem;line-height:1.85;color:var(--ink-soft);
 }
 .stepbody .tech b{color:var(--ink);font-weight:500}
-.stepbody.swap{animation:fadein var(--step) ease-out}
+.panel[hidden]{display:none}
+.panel{animation:fadein var(--step) ease-out}
+.plead{font-family:var(--mono);font-size:.69rem;color:var(--ink-soft);margin-bottom:.8rem}
 @keyframes fadein{from{opacity:.4}to{opacity:1}}
 .planned{
   display:inline-block;margin-top:.6rem;padding:.22rem .5rem;
   font-family:var(--mono);font-size:.67rem;color:var(--ink-soft);
   border:1px solid var(--rule);border-radius:2px;
 }
+
+/* comparador */
+.diff{margin-top:1.5rem;border:1px solid var(--rule);border-radius:2px;background:var(--panel);overflow:hidden}
+.diff .head{
+  display:flex;justify-content:space-between;align-items:center;gap:.6rem;
+  padding:.6rem .9rem;border-bottom:1px solid var(--rule);
+  font-family:var(--mono);font-size:.67rem;letter-spacing:.04em;color:var(--ink-soft);
+}
+.stage{position:relative}
+.pane{padding:1.05rem .95rem;font-family:var(--mono);font-size:.7rem;line-height:1.95}
+.pane pre{margin:0;white-space:pre;overflow-x:auto}
+.pane.after{position:absolute;inset:0;background:var(--panel-deep);clip-path:inset(0 0 0 var(--split,50%));border-left:1px solid var(--accent)}
+.pane .dim{color:var(--ink-soft)}
+.pane .ok{color:var(--accent)}
+.slider{
+  -webkit-appearance:none;appearance:none;display:block;width:100%;margin:0;
+  height:32px;background:transparent;cursor:ew-resize;border-top:1px solid var(--rule);
+}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:2px;background:var(--accent);border:0}
+.slider::-moz-range-thumb{width:32px;height:32px;border-radius:2px;background:var(--accent);border:0}
+.difflegend{font-family:var(--mono);font-size:.66rem;color:var(--ink-soft);padding:.5rem .9rem;border-top:1px solid var(--rule)}
 
 /* tabela de versões */
 .vtable{margin-top:1.5rem;border:1px solid var(--rule);border-radius:2px;background:var(--panel);overflow-x:auto}
@@ -200,7 +241,7 @@ summary:hover{color:var(--accent)}
 .chipbody{margin-top:.75rem;padding:1rem 1.1rem;background:var(--panel);border:1px solid var(--rule);border-radius:2px;min-height:120px}
 .chipbody .dom{font-family:var(--mono);font-size:.67rem;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:.3rem}
 .chipbody p{margin:.35rem 0 0;font-size:.95rem;max-width:56ch}
-.chipbody.swap{animation:fadein var(--step) ease-out}
+
 
 footer{border-top:1px solid var(--rule);padding:2.4rem 0 4rem;font-family:var(--mono);font-size:.73rem;color:var(--ink-soft)}
 footer .links{margin-bottom:1rem}
@@ -217,7 +258,7 @@ footer .links{margin-bottom:1rem}
 <div class="shell">
   <nav class="index" aria-label="Índice">
     <ol>
-      <li><a href="#cvm">1.01 dados de balanço</a></li>
+      <li><a href="#cvm">1.01 pipeline cvm</a></li>
       <li><a href="#skills">2.01 genie code</a></li>
       <li><a href="#stack">3.01 stack</a></li>
       <li><a href="#trajetoria">4.01 trajetória</a></li>
@@ -228,15 +269,15 @@ footer .links{margin-bottom:1rem}
   <main>
 
     <section class="hero" id="topo">
-      <p class="role reveal">Engenharia de dados · Databricks · Power BI</p>
+      <p class="role reveal">Engenharia de dados · Databricks · BI e governança financeira</p>
       <h1 class="reveal">Pedro Oliveira</h1>
       <p class="stmt reveal">
-        Construo pipelines em Databricks com dado público e código aberto. Hoje atuo em
-        controladoria bancária, na governança financeira dos custos de TI.
+        Construo pipelines em Databricks com dado público e código aberto. Hoje atuo na
+        Controladoria do Bradesco, FP&A e governança financeira dos custos de TI.
       </p>
       <p class="links reveal">
-        <a href="https://www.linkedin.com/in/1pedroosilva/">linkedin</a>
-        <a href="https://github.com/1pedroosilva">github</a>
+        <a href="https://www.linkedin.com/in/1pedroosilva/" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="https://github.com/1pedroosilva" target="_blank" rel="noopener noreferrer">github</a>
         <a href="mailto:1pedro.osilva@gmail.com">e-mail</a>
       </p>
     </section>
@@ -244,10 +285,11 @@ footer .links{margin-bottom:1rem}
     <!-- ═══ 1.01 ═══ -->
     <section id="cvm">
       <p class="marker"><b>1.01</b> &nbsp;projeto</p>
-      <h2>Balanços de companhias abertas</h2>
+      <h2>Pipeline de demonstrações financeiras da CVM</h2>
+      <p class="pstatus">&#9679; em execução &nbsp;·&nbsp; &#9675; camada de entrega em construção</p>
       <p class="lede" style="margin-top:.8rem">
-        Pipeline em Databricks sobre as demonstrações financeiras padronizadas que as
-        companhias abertas entregam à CVM. Dado público, e ainda assim hostil: pacotes
+        Pipeline em Databricks com as Demonstrações Financeiras Padronizadas (DFP) que as
+        companhias abertas entregam à Comissão de Valores Mobiliários (CVM). Dado público bruto: pacotes
         anuais, formato que muda ao longo dos anos e republicação silenciosa sempre que uma
         companhia corrige um número já divulgado.
       </p>
@@ -257,18 +299,54 @@ footer .links{margin-bottom:1rem}
 
       <div class="steps" role="tablist" aria-label="Etapas do processo">
         <button role="tab" aria-selected="true"  data-step="captura"><span class="st">&#9679;</span>captura</button>
-        <button role="tab" aria-selected="false" data-step="historico"><span class="st">&#9679;</span>histórico</button>
+        <button role="tab" aria-selected="false" data-step="histórico"><span class="st">&#9679;</span>histórico</button>
         <button role="tab" aria-selected="false" data-step="tratamento"><span class="st">&#9679;</span>tratamento</button>
         <button role="tab" aria-selected="false" data-step="entrega"><span class="st">&#9675;</span>entrega</button>
       </div>
-      <div class="stepbody" id="stepbody" role="tabpanel" aria-live="polite"></div>
-      <p class="hint">&#9679; em funcionamento &nbsp;·&nbsp; &#9675; ainda não construído</p>
+      <div class="stepbody" id="stepbody" role="tabpanel">
+        <div class="panel" data-panel="captura">
+          <h3>Captura</h3>
+          <p class="plead">Busca os arquivos na CVM</p>
+          <p>Os pacotes anuais são baixados e guardados exatamente como vieram, sem nenhuma
+ alteração. Um registro de controle anota o que já foi baixado e quando o arquivo mudou
+ na origem, para não refazer trabalho à toa.</p>
+          <p class="tech">Landing zone em volume do <b>Unity Catalog</b>. Tabela de controle de ingestão com o cabeçalho <b>Last-Modified</b> da origem, permitindo reprocessamento seletivo.</p>
+        </div>
+        <div class="panel" data-panel="histórico" hidden>
+          <h3>Histórico</h3>
+          <p class="plead">Guarda todas as versões, sem apagar nada</p>
+          <p>Cada arquivo que chega vira registro novo em tabela. Nada é sobrescrito e nada é removido.
+ Se a companhia republicar o mesmo exercício cinco vezes, as cinco ficam guardadas com a
+ data em que chegaram.</p>
+ <p>Esta etapa não decide qual versão vale. Perder uma versão antiga, no entanto, seria
+ irreversível.</p>
+          <p class="tech">Camada <b>bronze</b> append-only para DRE, Balanço Patrimonial Ativo e Passivo, com colunas de controle <b>_versão_ingestão</b>, <b>_last_modified_cvm</b> e <b>_ingest_ts</b>.</p>
+        </div>
+        <div class="panel" data-panel="tratamento" hidden>
+          <h3>Tratamento</h3>
+          <p class="plead">Escolhe a versão vigente e padroniza</p>
+          <p>Aqui o pipeline decide o que publicar: para cada companhia e cada exercício, a
+ divulgacao mais recente. O resultado é uma base sem duplicidade, que pode ser
+ reprocessada quantas vezes for preciso sem mudar de valor.</p>
+ <p>Duas padronizações ainda faltam e estão documentadas: valores que chegam em escalas
+ diferentes e contas contábeis sem classificação de hierarquia.</p>
+          <p class="tech">Camada <b>silver</b> com filtro de versão mais recente por registro e gravação atômica por predicado (<b>replaceWhere</b>) sobre a partição de ano, em <b>PySpark</b> sobre <b>Delta Lake</b>.</p>
+        </div>
+        <div class="panel" data-panel="entrega" hidden>
+          <h3>Entrega</h3>
+          <p class="plead">Base pronta para análise</p>
+          <p>Indicadores calculados e organizados para consumo direto, sem que quem for analisar
+ precise conhecer as armadilhas das etapas anteriores.</p>
+ <span class="planned">ainda não construído</span>
+          <p class="tech">Camada <b>gold</b> com modelo dimensional. A estrutura do projeto e a declaração de ambiente já a preveem; os notebooks não existem.</p>
+        </div>
+      </div>
 
       <p class="arm">o problema da republicação</p>
       <p>
         A DFP de um exercício é entregue no ano seguinte, e pode ser reentregue várias vezes
-        depois disso. Guardar só a primeira entrega deixa o valor desatualizado; sobrescrever
-        a cada nova entrega apaga o fato de que houve correção, e o tamanho dela.
+        depois disso. Guardar só a primeira entrega deixaria o valor desatualizado; sobrescrever
+        a cada nova entrega apagaria o fato de que houve alguma correção, e o tamanho dela.
       </p>
 
       <div class="vtable">
@@ -284,15 +362,49 @@ footer .links{margin-bottom:1rem}
         </table>
       </div>
       <p class="vnote">
-        As três entregas ficam armazenadas. A base entrega a versão 3 e mantém as anteriores
+        As três entregas ficam armazenadas. O pipeline entrega a versão 3 e mantém as anteriores
         consultáveis, com a data em que chegaram.
       </p>
 
+      <p class="arm">o problema da escala</p>
+      <p>
+        Cada companhia escolhe em que escala reporta. Duas linhas vizinhas da mesma coluna
+        podem estar em unidades diferentes, e a escala vem em um campo à parte, que não
+        acompanha o valor em nenhuma conta.
+      </p>
+
+      <div class="diff">
+        <div class="head"><span>como chega</span><span style="opacity:.6">&#9666; arraste &#9656;</span><span>com a escala aplicada</span></div>
+        <div class="stage">
+          <div class="pane before"><pre>Companhia A &#183; lucro de 2024
+  escala          MIL
+  valor           1.234.567
+
+Companhia B &#183; lucro de 2024
+  escala          UNIDADE
+  valor           890.412.300
+
+<span class="dim">lado a lado, B parece
+setecentas vezes maior.</span></pre></div>
+          <div class="pane after" id="paneEscala"><pre>Companhia A &#183; lucro de 2024
+  valor    <span class="ok">1.234.567.000,00</span>
+
+Companhia B &#183; lucro de 2024
+  valor      <span class="ok">890.412.300,00</span>
+
+<span class="dim">com a escala aplicada,
+A é maior que B. a ordem
+entre as duas se inverte.</span></pre></div>
+        </div>
+        <input class="slider" id="splitEscala" type="range" min="0" max="100" value="50"
+               aria-label="Comparar valor bruto e valor com escala aplicada">
+        <div class="difflegend">enquanto a escala não é aplicada, nenhuma soma ou ranking sobre a coluna fecha</div>
+      </div>
+
       <p class="arm">o que sustenta a execução autônoma</p>
       <p>
-        Um pipeline agendado precisa falhar de forma visível quando algo sai do previsto. O
-        modo de falha caro não é a interrupção, é a carga que termina bem e entrega número
-        errado.
+        Em um pipeline autônomo, o problema não é quando o processo para.
+        O perigo real é ele terminar com sucesso e entregar números errados em silêncio.
       </p>
 
       <div style="margin-top:1.2rem">
@@ -316,26 +428,26 @@ footer .links{margin-bottom:1rem}
         <details>
           <summary><span>Ambiente reproduzível a partir do repositório</span></summary>
           <div class="dbody">
-            <p>O ambiente está declarado em arquivo versionado, com separação entre
-            desenvolvimento, integração e produção. Clonar o repositório é suficiente para
-            recriar a mesma execução.</p>
+            <p>O ambiente e os jobs estão declarados em arquivo versionado, com separação entre desenvolvimento, integração e produção.
+		Quem clonar o repositório sobe o mesmo pipeline sem depender de nada configurado na interface.
+		Os dados não vêm junto: são baixados da CVM na execução, e o resultado depende do que estiver publicado lá naquele momento.</p>
             <p class="tech-note"><b>Databricks Asset Bundles</b> com targets de desenvolvimento, integração contínua e produção. Jobs declarados em YAML, com notificação de falha por e-mail.</p>
           </div>
         </details>
         <details>
           <summary><span>Reprocessamento sem duplicação</span></summary>
           <div class="dbody">
-            <p>Reexecutar um exercício já processado devolve o mesmo resultado, sem linha
-            duplicada e sem janela em que a tabela fique parcialmente escrita.</p>
+            <p>Reprocessar um exercício já carregado é rotina: quando a CVM republica um arquivo corrigido, quando a regra de transformação 		muda e o histórico precisa ser refeito, ou quando a execução anterior parou no meio.
+		Em qualquer um desses casos, rodar de novo entrega a versão correta e apenas ela — sem somar linha em cima do que já estava 		lá, e sem intervalo em que a tabela fique pela metade para quem estiver consultando.</p>
             <p class="tech-note">Sobrescrita atômica por predicado sobre a partição de ano (<b>replaceWhere</b>), substituindo a estratégia anterior de apagar e reinserir, que deixava uma janela com a tabela incompleta.</p>
           </div>
         </details>
       </div>
 
-      <p class="arm">o que mudou de ideia no caminho</p>
+      <p class="arm">projeto em evolução <span>&#8212; decisões registradas em repositório</span></p>
       <p>
-        Cada decisão relevante fica registrada no repositório com a data, o contexto e o que
-        se aprendeu. Inclusive as que desfizeram uma escolha anterior minha.
+        Cada decisão relevante fica no repositório com data, contexto e o que se aprendeu.
+        Inclusive as que desfizeram uma escolha anterior minha.
       </p>
 
       <div style="margin-top:1.2rem">
@@ -383,13 +495,14 @@ footer .links{margin-bottom:1rem}
         classificação de hierarquia.
       </p>
 
-      <p style="margin-top:1.6rem"><a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros">ver o projeto no github</a></p>
+      <p style="margin-top:1.6rem"><a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros" target="_blank" rel="noopener noreferrer">ver o projeto no github</a></p>
     </section>
 
     <!-- ═══ 2.01 ═══ -->
     <section id="skills">
       <p class="marker"><b>2.01</b> &nbsp;projeto</p>
       <h2>Skills para o Databricks Genie Code</h2>
+      <p class="pstatus">&#9679; treze skills publicadas &nbsp;·&nbsp; &#9675; comparação com e sem skills em andamento</p>
       <p class="lede" style="margin-top:.8rem">
         O Genie Code, assistente de programação do Databricks, aceita skills: instruções
         que o orientam em domínios específicos. As nativas da plataforma cobrem notebooks,
@@ -444,18 +557,74 @@ footer .links{margin-bottom:1rem}
           </div>
         </details>
         <details>
-          <summary><span>O que isso revelou sobre a plataforma</span></summary>
+          <summary><span>O que os testes mostraram sobre o mecanismo de acionamento</span></summary>
           <div class="dbody">
-            <p>O mecanismo é mais robusto do que eu supunha: entende o sentido do pedido em
-            vez de procurar palavras exatas.</p>
+            <p>O acionamento é mais robusto do que eu supunha: interpreta o sentido do
+            pedido em vez de procurar palavras exatas. Isso vale para o acionamento, e não
+            diz nada sobre o efeito das skills no resultado do trabalho — essa é a pergunta
+            seguinte.</p>
             <p class="tech-note">Acionamento por compreensão semântica, com suporte a UTF-8 completo e sem exigência de formato na description. Protocolo completo e lições registradas em documentos versionados no repositório.</p>
           </div>
         </details>
       </div>
 
       <p class="arm">as treze instruções <span>&#8212; clique para ler</span></p>
-      <div class="chips" id="chips" role="group" aria-label="Catálogo"></div>
-      <div class="chipbody" id="chipbody" aria-live="polite"></div>
+      <div class="chips" id="chips" role="group" aria-label="Catálogo">
+        <button type="button" data-skill="medallion-architecture" aria-pressed="true">medallion-architecture</button>
+        <button type="button" data-skill="code-review" aria-pressed="false">code-review</button>
+        <button type="button" data-skill="notebook-structure" aria-pressed="false">notebook-structure</button>
+        <button type="button" data-skill="data-quality-guardrails" aria-pressed="false">data-quality-guardrails</button>
+        <button type="button" data-skill="eda-and-validation" aria-pressed="false">eda-and-validation</button>
+        <button type="button" data-skill="naming-conventions" aria-pressed="false">naming-conventions</button>
+        <button type="button" data-skill="unity-catalog-naming" aria-pressed="false">unity-catalog-naming</button>
+        <button type="button" data-skill="artifact-documentation" aria-pressed="false">artifact-documentation</button>
+        <button type="button" data-skill="docs-sync" aria-pressed="false">docs-sync</button>
+        <button type="button" data-skill="technical-writing" aria-pressed="false">technical-writing</button>
+        <button type="button" data-skill="git-workflow" aria-pressed="false">git-workflow</button>
+        <button type="button" data-skill="asset-placement" aria-pressed="false">asset-placement</button>
+        <button type="button" data-skill="skill-patterns" aria-pressed="false">skill-patterns</button>
+      </div>
+      <div class="chipbody" id="chipbody">
+        <div class="panel" data-skillpanel="medallion-architecture">
+          <p class="dom">arquitetura</p><h3>medallion-architecture</h3><p>Como decidir a forma de gravar cada camada, garantir que reprocessar não duplique, e versionar mudancas de regra de negocio.</p>
+        </div>
+        <div class="panel" data-skillpanel="code-review" hidden>
+          <p class="dom">revisão</p><h3>code-review</h3><p>O que olhar ao revisar código: erro de lógica, suposição não verificada, trecho que virou inútil e custo desnecessário de processamento.</p>
+        </div>
+        <div class="panel" data-skillpanel="notebook-structure" hidden>
+          <p class="dom">revisão</p><h3>notebook-structure</h3><p>Como organizar um notebook novo: o que vem primeiro e o que não deve se misturar.</p>
+        </div>
+        <div class="panel" data-skillpanel="data-quality-guardrails" hidden>
+          <p class="dom">qualidade</p><h3>data-quality-guardrails</h3><p>Que verificacoes colocar para o pipeline falhar cedo e de forma visivel, em vez de entregar número errado em silêncio.</p>
+        </div>
+        <div class="panel" data-skillpanel="eda-and-validation" hidden>
+          <p class="dom">qualidade</p><h3>eda-and-validation</h3><p>Quando investigar a base, quando verificar, onde guardar cada coisa e como registrar o que foi descoberto.</p>
+        </div>
+        <div class="panel" data-skillpanel="naming-conventions" hidden>
+          <p class="dom">nomenclatura</p><h3>naming-conventions</h3><p>Como nomear notebooks, tabelas e variáveis de forma que o nome diga a que camada pertence.</p>
+        </div>
+        <div class="panel" data-skillpanel="unity-catalog-naming" hidden>
+          <p class="dom">nomenclatura</p><h3>unity-catalog-naming</h3><p>Como organizar schemas, tabelas e volumes no Unity Catalog por camada.</p>
+        </div>
+        <div class="panel" data-skillpanel="artifact-documentation" hidden>
+          <p class="dom">documentação</p><h3>artifact-documentation</h3><p>Como documentar algo que já existe a partir do que está no ambiente, tratando divergências entre fontes em vez de escolher uma.</p>
+        </div>
+        <div class="panel" data-skillpanel="docs-sync" hidden>
+          <p class="dom">documentação</p><h3>docs-sync</h3><p>Depois de mudar o código, quais documentos ficaram desatualizados e precisam acompanhar.</p>
+        </div>
+        <div class="panel" data-skillpanel="technical-writing" hidden>
+          <p class="dom">documentação</p><h3>technical-writing</h3><p>Tom de documentação técnica: verbo no presente, sem emoji, sem adjetivo de venda.</p>
+        </div>
+        <div class="panel" data-skillpanel="git-workflow" hidden>
+          <p class="dom">versionamento</p><h3>git-workflow</h3><p>Como dividir uma alteração em commits coerentes e escrever a mensagem de cada um.</p>
+        </div>
+        <div class="panel" data-skillpanel="asset-placement" hidden>
+          <p class="dom">organização</p><h3>asset-placement</h3><p>Antes de criar um arquivo: a que projeto pertence, em que pasta vai e o que conferir antes.</p>
+        </div>
+        <div class="panel" data-skillpanel="skill-patterns" hidden>
+          <p class="dom">meta</p><h3>skill-patterns</h3><p>Como escrever e revisar as próprias skills, incluindo checar se já existe algo equivalente nas nativas da plataforma.</p>
+        </div>
+      </div>
 
       <p style="margin-top:2rem">
         Em andamento: comparar como o assistente se comporta com e sem essas instruções,
@@ -463,7 +632,7 @@ footer .links{margin-bottom:1rem}
         condições rodarem.
       </p>
 
-      <p style="margin-top:1.6rem"><a href="https://github.com/1pedroosilva/databricks-genie-skills">ver o projeto no github</a></p>
+      <p style="margin-top:1.6rem"><a href="https://github.com/1pedroosilva/databricks-genie-skills" target="_blank" rel="noopener noreferrer">ver o projeto no github</a></p>
     </section>
 
     <section id="stack">
@@ -474,7 +643,6 @@ footer .links{margin-bottom:1rem}
         <div class="row"><div class="k">engenharia</div><div class="v">PySpark, SQL, Python, Git, GitHub Actions, pytest, Ruff</div></div>
         <div class="row"><div class="k">modelagem</div><div class="v">Arquitetura medalhão, modelagem dimensional</div></div>
         <div class="row"><div class="k">bi</div><div class="v">Power BI, DAX, Power Query (M), Excel, VBA</div></div>
-        <div class="row"><div class="k">custos</div><div class="v">MyABCM, metodologia ABC</div></div>
       </div>
     </section>
 
@@ -482,7 +650,7 @@ footer .links{margin-bottom:1rem}
       <p class="marker"><b>4.01</b> &nbsp;trajetória</p>
       <h2>Experiência</h2>
       <div class="rows">
-        <div class="row"><div class="k">2025 &#8212;</div><div class="v">Business Intelligence · Bradesco<small>Controladoria. Governança financeira dos custos de TI e redistribuição gerencial entre áreas.</small></div></div>
+        <div class="row"><div class="k">2025 &#8212;</div><div class="v">Business Intelligence · Bradesco<small>Controladoria. Governança financeira dos custos de TI e redistribuição gerencial entre áreas, com MyABCM e metodologia ABC.</small></div></div>
         <div class="row"><div class="k">2023 – 2025</div><div class="v">Especialista de dados · act digital<small>Alocado no cliente Bradesco.</small></div></div>
         <div class="row"><div class="k">2023</div><div class="v">Analista de planejamento financeiro · Alares Internet</div></div>
         <div class="row"><div class="k">2017 – 2023</div><div class="v">Claro Brasil<small>Planejamento financeiro, BI e administrativo sênior.</small></div></div>
@@ -497,15 +665,15 @@ footer .links{margin-bottom:1rem}
         <div class="row"><div class="k">2019 – 2022</div><div class="v">Bacharelado em Administração · Universidade Cruzeiro do Sul</div></div>
         <div class="row"><div class="k">2022</div><div class="v">Orçamento e Controle · FGV</div></div>
         <div class="row"><div class="k">2016 – 2017</div><div class="v">Técnico em Administração · ETEC</div></div>
-        <div class="row"><div class="k">em curso</div><div class="v">Databricks Certified Data Engineer Associate</div></div>
+        <div class="row"><div class="k">em preparação</div><div class="v">Certificação Databricks Data Engineer Associate</div></div>
       </div>
     </section>
 
     <footer>
       <p class="links">
         <a href="mailto:1pedro.osilva@gmail.com">1pedro.osilva@gmail.com</a>
-        <a href="https://www.linkedin.com/in/1pedroosilva/">linkedin</a>
-        <a href="https://github.com/1pedroosilva">github</a>
+        <a href="https://www.linkedin.com/in/1pedroosilva/" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="https://github.com/1pedroosilva" target="_blank" rel="noopener noreferrer">github</a>
       </p>
       <p>São Paulo, Brasil.</p>
     </footer>
@@ -514,72 +682,24 @@ footer .links{margin-bottom:1rem}
 </div>
 
 <script>
-const STEPS = {
-  captura:{title:"Captura",lead:"Busca os arquivos na CVM",
-    body:`<p>Os pacotes anuais são baixados e guardados exatamente como vieram, sem nenhuma
-      alteração. Um registro de controle anota o que já foi baixado e quando o arquivo mudou
-      na origem, para não refazer trabalho à toa.</p>`,
-    tech:`Landing zone em volume do Unity Catalog. Tabela de controle de ingestão com o cabeçalho <b>Last-Modified</b> da origem, permitindo reprocessamento seletivo.`},
-  historico:{title:"Histórico",lead:"Guarda todas as versões, sem apagar nada",
-    body:`<p>Cada arquivo que chega vira registro novo. Nada é sobrescrito e nada é removido.
-      Se a companhia republicar o mesmo ano cinco vezes, as cinco ficam guardadas com a data
-      em que chegaram.</p>
-      <p>Esta etapa não decide qual versão vale. Perder uma versão antiga, no entanto, seria
-      irreversível.</p>`,
-    tech:`Camada bronze append-only para DRE, Balanço Patrimonial Ativo e Passivo, com colunas de controle <b>_versao_ingestao</b>, <b>_last_modified_cvm</b> e <b>_ingest_ts</b>.`},
-  tratamento:{title:"Tratamento",lead:"Escolhe a versão vigente e padroniza",
-    body:`<p>Aqui o processo decide o que publicar: para cada companhia e cada ano, a
-      divulgação mais recente. O resultado é uma base sem duplicidade, que pode ser
-      reprocessada quantas vezes for preciso sem mudar de valor.</p>
-      <p>Duas padronizações ainda faltam e estão documentadas: valores que chegam em escalas
-      diferentes e contas contábeis sem classificação de hierarquia.</p>`,
-    tech:`Camada silver com filtro de versão mais recente por registro e gravação atômica por predicado (<b>replaceWhere</b>) sobre a partição de ano.`},
-  entrega:{title:"Entrega",lead:"Base pronta para análise",
-    body:`<p>Indicadores calculados e organizados para consumo direto, sem que quem for
-      analisar precise conhecer as armadilhas das etapas anteriores.</p>
-      <span class="planned">ainda não construído</span>`,
-    tech:`Camada gold com modelo dimensional. A estrutura do projeto e a declaração de ambiente já a preveem; os notebooks não existem.`}
-};
-const sbody=document.getElementById('stepbody');
-const stabs=[...document.querySelectorAll('.steps button')];
-function paintStep(k){
-  const S=STEPS[k];
-  sbody.innerHTML=`<h3>${S.title}</h3><p class="meta" style="font-family:var(--mono);font-size:.69rem;color:var(--ink-soft);margin-bottom:.8rem">${S.lead}</p>${S.body}<p class="tech">${S.tech}</p>`;
-  sbody.classList.remove('swap');void sbody.offsetWidth;sbody.classList.add('swap');
-  stabs.forEach(t=>t.setAttribute('aria-selected',String(t.dataset.step===k)));
+function toggler(btnSel, panelAttr, dataKey, selectedAttr){
+  const btns=[...document.querySelectorAll(btnSel)];
+  const panels=[...document.querySelectorAll('['+panelAttr+']')];
+  const show=k=>{
+    panels.forEach(p=>{p.hidden = p.getAttribute(panelAttr)!==k;});
+    btns.forEach(b=>b.setAttribute(selectedAttr,String(b.dataset[dataKey]===k)));
+  };
+  btns.forEach(b=>b.addEventListener('click',()=>show(b.dataset[dataKey])));
 }
-stabs.forEach(t=>t.addEventListener('click',()=>paintStep(t.dataset.step)));
-paintStep('captura');
+toggler('.steps button','data-panel','step','aria-selected');
+toggler('.chips button','data-skillpanel','skill','aria-pressed');
 
-const SKILLS=[
-  ["medallion-architecture","arquitetura","Como decidir a forma de gravar cada camada, garantir que reprocessar não duplique, e versionar mudanças de regra de negócio."],
-  ["code-review","revisão","O que olhar ao revisar código: erro de lógica, suposição não verificada, trecho que virou inútil e custo desnecessário de processamento."],
-  ["notebook-structure","revisão","Como organizar um arquivo de código novo: o que vem primeiro e o que não deve se misturar."],
-  ["data-quality-guardrails","qualidade","Que verificações colocar para o processo falhar cedo e de forma visível, em vez de entregar número errado em silêncio."],
-  ["eda-and-validation","qualidade","Quando investigar a base, quando verificar, onde guardar cada coisa e como registrar o que foi descoberto."],
-  ["naming-conventions","nomenclatura","Como nomear arquivos, tabelas e variáveis de forma que o nome diga a que etapa pertence."],
-  ["unity-catalog-naming","nomenclatura","Como organizar os espaços de dados por camada, para que a origem de cada tabela seja evidente."],
-  ["artifact-documentation","documentação","Como documentar algo que já existe a partir do que está no ambiente, tratando divergências entre fontes em vez de escolher uma."],
-  ["docs-sync","documentação","Depois de mudar o código, quais documentos ficaram desatualizados e precisam acompanhar."],
-  ["technical-writing","documentação","Tom de documentação técnica: verbo no presente, sem emoji, sem adjetivo de venda."],
-  ["git-workflow","versionamento","Como dividir uma alteração em partes coerentes e escrever a descrição de cada uma."],
-  ["asset-placement","organização","Antes de criar um arquivo: a que projeto pertence, em que pasta vai e o que conferir antes."],
-  ["skill-patterns","meta","Como escrever e revisar as próprias instruções, incluindo checar se já existe algo equivalente."]
-];
-const chips=document.getElementById('chips'),chipbody=document.getElementById('chipbody');
-SKILLS.forEach(([n],i)=>{
-  const b=document.createElement('button');
-  b.type='button';b.textContent=n;b.setAttribute('aria-pressed',String(i===0));
-  b.addEventListener('click',()=>paintSkill(i));
-  chips.appendChild(b);
-});
-function paintSkill(i){
-  const [n,d,t]=SKILLS[i];
-  chipbody.innerHTML=`<p class="dom">${d}</p><h3>${n}</h3><p>${t}</p>`;
-  chipbody.classList.remove('swap');void chipbody.offsetWidth;chipbody.classList.add('swap');
-  [...chips.children].forEach((b,j)=>b.setAttribute('aria-pressed',String(j===i)));
+const sE=document.getElementById('splitEscala'), pE=document.getElementById('paneEscala');
+if(sE&&pE){
+  const set=v=>pE.style.setProperty('--split',v+'%');
+  sE.addEventListener('input',e=>set(e.target.value));
+  set(sE.value);
 }
-paintSkill(0);
 
 const links=[...document.querySelectorAll('.index a')];
 const label=document.getElementById('railLabel'),fill=document.getElementById('railFill');
