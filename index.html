@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pedro Oliveira — Engenharia de dados em Databricks</title>
+<title>Pedro Oliveira · Engenharia de dados em Databricks</title>
 
 <meta name="robots" content="index, follow">
 <meta name="author" content="Pedro Oliveira">
@@ -13,8 +13,8 @@
 <meta property="og:type" content="profile">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://1pedroosilva.github.io/">
-<meta property="og:title" content="Pedro Oliveira — Engenharia de dados em Databricks">
-<meta property="og:description" content="Transformo dado público em informação confiável. Decisões registradas, premissas testadas.">
+<meta property="og:title" content="Pedro Oliveira · Engenharia de dados em Databricks">
+<meta property="og:description" content="Pipeline de dado público em Databricks, com as decisões registradas e as premissas testadas.">
 <meta property="og:image" content="https://1pedroosilva.github.io/og.png">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -330,11 +330,12 @@ footer .links{margin-bottom:1rem}
   <main>
 
     <section class="hero" id="topo">
-      <p class="role reveal">Engenharia de dados · Databricks · BI e governança financeira</p>
+      <p class="role reveal">Engenharia de dados · Databricks · Business Intelligence e governança financeira</p>
       <h1 class="reveal">Pedro Oliveira</h1>
       <p class="stmt reveal">
-        Construo pipelines em Databricks com dado público e código aberto. Hoje atuo na
-        Controladoria do Bradesco, FP&A e governança financeira dos custos de TI.
+        Construo pipelines em Databricks com dado público e código aberto. Hoje trabalho na
+        Controladoria do Bradesco, em planejamento e análise financeira (FP&amp;A) e na governança
+        dos custos de tecnologia da informação (TI).
       </p>
       <p class="links reveal">
         <a href="https://www.linkedin.com/in/1pedroosilva/" target="_blank" rel="noopener noreferrer">linkedin</a>
@@ -350,9 +351,9 @@ footer .links{margin-bottom:1rem}
       <p class="pstatus">&#9679; em execução &nbsp;·&nbsp; &#9675; camada de entrega em construção</p>
       <p class="lede" style="margin-top:.8rem">
         Pipeline em Databricks com as Demonstrações Financeiras Padronizadas (DFP) que as
-        companhias abertas entregam à Comissão de Valores Mobiliários (CVM). Dado público bruto: pacotes
-        anuais, formato que muda ao longo dos anos e republicação silenciosa sempre que uma
-        companhia corrige um número já divulgado.
+        companhias abertas entregam à Comissão de Valores Mobiliários (CVM). É dado público e bruto: pacotes
+        anuais, formato que muda de um ano para outro e republicação silenciosa toda vez que
+        uma companhia corrige um número já divulgado.
       </p>
       <p style="margin-top:1.2rem">
         Quatro etapas, cada uma com uma responsabilidade só.
@@ -368,36 +369,35 @@ footer .links{margin-bottom:1rem}
         <div class="panel" data-panel="captura">
           <h3>Captura</h3>
           <p class="plead">Busca os arquivos na CVM</p>
-          <p>Os pacotes anuais são baixados e guardados exatamente como vieram, sem nenhuma
- alteração. Um registro de controle anota o que já foi baixado e quando o arquivo mudou
- na origem, para não refazer trabalho à toa.</p>
+          <p>O pipeline baixa os pacotes anuais e guarda cada um exatamente como veio, sem alterar
+ nada. Uma tabela de controle anota o que já entrou e quando o arquivo mudou na origem,
+ para não refazer trabalho à toa.</p>
           <p class="tech">Landing zone em volume do <b>Unity Catalog</b>. Tabela de controle de ingestão com o cabeçalho <b>Last-Modified</b> da origem, permitindo reprocessamento seletivo.</p>
         </div>
         <div class="panel" data-panel="historico" hidden>
           <h3>Histórico</h3>
           <p class="plead">Guarda todas as versões, sem apagar nada</p>
-          <p>Cada arquivo que chega vira registro novo em tabela. Nada é sobrescrito e nada é removido.
- Se a companhia republicar o mesmo exercício cinco vezes, as cinco ficam guardadas com a
- data em que chegaram.</p>
- <p>Esta etapa não decide qual versão vale. Perder uma versão antiga, no entanto, seria
- irreversível.</p>
-          <p class="tech">Camada <b>bronze</b> append-only para DRE, Balanço Patrimonial Ativo e Passivo, com colunas de controle <b>_versao_ingestao</b>, <b>_last_modified_cvm</b> e <b>_ingest_ts</b>.</p>
+          <p>Cada arquivo que chega vira registro novo na tabela, sem sobrescrever nem apagar o que
+ já estava lá. Se a companhia republicar o mesmo exercício cinco vezes, as cinco ficam
+ guardadas com a data em que chegaram.</p>
+ <p>Esta etapa não decide qual versão vale: perder uma versão antiga seria irreversível.</p>
+          <p class="tech">Camada <b>bronze</b> append-only para Demonstração do Resultado do Exercício (DRE), Balanço Patrimonial Ativo e Passivo, com colunas de controle <b>_versao_ingestao</b>, <b>_last_modified_cvm</b> e <b>_ingest_ts</b>.</p>
         </div>
         <div class="panel" data-panel="tratamento" hidden>
           <h3>Tratamento</h3>
           <p class="plead">Escolhe a versão vigente e padroniza</p>
           <p>Aqui o pipeline decide o que publicar: para cada companhia e cada exercício, a
- divulgação mais recente. O resultado é uma base sem duplicidade, que pode ser
- reprocessada quantas vezes for preciso sem mudar de valor.</p>
- <p>Duas padronizações ainda faltam e estão documentadas: valores que chegam em escalas
+ divulgação mais recente. Sai daí uma base sem duplicidade, que pode rodar de novo
+ quantas vezes for preciso sem mudar de valor.</p>
+ <p>Faltam duas padronizações, as duas documentadas: valores que chegam em escalas
  diferentes e contas contábeis sem classificação de hierarquia.</p>
           <p class="tech">Camada <b>silver</b> com filtro de versão mais recente por registro e gravação atômica por predicado (<b>replaceWhere</b>) sobre a partição de ano, em <b>PySpark</b> sobre <b>Delta Lake</b>.</p>
         </div>
         <div class="panel" data-panel="entrega" hidden>
           <h3>Entrega</h3>
           <p class="plead">Base pronta para análise</p>
-          <p>Indicadores calculados e organizados para consumo direto, sem que quem for analisar
- precise conhecer as armadilhas das etapas anteriores.</p>
+          <p>Indicadores calculados e organizados, para que quem for analisar não precise
+ conhecer as armadilhas das etapas anteriores.</p>
  <span class="planned">ainda não construído</span>
           <p class="tech">Camada <b>gold</b> com modelo dimensional. A estrutura do projeto e a declaração de ambiente já a preveem; os notebooks não existem.</p>
         </div>
@@ -405,9 +405,9 @@ footer .links{margin-bottom:1rem}
 
       <p class="arm">o problema da republicação</p>
       <p>
-        A DFP de um exercício é entregue no ano seguinte, e pode ser reentregue várias vezes
-        depois disso. Guardar só a primeira entrega deixaria o valor desatualizado; sobrescrever
-        a cada nova entrega apagaria o fato de que houve alguma correção, e o tamanho dela.
+        A companhia entrega a DFP de um exercício no ano seguinte, e pode reentregar várias vezes
+        depois disso. Guardar só a primeira entrega deixa o valor desatualizado; sobrescrever a
+        cada nova entrega apaga o fato de que houve correção, e o tamanho dela.
       </p>
 
       <div class="vtable">
@@ -423,15 +423,15 @@ footer .links{margin-bottom:1rem}
         </table>
       </div>
       <p class="vnote">
-        As três entregas ficam armazenadas. O pipeline entrega a versão 3 e mantém as anteriores
-        consultáveis, com a data em que chegaram.
+        O pipeline publica a versão 3 e mantém as duas anteriores consultáveis, cada uma com a
+        data em que chegou.
       </p>
 
       <p class="arm">o problema da escala</p>
       <p>
-        Cada companhia escolhe em que escala reporta. Duas linhas vizinhas da mesma coluna
-        podem estar em unidades diferentes, e a escala vem em um campo à parte, que não
-        acompanha o valor em nenhuma conta.
+        Cada companhia escolhe em que escala reporta, então duas linhas vizinhas da mesma coluna
+        podem estar em unidades diferentes. A escala vem em um campo à parte e não acompanha o
+        valor em nenhuma conta.
       </p>
 
       <div class="diff">
@@ -459,13 +459,13 @@ entre as duas se inverte.</span></pre></div>
         </div>
         <input class="slider" id="splitEscala" type="range" min="0" max="100" value="50"
                aria-label="Comparar valor bruto e valor com escala aplicada">
-        <div class="difflegend">enquanto a escala não é aplicada, nenhuma soma ou ranking sobre a coluna fecha</div>
+        <div class="difflegend">sem aplicar a escala, nenhuma soma ou ranking sobre a coluna fecha</div>
       </div>
 
       <p class="arm">o que sustenta a execução autônoma</p>
       <p>
-        Em um pipeline autônomo, o problema não é quando o processo para.
-        O perigo real é ele terminar com sucesso e entregar números errados em silêncio.
+        Em um pipeline autônomo, quando o processo quebra alguém percebe. O risco está em
+        ele terminar com sucesso e entregar número errado em silêncio.
       </p>
 
       <div class="acc">
@@ -475,49 +475,54 @@ entre as duas se inverte.</span></pre></div>
             <p>A checagem de estrutura acontece antes da escrita. Faltando informação
             essencial, a execução para na etapa em que o problema nasceu, e não três camadas
             adiante, onde a causa já se perdeu.</p>
-            <p class="tech-note">Validações de ingestão e de transformação com falha explícita, processamento granular por período e rastreamento de erro. A documentação inclui uma seção sobre <b>quando não usar guardrail</b> — nem toda verificação compensa o custo de manter.</p>
+            <p class="tech-note">Validações de ingestão e de transformação com falha explícita, processamento granular por período e rastreamento de erro. A documentação inclui uma seção sobre <b>quando não usar guardrail</b>, já que nem toda verificação compensa o custo de manter.</p>
           </div>
         </details>
         <details>
           <summary><span>Verificação automática a cada alteração de código</span></summary>
           <div class="dbody">
-            <p>Alteração de código só é aceita depois de passar por uma bateria automática.
-            A quebra aparece no momento da mudança, não na execução agendada.</p>
+            <p>Nenhuma alteração de código entra sem passar por uma checagem automática. A quebra
+            aparece no momento da mudança, e não na execução agendada.</p>
             <p class="tech-note">GitHub Actions em cada push e pull request na main: <b>Ruff</b> para padrão de código e <b>pytest</b> para os testes. Testes unitários das funções puras de configuração, mais um teste de integração ponta a ponta em job separado.</p>
           </div>
         </details>
         <details>
           <summary><span>Ambiente reproduzível a partir do repositório</span></summary>
           <div class="dbody">
-            <p>O ambiente e os jobs estão declarados em arquivo versionado, com separação entre desenvolvimento, integração e produção.
-		Quem clonar o repositório sobe o mesmo pipeline sem depender de nada configurado na interface.
-		Os dados não vêm junto: são baixados da CVM na execução, e o resultado depende do que estiver publicado lá naquele momento.</p>
+            <p>O ambiente e os jobs estão declarados em arquivo versionado, com separação entre
+            desenvolvimento, integração e produção. Quem clonar o repositório sobe o mesmo
+            pipeline sem depender de nada configurado na interface. Os dados não vêm junto: o
+            pipeline baixa da CVM na execução, e o resultado depende do que estiver publicado
+            lá naquele momento.</p>
             <p class="tech-note"><b>Databricks Asset Bundles</b> com targets de desenvolvimento, integração contínua e produção. Jobs declarados em YAML, com notificação de falha por e-mail.</p>
           </div>
         </details>
         <details>
           <summary><span>Reprocessamento sem duplicação</span></summary>
           <div class="dbody">
-            <p>Reprocessar um exercício já carregado é rotina: quando a CVM republica um arquivo corrigido, quando a regra de transformação 		muda e o histórico precisa ser refeito, ou quando a execução anterior parou no meio.
-		Em qualquer um desses casos, rodar de novo entrega a versão correta e apenas ela — sem somar linha em cima do que já estava 		lá, e sem intervalo em que a tabela fique pela metade para quem estiver consultando.</p>
+            <p>Reprocessar um exercício já carregado é rotina: quando a CVM republica um arquivo
+            corrigido, quando a regra de transformação muda e o histórico precisa ser refeito,
+            ou quando a execução anterior parou no meio. Em qualquer um desses casos, rodar de
+            novo entrega a versão correta e só ela, sem somar linha em cima do que já estava lá
+            e sem intervalo em que a tabela fique pela metade para quem estiver consultando.</p>
             <p class="tech-note">Sobrescrita atômica por predicado sobre a partição de ano (<b>replaceWhere</b>), substituindo a estratégia anterior de apagar e reinserir, que deixava uma janela com a tabela incompleta.</p>
           </div>
         </details>
       </div>
 
-      <p class="arm">projeto em evolução <span>&#8212; decisões registradas em repositório</span></p>
+      <p class="arm">projeto em evolução <span>· decisões registradas em repositório</span></p>
       <p>
-        Cada decisão relevante fica no repositório com data, contexto e o que se aprendeu.
-        Inclusive as que desfizeram uma escolha anterior minha.
+        Cada decisão relevante fica no repositório com data, contexto e o que aprendi com ela.
+        Inclusive as que desfizeram alguma escolha que eu mesmo tinha feito antes.
       </p>
 
       <div class="acc">
         <details class="first">
           <summary><span class="date">19 ago</span><span>Troquei a forma de regravar os dados</span></summary>
           <div class="dbody">
-            <p>A forma original apagava o período e reescrevia em duas operações separadas.
-            Entre uma e outra existia um instante em que a base estava incompleta. A nova
-            faz as duas coisas de uma vez.</p>
+            <p>A forma original apagava o período e reescrevia em duas operações separadas, e entre
+            uma e outra existia um instante com a base incompleta. A nova faz as duas coisas de
+            uma vez.</p>
             <p class="tech-note">De DELETE seguido de APPEND para <b>replaceWhere</b> sobre a partição de ano.</p>
           </div>
         </details>
@@ -532,9 +537,9 @@ entre as duas se inverte.</span></pre></div>
         <details>
           <summary><span class="date">17 ago</span><span>Descobri que uma verificação minha estava errada</span></summary>
           <div class="dbody">
-            <p>Uma checagem de consistência contábil vinha passando sempre. O motivo é que a
-            amostra escolhida não era representativa: ela não conseguia falhar. Verificação
-            que não pode falhar não verifica nada, só produz confiança.</p>
+            <p>Uma checagem de consistência contábil vinha passando sempre, e o motivo era a amostra:
+            não era representativa, então não tinha como falhar. Verificação que não pode falhar
+            não verifica nada, só produz confiança.</p>
             <p class="tech-note">Premissa oculta em validação hierárquica, encontrada na análise exploratória. A correção exigiu identificar antes uma amostra em que a hierarquia pudesse de fato ser testada.</p>
           </div>
         </details>
@@ -550,10 +555,9 @@ entre as duas se inverte.</span></pre></div>
       </div>
 
       <p style="margin-top:2.2rem">
-        A investigação de qualidade da base registra quinze achados numerados, incluindo os
-        que ainda não foram resolvidos. Dois deles estão abertos e documentados: valores que
-        chegam em escalas diferentes sem conversão, e contas contábeis ainda sem
-        classificação de hierarquia.
+        A investigação de qualidade da base reúne quinze achados numerados, contando os que
+        ainda não resolvi. Dois seguem abertos e documentados: valores que chegam em escalas
+        diferentes sem conversão, e contas contábeis ainda sem classificação de hierarquia.
       </p>
 
       <p style="margin-top:1.6rem"><a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros" target="_blank" rel="noopener noreferrer">ver o projeto no github</a></p>
@@ -571,7 +575,8 @@ entre as duas se inverte.</span></pre></div>
         convenção de nomenclatura nem padrão de revisão.
       </p>
       <p style="margin-top:1.2rem">
-        Escrevi treze skills para essa lacuna. O problema apareceu antes de elas serem úteis.
+        Escrevi treze skills para preencher essa lacuna. Um problema apareceu antes de
+        qualquer uma delas ser útil.
       </p>
 
       <p class="arm">o erro que eu publiquei</p>
@@ -581,8 +586,8 @@ entre as duas se inverte.</span></pre></div>
         exigências não documentadas da plataforma. Escrevi isso e publiquei.
       </p>
       <p>
-        A afirmação era sobre causa. A evidência era só uma coincidência entre coisas que já
-        estavam funcionando. Isso não se sustenta, então voltei e testei uma por uma.
+        Eu tinha afirmado uma causa com base só numa coincidência entre coisas que já
+        funcionavam. Isso não se sustenta, então voltei e testei uma por uma.
       </p>
 
       <div class="hyp">
@@ -605,12 +610,12 @@ entre as duas se inverte.</span></pre></div>
       </div>
       <p class="vnote">
         As três continuam no projeto, agora como escolha de clareza e não como exigência da
-        plataforma. A documentação publicada foi corrigida.
+        plataforma. Já corrigi a documentação publicada.
       </p>
 
       <div class="acc">
         <details class="first">
-          <summary><span>Como os testes foram feitos</span></summary>
+          <summary><span>Como testei</span></summary>
           <div class="dbody">
             <p>Uma mudança por vez, com volta ao ponto de partida entre elas. Sem isso,
             qualquer resultado seria ambíguo.</p>
@@ -620,16 +625,15 @@ entre as duas se inverte.</span></pre></div>
         <details>
           <summary><span>O que os testes mostraram sobre o mecanismo de acionamento</span></summary>
           <div class="dbody">
-            <p>O acionamento é mais robusto do que eu supunha: interpreta o sentido do
-            pedido em vez de procurar palavras exatas. Isso vale para o acionamento, e não
-            diz nada sobre o efeito das skills no resultado do trabalho — essa é a pergunta
-            seguinte.</p>
+            <p>O acionamento tolera mais variação do que eu supunha: interpreta o sentido do pedido em vez
+            de procurar palavras exatas. Só que isso diz respeito a quando a skill entra, e não
+            ao que ela muda no trabalho depois de entrar. Essa é a pergunta seguinte.</p>
             <p class="tech-note">Acionamento por compreensão semântica, com suporte a UTF-8 completo e sem exigência de formato na description. Protocolo completo e lições registradas em documentos versionados no repositório.</p>
           </div>
         </details>
       </div>
 
-      <p class="arm">as treze instruções <span>&#8212; clique para ler</span></p>
+      <p class="arm">as treze instruções <span>· clique para ler</span></p>
       <div class="chips" id="chips" role="group" aria-label="Catálogo">
         <button type="button" data-skill="medallion-architecture" aria-pressed="true">medallion-architecture</button>
         <button type="button" data-skill="code-review" aria-pressed="false">code-review</button>
@@ -653,22 +657,22 @@ entre as duas se inverte.</span></pre></div>
           <p class="dom">revisão</p><h3>code-review</h3><p>O que olhar ao revisar código: erro de lógica, suposição não verificada, trecho que virou inútil e custo desnecessário de processamento.</p>
         </div>
         <div class="panel" data-skillpanel="notebook-structure" hidden>
-          <p class="dom">revisão</p><h3>notebook-structure</h3><p>Como organizar um notebook novo: o que vem primeiro e o que não deve se misturar.</p>
+          <p class="dom">revisão</p><h3>notebook-structure</h3><p>A ordem de um notebook novo: o que vem primeiro e o que não deve se misturar.</p>
         </div>
         <div class="panel" data-skillpanel="data-quality-guardrails" hidden>
           <p class="dom">qualidade</p><h3>data-quality-guardrails</h3><p>Que verificações colocar para o pipeline falhar cedo e de forma visível, em vez de entregar número errado em silêncio.</p>
         </div>
         <div class="panel" data-skillpanel="eda-and-validation" hidden>
-          <p class="dom">qualidade</p><h3>eda-and-validation</h3><p>Quando investigar a base, quando verificar, onde guardar cada coisa e como registrar o que foi descoberto.</p>
+          <p class="dom">qualidade</p><h3>eda-and-validation</h3><p>Quando investigar a base, quando apenas verificar, onde guardar cada coisa e como registrar o que apareceu.</p>
         </div>
         <div class="panel" data-skillpanel="naming-conventions" hidden>
-          <p class="dom">nomenclatura</p><h3>naming-conventions</h3><p>Como nomear notebooks, tabelas e variáveis de forma que o nome diga a que camada pertence.</p>
+          <p class="dom">nomenclatura</p><h3>naming-conventions</h3><p>Nomear notebook, tabela e variável de um jeito que o nome já diga a que camada aquilo pertence.</p>
         </div>
         <div class="panel" data-skillpanel="unity-catalog-naming" hidden>
-          <p class="dom">nomenclatura</p><h3>unity-catalog-naming</h3><p>Como organizar schemas, tabelas e volumes no Unity Catalog por camada.</p>
+          <p class="dom">nomenclatura</p><h3>unity-catalog-naming</h3><p>Onde cada schema, tabela e volume fica dentro do Unity Catalog, camada por camada.</p>
         </div>
         <div class="panel" data-skillpanel="artifact-documentation" hidden>
-          <p class="dom">documentação</p><h3>artifact-documentation</h3><p>Como documentar algo que já existe a partir do que está no ambiente, tratando divergências entre fontes em vez de escolher uma.</p>
+          <p class="dom">documentação</p><h3>artifact-documentation</h3><p>Documentar algo que já existe a partir do que está no ambiente, tratando as divergências entre fontes em vez de eleger uma e ignorar o resto.</p>
         </div>
         <div class="panel" data-skillpanel="docs-sync" hidden>
           <p class="dom">documentação</p><h3>docs-sync</h3><p>Depois de mudar o código, quais documentos ficaram desatualizados e precisam acompanhar.</p>
@@ -677,20 +681,19 @@ entre as duas se inverte.</span></pre></div>
           <p class="dom">documentação</p><h3>technical-writing</h3><p>Tom de documentação técnica: verbo no presente, sem emoji, sem adjetivo de venda.</p>
         </div>
         <div class="panel" data-skillpanel="git-workflow" hidden>
-          <p class="dom">versionamento</p><h3>git-workflow</h3><p>Como dividir uma alteração em commits coerentes e escrever a mensagem de cada um.</p>
+          <p class="dom">versionamento</p><h3>git-workflow</h3><p>Dividir uma alteração em commits coerentes e escrever a mensagem de cada um.</p>
         </div>
         <div class="panel" data-skillpanel="asset-placement" hidden>
           <p class="dom">organização</p><h3>asset-placement</h3><p>Antes de criar um arquivo: a que projeto pertence, em que pasta vai e o que conferir antes.</p>
         </div>
         <div class="panel" data-skillpanel="skill-patterns" hidden>
-          <p class="dom">meta</p><h3>skill-patterns</h3><p>Como escrever e revisar as próprias skills, incluindo checar se já existe algo equivalente nas nativas da plataforma.</p>
+          <p class="dom">meta</p><h3>skill-patterns</h3><p>Escrever e revisar as próprias skills, checando antes se já existe algo equivalente entre as nativas da plataforma.</p>
         </div>
       </div>
 
       <p style="margin-top:2rem">
-        Em andamento: comparar como o assistente se comporta com e sem essas instruções,
-        sobre o mesmo trabalho. Nada será apresentado como resultado antes de as duas
-        condições rodarem.
+        Em andamento: comparar como o assistente se comporta com e sem essas instruções, no
+        mesmo trabalho. Não apresento nada como resultado antes de rodar as duas condições.
       </p>
 
       <p style="margin-top:1.6rem"><a href="https://github.com/1pedroosilva/databricks-genie-skills" target="_blank" rel="noopener noreferrer">ver o projeto no github</a></p>
@@ -703,7 +706,7 @@ entre as duas se inverte.</span></pre></div>
         <div class="row"><div class="k">plataforma</div><div class="v">Databricks, Delta Lake, Unity Catalog, Asset Bundles</div></div>
         <div class="row"><div class="k">engenharia</div><div class="v">PySpark, SQL, Python, Git, GitHub Actions, pytest, Ruff</div></div>
         <div class="row"><div class="k">modelagem</div><div class="v">Arquitetura medalhão, modelagem dimensional</div></div>
-        <div class="row"><div class="k">bi</div><div class="v">Power BI, DAX, Power Query (M), Excel, VBA</div></div>
+        <div class="row"><div class="k">business intelligence</div><div class="v">Power BI, DAX, Power Query (M), Excel, VBA</div></div>
       </div>
     </section>
 
@@ -711,7 +714,7 @@ entre as duas se inverte.</span></pre></div>
       <p class="marker"><b>4.01</b> &nbsp;trajetória</p>
       <h2>Experiência</h2>
       <div class="rows">
-        <div class="row"><div class="k">2025 &#8212;</div><div class="v">Business Intelligence · Bradesco<small>Controladoria. Governança financeira dos custos de TI e redistribuição gerencial entre áreas, com MyABCM e metodologia ABC.</small></div></div>
+        <div class="row"><div class="k">desde 2025</div><div class="v">Business Intelligence · Bradesco<small>Controladoria. Governança financeira dos custos de TI e redistribuição gerencial entre áreas, com MyABCM e custeio baseado em atividades (ABC).</small></div></div>
         <div class="row"><div class="k">2023 – 2025</div><div class="v">Especialista de dados · act digital<small>Alocado no cliente Bradesco.</small></div></div>
         <div class="row"><div class="k">2023</div><div class="v">Analista de planejamento financeiro · Alares Internet</div></div>
         <div class="row"><div class="k">2017 – 2023</div><div class="v">Claro Brasil<small>Planejamento financeiro, BI e administrativo sênior.</small></div></div>
