@@ -35,6 +35,16 @@
 }
 </script>
 
+<meta name="color-scheme" content="light dark">
+<script>
+(function(){
+  var t=null;
+  try{t=localStorage.getItem('tema');}catch(e){}
+  if(!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro';
+  document.documentElement.dataset.tema=t;
+})();
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -48,6 +58,15 @@
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --col:60ch; --step:220ms;
 }
+html[data-tema="escuro"]{
+  --paper:#151B19; --panel:#1C2321; --panel-deep:#111716;
+  --ink:#DCE3DE; --ink-soft:#8B9891; --rule:#2C3633;
+  --accent:#79C4B0; --flag:#D4785C;
+}
+html[data-tema="escuro"] .steps button[aria-selected="true"],
+html[data-tema="escuro"] .chips button[aria-pressed="true"]{color:#101614}
+html[data-tema="escuro"] .pane.after{background:var(--panel-deep)}
+
 @media (prefers-reduced-motion:reduce){
   :root{--step:1ms}
   *,*::before,*::after{animation-duration:1ms!important;transition-duration:1ms!important}
@@ -87,6 +106,17 @@ code{font-family:var(--mono);font-size:.85em}
   .index a[aria-current="true"]{color:var(--ink);border-left-color:var(--accent)}
   .index a:hover{color:var(--ink)}
 }
+.tema{
+  position:fixed;top:.5rem;right:clamp(.8rem,3vw,1.6rem);z-index:60;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;
+  padding:.34rem .6rem;cursor:pointer;
+  background:color-mix(in srgb,var(--paper) 82%,transparent);
+  backdrop-filter:blur(9px);
+  color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
+  transition:color var(--step),border-color var(--step);
+}
+.tema:hover{color:var(--ink);border-color:var(--ink-soft)}
+
 .railbar{
   position:sticky;top:0;z-index:40;display:flex;align-items:center;
   padding:.55rem clamp(1.15rem,4vw,3rem);
@@ -97,7 +127,18 @@ code{font-family:var(--mono);font-size:.85em}
 /* o progresso preenche a propria borda inferior: uma regua so */
 .railbar .bar{position:absolute;left:0;right:0;bottom:-1px;height:1px;pointer-events:none}
 .railbar .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width 90ms linear}
-@media (min-width:1000px){.railbar{display:none}}
+@media (min-width:1000px){.tema{
+  position:fixed;top:.5rem;right:clamp(.8rem,3vw,1.6rem);z-index:60;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;
+  padding:.34rem .6rem;cursor:pointer;
+  background:color-mix(in srgb,var(--paper) 82%,transparent);
+  backdrop-filter:blur(9px);
+  color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
+  transition:color var(--step),border-color var(--step);
+}
+.tema:hover{color:var(--ink);border-color:var(--ink-soft)}
+
+.railbar{display:none}}
 
 main{padding-bottom:5rem;min-width:0}
 
@@ -267,6 +308,8 @@ footer .links{margin-bottom:1rem}
 </head>
 
 <body>
+
+<button class="tema" id="tema" type="button" aria-label="Alternar tema"></button>
 
 <div class="railbar">
   <span id="railLabel">início</span>
@@ -718,6 +761,18 @@ if(sE&&pE){
   sE.addEventListener('input',e=>set(e.target.value));
   set(sE.value);
 }
+
+const btema=document.getElementById('tema');
+function pintaTema(t){
+  document.documentElement.dataset.tema=t;
+  btema.textContent = t==='escuro' ? 'claro' : 'escuro';
+  btema.setAttribute('aria-pressed', String(t==='escuro'));
+  try{localStorage.setItem('tema',t);}catch(e){}
+}
+pintaTema(document.documentElement.dataset.tema||'claro');
+btema.addEventListener('click',()=>{
+  pintaTema(document.documentElement.dataset.tema==='escuro'?'claro':'escuro');
+});
 
 const links=[...document.querySelectorAll('.index a')];
 const label=document.getElementById('railLabel'),fill=document.getElementById('railFill');
