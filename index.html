@@ -27,9 +27,9 @@
   "url":"https://1pedroosilva.github.io/",
   "jobTitle":"Engenharia de dados",
   "email":"mailto:1pedro.osilva@gmail.com",
-  "address":{"@type":"PostalAddress","addressLocality":"Sao Paulo","addressCountry":"BR"},
+  "address":{"@type":"PostalAddress","addressLocality":"São Paulo","addressCountry":"BR"},
   "knowsAbout":["Engenharia de dados","Databricks","PySpark","Delta Lake","Unity Catalog",
-    "Databricks Asset Bundles","Arquitetura medalhao","CVM","Demonstracoes financeiras padronizadas",
+    "Databricks Asset Bundles","Arquitetura medalhão","CVM","Demonstrações financeiras padronizadas",
     "Databricks Genie Code","Agent Skills","Power BI","DAX"],
   "sameAs":["https://github.com/1pedroosilva","https://www.linkedin.com/in/1pedroosilva/"]
 }
@@ -325,38 +325,38 @@ footer .links{margin-bottom:1rem}
         <div class="panel" data-panel="captura">
           <h3>Captura</h3>
           <p class="plead">Busca os arquivos na CVM</p>
-          <p>Os pacotes anuais sao baixados e guardados exatamente como vieram, sem nenhuma
- alteracao. Um registro de controle anota o que ja foi baixado e quando o arquivo mudou
- na origem, para nao refazer trabalho a toa.</p>
-          <p class="tech">Landing zone em volume do <b>Unity Catalog</b>. Tabela de controle de ingestao com o cabecalho <b>Last-Modified</b> da origem, permitindo reprocessamento seletivo.</p>
+          <p>Os pacotes anuais são baixados e guardados exatamente como vieram, sem nenhuma
+ alteração. Um registro de controle anota o que já foi baixado e quando o arquivo mudou
+ na origem, para não refazer trabalho à toa.</p>
+          <p class="tech">Landing zone em volume do <b>Unity Catalog</b>. Tabela de controle de ingestão com o cabeçalho <b>Last-Modified</b> da origem, permitindo reprocessamento seletivo.</p>
         </div>
         <div class="panel" data-panel="historico" hidden>
-          <h3>Historico</h3>
-          <p class="plead">Guarda todas as versoes, sem apagar nada</p>
-          <p>Cada arquivo que chega vira registro novo em tabela. Nada e sobrescrito e nada e removido.
- Se a companhia republicar o mesmo exercicio cinco vezes, as cinco ficam guardadas com a
+          <h3>Histórico</h3>
+          <p class="plead">Guarda todas as versões, sem apagar nada</p>
+          <p>Cada arquivo que chega vira registro novo em tabela. Nada é sobrescrito e nada é removido.
+ Se a companhia republicar o mesmo exercício cinco vezes, as cinco ficam guardadas com a
  data em que chegaram.</p>
- <p>Esta etapa nao decide qual versao vale. Perder uma versao antiga, no entanto, seria
- irreversivel.</p>
-          <p class="tech">Camada <b>bronze</b> append-only para DRE, Balanco Patrimonial Ativo e Passivo, com colunas de controle <b>_versao_ingestao</b>, <b>_last_modified_cvm</b> e <b>_ingest_ts</b>.</p>
+ <p>Esta etapa não decide qual versão vale. Perder uma versão antiga, no entanto, seria
+ irreversível.</p>
+          <p class="tech">Camada <b>bronze</b> append-only para DRE, Balanço Patrimonial Ativo e Passivo, com colunas de controle <b>_versao_ingestao</b>, <b>_last_modified_cvm</b> e <b>_ingest_ts</b>.</p>
         </div>
         <div class="panel" data-panel="tratamento" hidden>
           <h3>Tratamento</h3>
-          <p class="plead">Escolhe a versao vigente e padroniza</p>
-          <p>Aqui o pipeline decide o que publicar: para cada companhia e cada exercicio, a
- divulgacao mais recente. O resultado e uma base sem duplicidade, que pode ser
+          <p class="plead">Escolhe a versão vigente e padroniza</p>
+          <p>Aqui o pipeline decide o que publicar: para cada companhia e cada exercício, a
+ divulgação mais recente. O resultado é uma base sem duplicidade, que pode ser
  reprocessada quantas vezes for preciso sem mudar de valor.</p>
- <p>Duas padronizacoes ainda faltam e estao documentadas: valores que chegam em escalas
- diferentes e contas contabeis sem classificacao de hierarquia.</p>
-          <p class="tech">Camada <b>silver</b> com filtro de versao mais recente por registro e gravacao atomica por predicado (<b>replaceWhere</b>) sobre a particao de ano, em <b>PySpark</b> sobre <b>Delta Lake</b>.</p>
+ <p>Duas padronizações ainda faltam e estão documentadas: valores que chegam em escalas
+ diferentes e contas contábeis sem classificação de hierarquia.</p>
+          <p class="tech">Camada <b>silver</b> com filtro de versão mais recente por registro e gravação atômica por predicado (<b>replaceWhere</b>) sobre a partição de ano, em <b>PySpark</b> sobre <b>Delta Lake</b>.</p>
         </div>
         <div class="panel" data-panel="entrega" hidden>
           <h3>Entrega</h3>
-          <p class="plead">Base pronta para analise</p>
+          <p class="plead">Base pronta para análise</p>
           <p>Indicadores calculados e organizados para consumo direto, sem que quem for analisar
  precise conhecer as armadilhas das etapas anteriores.</p>
- <span class="planned">ainda nao construido</span>
-          <p class="tech">Camada <b>gold</b> com modelo dimensional. A estrutura do projeto e a declaracao de ambiente ja a preveem; os notebooks nao existem.</p>
+ <span class="planned">ainda não construído</span>
+          <p class="tech">Camada <b>gold</b> com modelo dimensional. A estrutura do projeto e a declaração de ambiente já a preveem; os notebooks não existem.</p>
         </div>
       </div>
 
@@ -380,7 +380,7 @@ footer .links{margin-bottom:1rem}
         </table>
       </div>
       <p class="vnote">
-        As três entregas ficam armazenadas. O pipelina entrega a versão 3 e mantém as anteriores
+        As três entregas ficam armazenadas. O pipeline entrega a versão 3 e mantém as anteriores
         consultáveis, com a data em que chegaram.
       </p>
 
@@ -411,7 +411,7 @@ Companhia B &#183; lucro de 2024
   valor      <span class="ok">890.412.300,00</span>
 
 <span class="dim">com a escala aplicada,
-A e maior que B. a ordem
+A é maior que B. a ordem
 entre as duas se inverte.</span></pre></div>
         </div>
         <input class="slider" id="splitEscala" type="range" min="0" max="100" value="50"
@@ -421,7 +421,7 @@ entre as duas se inverte.</span></pre></div>
 
       <p class="arm">o que sustenta a execução autônoma</p>
       <p>
-        Em um pipeline autônomo, o problema não é quando o processo pára.
+        Em um pipeline autônomo, o problema não é quando o processo para.
         O perigo real é ele terminar com sucesso e entregar números errados em silêncio.
       </p>
 
@@ -604,43 +604,43 @@ entre as duas se inverte.</span></pre></div>
       </div>
       <div class="chipbody" id="chipbody">
         <div class="panel" data-skillpanel="medallion-architecture">
-          <p class="dom">arquitetura</p><h3>medallion-architecture</h3><p>Como decidir a forma de gravar cada camada, garantir que reprocessar nao duplique, e versionar mudancas de regra de negocio.</p>
+          <p class="dom">arquitetura</p><h3>medallion-architecture</h3><p>Como decidir a forma de gravar cada camada, garantir que reprocessar não duplique, e versionar mudanças de regra de negócio.</p>
         </div>
         <div class="panel" data-skillpanel="code-review" hidden>
-          <p class="dom">revisao</p><h3>code-review</h3><p>O que olhar ao revisar codigo: erro de logica, suposicao nao verificada, trecho que virou inutil e custo desnecessario de processamento.</p>
+          <p class="dom">revisão</p><h3>code-review</h3><p>O que olhar ao revisar código: erro de lógica, suposição não verificada, trecho que virou inútil e custo desnecessário de processamento.</p>
         </div>
         <div class="panel" data-skillpanel="notebook-structure" hidden>
-          <p class="dom">revisao</p><h3>notebook-structure</h3><p>Como organizar um notebook novo: o que vem primeiro e o que nao deve se misturar.</p>
+          <p class="dom">revisão</p><h3>notebook-structure</h3><p>Como organizar um notebook novo: o que vem primeiro e o que não deve se misturar.</p>
         </div>
         <div class="panel" data-skillpanel="data-quality-guardrails" hidden>
-          <p class="dom">qualidade</p><h3>data-quality-guardrails</h3><p>Que verificacoes colocar para o pipeline falhar cedo e de forma visivel, em vez de entregar numero errado em silencio.</p>
+          <p class="dom">qualidade</p><h3>data-quality-guardrails</h3><p>Que verificações colocar para o pipeline falhar cedo e de forma visível, em vez de entregar número errado em silêncio.</p>
         </div>
         <div class="panel" data-skillpanel="eda-and-validation" hidden>
           <p class="dom">qualidade</p><h3>eda-and-validation</h3><p>Quando investigar a base, quando verificar, onde guardar cada coisa e como registrar o que foi descoberto.</p>
         </div>
         <div class="panel" data-skillpanel="naming-conventions" hidden>
-          <p class="dom">nomenclatura</p><h3>naming-conventions</h3><p>Como nomear notebooks, tabelas e variaveis de forma que o nome diga a que camada pertence.</p>
+          <p class="dom">nomenclatura</p><h3>naming-conventions</h3><p>Como nomear notebooks, tabelas e variáveis de forma que o nome diga a que camada pertence.</p>
         </div>
         <div class="panel" data-skillpanel="unity-catalog-naming" hidden>
           <p class="dom">nomenclatura</p><h3>unity-catalog-naming</h3><p>Como organizar schemas, tabelas e volumes no Unity Catalog por camada.</p>
         </div>
         <div class="panel" data-skillpanel="artifact-documentation" hidden>
-          <p class="dom">documentacao</p><h3>artifact-documentation</h3><p>Como documentar algo que ja existe a partir do que esta no ambiente, tratando divergencias entre fontes em vez de escolher uma.</p>
+          <p class="dom">documentação</p><h3>artifact-documentation</h3><p>Como documentar algo que já existe a partir do que está no ambiente, tratando divergências entre fontes em vez de escolher uma.</p>
         </div>
         <div class="panel" data-skillpanel="docs-sync" hidden>
-          <p class="dom">documentacao</p><h3>docs-sync</h3><p>Depois de mudar o codigo, quais documentos ficaram desatualizados e precisam acompanhar.</p>
+          <p class="dom">documentação</p><h3>docs-sync</h3><p>Depois de mudar o código, quais documentos ficaram desatualizados e precisam acompanhar.</p>
         </div>
         <div class="panel" data-skillpanel="technical-writing" hidden>
-          <p class="dom">documentacao</p><h3>technical-writing</h3><p>Tom de documentacao tecnica: verbo no presente, sem emoji, sem adjetivo de venda.</p>
+          <p class="dom">documentação</p><h3>technical-writing</h3><p>Tom de documentação técnica: verbo no presente, sem emoji, sem adjetivo de venda.</p>
         </div>
         <div class="panel" data-skillpanel="git-workflow" hidden>
-          <p class="dom">versionamento</p><h3>git-workflow</h3><p>Como dividir uma alteracao em commits coerentes e escrever a mensagem de cada um.</p>
+          <p class="dom">versionamento</p><h3>git-workflow</h3><p>Como dividir uma alteração em commits coerentes e escrever a mensagem de cada um.</p>
         </div>
         <div class="panel" data-skillpanel="asset-placement" hidden>
-          <p class="dom">organizacao</p><h3>asset-placement</h3><p>Antes de criar um arquivo: a que projeto pertence, em que pasta vai e o que conferir antes.</p>
+          <p class="dom">organização</p><h3>asset-placement</h3><p>Antes de criar um arquivo: a que projeto pertence, em que pasta vai e o que conferir antes.</p>
         </div>
         <div class="panel" data-skillpanel="skill-patterns" hidden>
-          <p class="dom">meta</p><h3>skill-patterns</h3><p>Como escrever e revisar as proprias skills, incluindo checar se ja existe algo equivalente nas nativas da plataforma.</p>
+          <p class="dom">meta</p><h3>skill-patterns</h3><p>Como escrever e revisar as próprias skills, incluindo checar se já existe algo equivalente nas nativas da plataforma.</p>
         </div>
       </div>
 
