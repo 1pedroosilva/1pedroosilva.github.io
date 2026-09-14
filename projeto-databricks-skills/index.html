@@ -17,7 +17,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://1pedroosilva.github.io/projeto-databricks-skills/">
 <meta property="og:title" content="Skills para o Genie Code">
-<meta property="og:description" content="Um agente de código acerta o trabalho e erra onde salvar, como nomear e o que registrar. Dá para corrigir isso com instrução escrita?">
+<meta property="og:description" content="O agente de código acerta a lógica, mas erra onde salvar, como nomear e o que registrar. Dá para corrigir isso com instrução escrita? E como é que se prova que corrigiu?">
 <meta property="og:image" content="https://1pedroosilva.github.io/og.png">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -407,16 +407,13 @@ html[data-tema="escuro"] .tabs button[aria-selected="true"]{color:#101614}
 .prob:hover .t{color:var(--accent)}
 .prob:hover .g{color:var(--ink)}
 
-/* quebra de linha: só o necessário, o resto é com o navegador */
-h1,h2,h3,h4{text-wrap:balance}
-p,li{text-wrap:pretty}
 
 /* rede de abertura */
 .rede{margin-top:2.4rem}
 .rede svg{width:100%;height:auto;display:block;overflow:visible}
 .rede .ed{stroke:var(--rule);stroke-width:1;transition:stroke var(--step),stroke-width var(--step)}
 .rede .nd{cursor:pointer;outline:none}
-.rede .nd .hit{fill:transparent;stroke:none;pointer-events:all}
+.rede .nd .hit,.rede .nd .hitxt{fill:transparent;stroke:none;pointer-events:all}
 .rede .nd .dot{fill:var(--accent);opacity:.85;pointer-events:none;transition:opacity var(--step)}
 .rede .nd text{font-family:var(--mono);font-size:16px;fill:var(--ink-soft);
   transition:fill var(--step);pointer-events:none;user-select:none}
@@ -428,7 +425,13 @@ p,li{text-wrap:pretty}
 .rede .nd.on .dot{opacity:1}
 .rede .nd.on.iso .dot{opacity:1;stroke:var(--accent)}
 .rede .nd.on text{fill:var(--ink)}
-.rede .nd.sel text{font-weight:500}
+.rede .nd .halo{fill:none;stroke:var(--accent);stroke-width:1.6;opacity:0;pointer-events:none;
+  transition:opacity var(--step)}
+.rede .nd.sel .halo{opacity:1}
+.rede .nd.sel .dot{fill:var(--ink)}
+html[data-tema="escuro"] .rede .nd.sel .dot{fill:var(--ink)}
+.rede .nd.sel.iso .dot{fill:var(--ink);stroke:var(--ink)}
+.rede .nd.sel text{font-weight:500;fill:var(--ink)}
 .rede .ed.on{stroke:var(--accent);stroke-width:1.7}
 .redecard{
   margin-top:1.4rem;max-width:var(--col);min-height:118px;
@@ -436,8 +439,12 @@ p,li{text-wrap:pretty}
 }
 .rcdom{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:.25rem}
 .redecard h3{font-family:var(--mono);font-size:.88rem;font-weight:500;margin-bottom:.5rem}
-.redecard p:last-child{font-size:.97rem;color:var(--ink)}
-.rcgrau{font-family:var(--mono);font-size:.63rem;color:var(--ink-soft);margin-top:.7rem}
+.redecard #rcTxt{font-size:.97rem;color:var(--ink)}
+.rcdica{
+  font-family:var(--mono);font-size:.67rem;letter-spacing:.03em;color:var(--ink-soft);
+  margin-top:.9rem;padding-top:.65rem;border-top:1px solid var(--rule);
+}
+.rcdica[hidden]{display:none}
 @media (max-width:620px){.rede .nd text{font-size:24px}.redecard{min-height:160px}}
 
 /* níveis de skill */
@@ -506,8 +513,8 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
       <p class="sub reveal">o agente de IA para engenharia de dados da Databricks</p>
       <p class="pstatus reveal">&#9679; <b>em curso</b> &nbsp;·&nbsp; catorze skills em uso</p>
       <p class="ask reveal">
-        Um agente de código acerta o trabalho e erra onde salvar, como nomear e o que registrar.
-        Dá para corrigir isso com instrução escrita, e dá para provar que corrigiu?
+        O agente de código acerta a lógica, mas erra onde salvar, como nomear e o que registrar.
+        Dá para corrigir isso com instrução escrita? E como é que se prova que corrigiu?
       </p>
 
       <div class="rede reveal" id="rede">
@@ -546,79 +553,108 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
           </g>
         <g class="nd" data-sk="artifact-documentation" tabindex="0" role="button" aria-label="artifact-documentation">
           <circle class="hit" cx="637.8" cy="150.0" r="27.6"/>
+          <circle class="halo" cx="637.8" cy="150.0" r="18.6"/>
           <circle class="dot" cx="637.8" cy="150.0" r="11.6"/>
+          <rect class="hitxt" x="654.4" y="139.5" width="227.0" height="24.0"/>
           <text x="661.4" y="155.0" text-anchor="start">artifact-documentation</text>
         </g>
         <g class="nd" data-sk="asset-placement" tabindex="0" role="button" aria-label="asset-placement">
           <circle class="hit" cx="603.1" cy="446.7" r="29.9"/>
+          <circle class="halo" cx="603.1" cy="446.7" r="20.9"/>
           <circle class="dot" cx="603.1" cy="446.7" r="13.9"/>
+          <rect class="hitxt" x="622.0" y="436.2" width="159.2" height="24.0"/>
           <text x="629.0" y="451.7" text-anchor="start">asset-placement</text>
         </g>
         <g class="nd" data-sk="code-review" tabindex="0" role="button" aria-label="code-review">
           <circle class="hit" cx="790.0" cy="285.3" r="25.3"/>
+          <circle class="halo" cx="790.0" cy="285.3" r="16.3"/>
           <circle class="dot" cx="790.0" cy="285.3" r="9.3"/>
+          <rect class="hitxt" x="804.3" y="274.8" width="120.5" height="24.0"/>
           <text x="811.3" y="290.3" text-anchor="start">code-review</text>
         </g>
         <g class="nd" data-sk="data-quality-guardrails" tabindex="0" role="button" aria-label="data-quality-guardrails">
           <circle class="hit" cx="232.5" cy="456.5" r="26.4"/>
+          <circle class="halo" cx="232.5" cy="456.5" r="17.4"/>
           <circle class="dot" cx="232.5" cy="456.5" r="10.4"/>
+          <rect class="hitxt" x="247.9" y="446.0" width="236.6" height="24.0"/>
           <text x="254.9" y="461.5" text-anchor="start">data-quality-guardrails</text>
         </g>
         <g class="nd" data-sk="docs-sync" tabindex="0" role="button" aria-label="docs-sync">
           <circle class="hit" cx="520.4" cy="241.9" r="29.9"/>
+          <circle class="halo" cx="520.4" cy="241.9" r="20.9"/>
           <circle class="dot" cx="520.4" cy="241.9" r="13.9"/>
+          <rect class="hitxt" x="539.3" y="231.4" width="101.1" height="24.0"/>
           <text x="546.3" y="246.9" text-anchor="start">docs-sync</text>
         </g>
         <g class="nd" data-sk="eda-and-validation" tabindex="0" role="button" aria-label="eda-and-validation">
           <circle class="hit" cx="336.1" cy="296.2" r="29.9"/>
+          <circle class="halo" cx="336.1" cy="296.2" r="20.9"/>
           <circle class="dot" cx="336.1" cy="296.2" r="13.9"/>
+          <rect class="hitxt" x="129.0" y="285.7" width="188.2" height="24.0"/>
           <text x="310.2" y="301.2" text-anchor="end">eda-and-validation</text>
         </g>
         <g class="nd iso" data-sk="git-workflow" tabindex="0" role="button" aria-label="git-workflow">
           <circle class="hit" cx="520.0" cy="590.0" r="23.0"/>
+          <circle class="halo" cx="520.0" cy="590.0" r="14.0"/>
           <circle class="dot" cx="520.0" cy="590.0" r="7.0"/>
+          <rect class="hitxt" x="454.9" y="607.5" width="130.2" height="24.0"/>
           <text x="520.0" y="623.0" text-anchor="middle">git-workflow</text>
         </g>
         <g class="nd" data-sk="medallion-architecture" tabindex="0" role="button" aria-label="medallion-architecture">
           <circle class="hit" cx="412.1" cy="509.9" r="27.6"/>
+          <circle class="halo" cx="412.1" cy="509.9" r="18.6"/>
           <circle class="dot" cx="412.1" cy="509.9" r="11.6"/>
+          <rect class="hitxt" x="168.5" y="499.4" width="227.0" height="24.0"/>
           <text x="388.5" y="514.9" text-anchor="end">medallion-architecture</text>
         </g>
         <g class="nd" data-sk="naming-conventions" tabindex="0" role="button" aria-label="naming-conventions">
           <circle class="hit" cx="519.4" cy="403.9" r="29.9"/>
+          <circle class="halo" cx="519.4" cy="403.9" r="20.9"/>
           <circle class="dot" cx="519.4" cy="403.9" r="13.9"/>
+          <rect class="hitxt" x="312.3" y="393.4" width="188.2" height="24.0"/>
           <text x="493.5" y="408.9" text-anchor="end">naming-conventions</text>
         </g>
         <g class="nd" data-sk="notebook-structure" tabindex="0" role="button" aria-label="notebook-structure">
           <circle class="hit" cx="423.9" cy="349.6" r="31.0"/>
+          <circle class="halo" cx="423.9" cy="349.6" r="22.0"/>
           <circle class="dot" cx="423.9" cy="349.6" r="15.0"/>
+          <rect class="hitxt" x="215.7" y="339.1" width="188.2" height="24.0"/>
           <text x="396.9" y="354.6" text-anchor="end">notebook-structure</text>
         </g>
         <g class="nd" data-sk="project-context" tabindex="0" role="button" aria-label="project-context">
           <circle class="hit" cx="542.3" cy="310.2" r="32.2"/>
+          <circle class="halo" cx="542.3" cy="310.2" r="23.2"/>
           <circle class="dot" cx="542.3" cy="310.2" r="16.2"/>
+          <rect class="hitxt" x="563.5" y="299.7" width="159.2" height="24.0"/>
           <text x="570.5" y="315.2" text-anchor="start">project-context</text>
         </g>
         <g class="nd iso" data-sk="skill-patterns" tabindex="0" role="button" aria-label="skill-patterns">
           <circle class="hit" cx="520.0" cy="56.0" r="23.0"/>
+          <circle class="halo" cx="520.0" cy="56.0" r="14.0"/>
           <circle class="dot" cx="520.0" cy="56.0" r="7.0"/>
+          <rect class="hitxt" x="445.2" y="17.5" width="149.5" height="24.0"/>
           <text x="520.0" y="33.0" text-anchor="middle">skill-patterns</text>
         </g>
         <g class="nd" data-sk="technical-writing" tabindex="0" role="button" aria-label="technical-writing">
           <circle class="hit" cx="442.3" cy="158.7" r="27.6"/>
+          <circle class="halo" cx="442.3" cy="158.7" r="18.6"/>
           <circle class="dot" cx="442.3" cy="158.7" r="11.6"/>
+          <rect class="hitxt" x="247.1" y="148.2" width="178.6" height="24.0"/>
           <text x="418.7" y="163.7" text-anchor="end">technical-writing</text>
         </g>
         <g class="nd" data-sk="unity-catalog-naming" tabindex="0" role="button" aria-label="unity-catalog-naming">
           <circle class="hit" cx="670.2" cy="363.6" r="27.6"/>
+          <circle class="halo" cx="670.2" cy="363.6" r="18.6"/>
           <circle class="dot" cx="670.2" cy="363.6" r="11.6"/>
+          <rect class="hitxt" x="686.8" y="353.1" width="207.6" height="24.0"/>
           <text x="693.8" y="368.6" text-anchor="start">unity-catalog-naming</text>
         </g>
         </svg>
         <div class="redecard" id="redeCard">
           <p class="rcdom" id="rcDom">catorze skills</p>
           <h3 id="rcName">trinta fronteiras declaradas entre elas</h3>
-          <p id="rcTxt">Cada linha existe porque uma skill cita a outra pelo nome dentro do próprio arquivo, no trecho em que delimita o que não faz. Clique em um nó para ler o que ele governa, e clique de novo para soltar.</p>
+          <p id="rcTxt">Cada linha existe porque uma skill cita a outra pelo nome dentro do próprio arquivo, no trecho em que delimita o que não faz.</p>
+          <p class="rcdica" id="rcDica">clique num nó para ler &nbsp;·&nbsp; clique de novo para soltar</p>
         </div>
       </div>
     </section>
@@ -627,12 +663,17 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
       <p class="marker">o que é</p>
       <h2>O que é uma skill</h2>
       <p class="lede" style="margin-top:.8rem">
-        O Genie Code é o assistente de programação do Databricks. Ele aceita arquivos de instrução
-        guardados no ambiente e decide sozinho quando carregar cada um, comparando o pedido com o
-        que o arquivo diz cobrir. O usuário não precisa indicar qual usar.
+        Uma skill é um arquivo de texto com uma regra dentro. O cabeçalho diz em que situações
+        aquela regra vale, e em quais não vale. O corpo diz o que fazer quando a situação aparece.
+        Um arquivo, um assunto.
       </p>
       <p style="margin-top:1.1rem">
-        Eles existem em três níveis, e o nível define quem manda na regra.
+        Quem lê esses arquivos é o Genie Code, o assistente de programação do Databricks. Antes
+        de responder, ele confere a tarefa contra o cabeçalho de cada arquivo disponível e carrega
+        os que combinam, sem ninguém indicar qual usar.
+      </p>
+      <p>
+        Os arquivos existem em três níveis, e o nível define quem manda na regra.
       </p>
 
       <div class="niveis">
@@ -835,7 +876,7 @@ const SK = {"artifact-documentation": {"dom": "documentação", "txt": "Document
 const rede=document.getElementById('rede');
 const nds=[...rede.querySelectorAll('.nd')];
 const eds=[...rede.querySelectorAll('.ed')];
-const rcDom=document.getElementById('rcDom'),rcName=document.getElementById('rcName'),rcTxt=document.getElementById('rcTxt');
+const rcDom=document.getElementById('rcDom'),rcName=document.getElementById('rcName'),rcTxt=document.getElementById('rcTxt'),rcDica=document.getElementById('rcDica');
 const inicial={d:rcDom.textContent,n:rcName.textContent,t:rcTxt.textContent};
 let sel=null;
 
@@ -858,12 +899,14 @@ function limpa(){
   rede.classList.remove('ativa');
 }
 function escreve(sk){
-  if(!sk){rcDom.textContent=inicial.d;rcName.textContent=inicial.n;rcTxt.textContent=inicial.t;return;}
+  if(!sk){rcDom.textContent=inicial.d;rcName.textContent=inicial.n;rcTxt.textContent=inicial.t;rcDica.hidden=false;return;}
+  rcDica.hidden=true;
   const d=SK[sk];
-  rcDom.textContent=d.dom; rcName.textContent=sk;
-  rcTxt.innerHTML=d.txt+'<span class="rcgrau">'+
-    (d.grau? d.grau+(d.grau>1?' fronteiras declaradas com outras skills':' fronteira declarada com outra skill')
-           : 'nenhuma fronteira declarada com outra skill')+'</span>';
+  rcDom.textContent = d.dom + ' \u00b7 ' + (d.grau
+    ? d.grau + (d.grau>1 ? ' fronteiras declaradas' : ' fronteira declarada')
+    : 'sem fronteira declarada');
+  rcName.textContent = sk;
+  rcTxt.textContent = d.txt;
 }
 function seleciona(sk){
   sel = (sel===sk) ? null : sk;
