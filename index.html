@@ -124,6 +124,7 @@ code{font-family:var(--mono);font-size:.85em}
   border-bottom:1px solid var(--rule);
   font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--ink-soft);
 }
+.railbar.semprogresso .bar{display:none}
 .railbar .bar{position:absolute;left:0;right:0;bottom:-1px;height:1px;pointer-events:none}
 .railbar .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width 90ms linear}
 @media (min-width:1000px){.railbar{display:none}}
@@ -152,6 +153,26 @@ section:first-of-type{border-top:0}
 @keyframes rise{to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;animation:none}}
 .links{display:flex;flex-wrap:wrap;gap:1.4rem;font-family:var(--mono);font-size:.78rem}
+
+.atalhos{
+  display:flex;gap:1.15rem;position:sticky;top:2.15rem;z-index:35;
+  padding:.6rem 0 .65rem;margin:0;
+  background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(9px);
+  border-bottom:1px solid var(--rule);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.atalhos::-webkit-scrollbar{display:none}
+.atalhos a{
+  flex:0 0 auto;display:inline-flex;align-items:baseline;gap:.35rem;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;
+  padding:.3rem 0 .35rem;text-decoration:none;color:var(--ink-soft);
+  border-bottom:1.5px solid transparent;
+  transition:color var(--step),border-color var(--step);
+}
+.atalhos a:hover{color:var(--ink)}
+.atalhos a[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+@media (min-width:1000px){.atalhos{display:none}}
+main section[hidden]{display:none}
 
 .pstatus{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);letter-spacing:.03em;margin:.7rem 0 0}
 .pstatus b{color:var(--ink);font-weight:500}
@@ -238,11 +259,6 @@ html[data-tema="escuro"] .go a.main:hover{color:var(--ink)}
 footer{border-top:1px solid var(--rule);padding:2.4rem 0 4rem;font-family:var(--mono);font-size:.73rem;color:var(--ink-soft)}
 footer .links{margin-bottom:1rem}
 
-/* diagramação: sem palavra órfã na última linha */
-h1,h2,h3,h4,summary,.ask,.q em,.hint,.wlabel,.simhead,.marker,.pstatus,
-.tabbody .one,.chain a,.row .k,.tl .d,.temas span{text-wrap:balance}
-p,li,.lede,.dbody p,.tech-note,.row .v,.readout{text-wrap:pretty}
-p,li,.lede{hyphens:none}
 </style>
 </head>
 
@@ -282,6 +298,15 @@ p,li,.lede{hyphens:none}
         <a href="mailto:1pedro.osilva@gmail.com">e-mail</a>
       </p>
     </section>
+
+      <nav class="atalhos" aria-label="Seções da página">
+        <a href="#cvm">cvm</a>
+        <a href="#skills">skills</a>
+        <a href="#stack">stack</a>
+        <a href="#trajetoria">experiência</a>
+        <a href="#formacao">formação</a>
+      </nav>
+
 
     <!-- 1.01 -->
     <section id="cvm">
@@ -362,7 +387,7 @@ p,li,.lede{hyphens:none}
       <p class="marker"><b>2.01</b> &nbsp;projeto</p>
       <h2>Skills para o Genie Code</h2>
       <p class="sub">o agente de IA para engenharia de dados da Databricks</p>
-      <p class="pstatus">&#9679; <b>em curso</b> &nbsp;·&nbsp; treze skills em uso</p>
+      <p class="pstatus">&#9679; <b>em curso</b> &nbsp;·&nbsp; catorze skills em uso</p>
       <p class="lede" style="margin-top:.9rem">
         O Genie Code aceita skills: instruções que o orientam em domínios específicos. As nativas
         da plataforma cobrem notebooks, Unity Catalog, dashboards e pipelines. Não cobrem critério
@@ -370,13 +395,13 @@ p,li,.lede{hyphens:none}
       </p>
 
       <p class="ask">
-        Um agente de código acerta o trabalho e erra onde salvar, como nomear e o que registrar.
-        Dá para corrigir isso com instrução escrita, e dá para provar que corrigiu?
+        O agente de código acerta a lógica, mas erra onde salvar, como nomear e o que registrar.
+        Dá para corrigir isso com instrução escrita? E como é que se prova que corrigiu?
       </p>
 
       <div class="acc">
         <details class="first">
-          <summary><span class="k">as treze<br>skills</span><span>Escritas para o que as nativas não cobrem</span></summary>
+          <summary><span class="k">as catorze<br>skills</span><span>Escritas para o que as nativas não cobrem</span></summary>
           <div class="dbody">
             <p>Cada uma nasceu de um problema que apareceu na prática, uma de cada vez.</p>
             <p class="hint" style="margin-top:1.1rem">clique em uma para ler o que ela faz</p>
@@ -393,6 +418,7 @@ p,li,.lede{hyphens:none}
               <button type="button" data-skill="technical-writing" aria-pressed="false">technical-writing</button>
               <button type="button" data-skill="git-workflow" aria-pressed="false">git-workflow</button>
               <button type="button" data-skill="asset-placement" aria-pressed="false">asset-placement</button>
+              <button type="button" data-skill="project-context" aria-pressed="false">project-context</button>
               <button type="button" data-skill="skill-patterns" aria-pressed="false">skill-patterns</button>
             </div>
             <div class="chipbody">
@@ -431,6 +457,9 @@ p,li,.lede{hyphens:none}
               </div>
               <div class="panel" data-skillpanel="asset-placement" hidden>
                 <p class="dom">organização</p><h3>asset-placement</h3><p>Antes de criar um arquivo: a que projeto pertence, em que pasta vai e o que conferir antes.</p>
+              </div>
+              <div class="panel" data-skillpanel="project-context" hidden>
+                <p class="dom">projeto</p><h3>project-context</h3><p>Iniciar, retomar ou fechar um projeto de dados: classificar o estado, desenhar o mapa do pipeline, criar estrutura e documentos, declarar o próximo passo.</p>
               </div>
               <div class="panel" data-skillpanel="skill-patterns" hidden>
                 <p class="dom">meta</p><h3>skill-patterns</h3><p>Escrever e revisar as próprias skills, checando antes se já existe algo equivalente entre as nativas da plataforma.</p>
@@ -541,8 +570,42 @@ btema.addEventListener('click',()=>{
 });
 
 const links=[...document.querySelectorAll('.index a')];
+
+/* no celular a home vira abas: o clique troca a seção mostrada */
+const mq = matchMedia('(max-width:999px)');
+const abas = [...document.querySelectorAll('.atalhos a')];
+const secoes = [...document.querySelectorAll('main section:not(.hero)')];
+let atual = 'cvm';
+function aplicaAbas(){
+  const rb = document.querySelector('.railbar');
+  const lb = document.getElementById('railLabel');
+  const fl = document.getElementById('railFill');
+  if(mq.matches){
+    secoes.forEach(sec => { sec.hidden = sec.id !== atual; });
+    abas.forEach(a => a.setAttribute('aria-current', String(a.getAttribute('href') === '#'+atual)));
+    rb.classList.add('semprogresso');
+    fl.style.width = '0';
+    const alvo = abas.find(a => a.getAttribute('href') === '#'+atual);
+    if(alvo) lb.textContent = alvo.textContent.trim();
+  } else {
+    secoes.forEach(sec => { sec.hidden = false; });
+    abas.forEach(a => a.removeAttribute('aria-current'));
+    rb.classList.remove('semprogresso');
+  }
+}
+abas.forEach(a => a.addEventListener('click', e => {
+  if(!mq.matches) return;
+  e.preventDefault();
+  atual = a.getAttribute('href').slice(1);
+  aplicaAbas();
+  const topo = document.querySelector('.atalhos');
+  if(topo.getBoundingClientRect().top < 0) topo.scrollIntoView({block:'start'});
+}));
+mq.addEventListener('change', aplicaAbas);
+aplicaAbas();
 const label=document.getElementById('railLabel'),fill=document.getElementById('railFill');
 const obs=new IntersectionObserver(es=>{
+  if(mq.matches) return;
   es.forEach(en=>{
     if(!en.isIntersecting)return;
     const id=en.target.id;
@@ -553,6 +616,7 @@ const obs=new IntersectionObserver(es=>{
 },{rootMargin:'-45% 0px -50% 0px'});
 [...document.querySelectorAll('main section')].forEach(s=>obs.observe(s));
 addEventListener('scroll',()=>{
+  if(mq.matches) return;
   const max=document.body.scrollHeight-innerHeight;
   fill.style.width=(max>0?(scrollY/max)*100:0)+'%';
 },{passive:true});
