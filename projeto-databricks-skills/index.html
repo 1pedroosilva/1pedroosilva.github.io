@@ -407,11 +407,38 @@ html[data-tema="escuro"] .tabs button[aria-selected="true"]{color:#101614}
 .prob:hover .t{color:var(--accent)}
 .prob:hover .g{color:var(--ink)}
 
-/* diagramação: sem palavra órfã na última linha */
-h1,h2,h3,h4,summary,.ask,.q em,.hint,.wlabel,.simhead,.marker,.pstatus,
-.tabbody .one,.chain a,.row .k,.tl .d,.temas span{text-wrap:balance}
-p,li,.lede,.dbody p,.tech-note,.row .v,.readout{text-wrap:pretty}
-p,li,.lede{hyphens:none}
+/* quebra de linha: só o necessário, o resto é com o navegador */
+h1,h2,h3,h4{text-wrap:balance}
+p,li{text-wrap:pretty}
+
+/* rede de abertura */
+.rede{margin-top:2.4rem}
+.rede svg{width:100%;height:auto;display:block;overflow:visible}
+.rede .ed{stroke:var(--rule);stroke-width:1;transition:stroke var(--step),stroke-width var(--step)}
+.rede .nd{cursor:pointer;outline:none}
+.rede .nd .hit{fill:transparent;stroke:none;pointer-events:all}
+.rede .nd .dot{fill:var(--accent);opacity:.85;pointer-events:none;transition:opacity var(--step)}
+.rede .nd text{font-family:var(--mono);font-size:16px;fill:var(--ink-soft);
+  transition:fill var(--step);pointer-events:none;user-select:none}
+.rede .nd.iso .dot{fill:var(--paper);stroke:var(--ink-soft);stroke-width:1.4;opacity:.8}
+.rede.ativa .nd .dot{opacity:.18}
+.rede.ativa .nd.iso .dot{opacity:.25}
+.rede.ativa .nd text{fill:var(--rule)}
+.rede.ativa .ed{stroke:color-mix(in srgb,var(--rule) 40%,transparent)}
+.rede .nd.on .dot{opacity:1}
+.rede .nd.on.iso .dot{opacity:1;stroke:var(--accent)}
+.rede .nd.on text{fill:var(--ink)}
+.rede .nd.sel text{font-weight:500}
+.rede .ed.on{stroke:var(--accent);stroke-width:1.7}
+.redecard{
+  margin-top:1.4rem;max-width:var(--col);min-height:118px;
+  border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1.15rem;
+}
+.rcdom{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:.25rem}
+.redecard h3{font-family:var(--mono);font-size:.88rem;font-weight:500;margin-bottom:.5rem}
+.redecard p:last-child{font-size:.97rem;color:var(--ink)}
+.rcgrau{font-family:var(--mono);font-size:.63rem;color:var(--ink-soft);margin-top:.7rem}
+@media (max-width:620px){.rede .nd text{font-size:24px}.redecard{min-height:160px}}
 
 /* níveis de skill */
 .niveis{margin-top:1.5rem;max-width:var(--col)}
@@ -420,35 +447,29 @@ p,li,.lede{hyphens:none}
 .niv.on{border-left-color:var(--accent);background:var(--panel)}
 .nk{font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:.3rem}
 .niv.on .nk{color:var(--ink)}
-.nk .here{
-  margin-left:.5rem;font-size:.58rem;letter-spacing:.06em;padding:.1rem .35rem;
-  border:1px solid var(--accent);border-radius:2px;color:var(--accent);
-}
+.nk .here{margin-left:.5rem;font-size:.58rem;letter-spacing:.06em;padding:.1rem .35rem;
+  border:1px solid var(--accent);border-radius:2px;color:var(--accent)}
 .nv{font-size:.95rem;color:var(--ink-soft)}
 .niv.on .nv{color:var(--ink)}
 
 /* catálogo em chips */
 .chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.4rem;max-width:var(--col)}
-.chips button{
-  font-family:var(--mono);font-size:.66rem;padding:.36rem .6rem;cursor:pointer;
+.chips button{font-family:var(--mono);font-size:.66rem;padding:.36rem .6rem;cursor:pointer;
   background:transparent;color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
-  transition:background var(--step),color var(--step),border-color var(--step);
-}
+  transition:background var(--step),color var(--step),border-color var(--step)}
 .chips button:hover{color:var(--ink);border-color:var(--ink-soft)}
 .chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
 html[data-tema="escuro"] .chips button[aria-pressed="true"]{color:#101614}
-.chipbody{
-  margin-top:.75rem;max-width:var(--col);min-height:132px;
-  border:1px solid var(--rule);border-radius:2px;background:var(--panel);padding:1.1rem 1.15rem;
-}
+.chipbody{margin-top:.75rem;max-width:var(--col);min-height:132px;
+  border:1px solid var(--rule);border-radius:2px;background:var(--panel);padding:1.1rem 1.15rem}
 .chipbody .dom{font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:.2rem}
 .chipbody h3{font-family:var(--mono);font-size:.82rem;font-weight:500}
 .chipbody p{margin:.4rem 0 0;font-size:.95rem}
 .panel[hidden]{display:none}
 .panel{animation:fadein var(--step) ease-out}
+@keyframes fadein{from{opacity:.35}to{opacity:1}}
 
 .code .hl{color:var(--accent)}
-.log .ln .y{flex:0 0 3.4em}
 code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
 </style>
 </head>
@@ -469,7 +490,6 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
       <li><a href="#skill"><span class="num">··</span> o que é</a></li>
       <li><a href="#lacuna"><span class="num">··</span> a lacuna</a></li>
       <li><a href="#anatomia"><span class="num">··</span> anatomia</a></li>
-      <li><a href="#catalogo"><span class="num">··</span> as catorze</a></li>
       <li class="gap"></li>
       <li><a href="#origem"><span class="num">··</span> como nasceram</a></li>
       <li><a href="#avaliacao"><span class="num">··</span> a avaliação</a></li>
@@ -489,18 +509,130 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
         Um agente de código acerta o trabalho e erra onde salvar, como nomear e o que registrar.
         Dá para corrigir isso com instrução escrita, e dá para provar que corrigiu?
       </p>
+
+      <div class="rede reveal" id="rede">
+        <svg viewBox="0 0 1040 640" role="img" aria-label="Rede das catorze skills e as fronteiras declaradas entre elas">
+          <g class="eds">
+        <line class="ed" data-a="artifact-documentation" data-b="code-review" x1="637.8" y1="150.0" x2="790.0" y2="285.3"/>
+        <line class="ed" data-a="artifact-documentation" data-b="docs-sync" x1="637.8" y1="150.0" x2="520.4" y2="241.9"/>
+        <line class="ed" data-a="artifact-documentation" data-b="project-context" x1="637.8" y1="150.0" x2="542.3" y2="310.2"/>
+        <line class="ed" data-a="artifact-documentation" data-b="technical-writing" x1="637.8" y1="150.0" x2="442.3" y2="158.7"/>
+        <line class="ed" data-a="asset-placement" data-b="code-review" x1="603.1" y1="446.7" x2="790.0" y2="285.3"/>
+        <line class="ed" data-a="asset-placement" data-b="medallion-architecture" x1="603.1" y1="446.7" x2="412.1" y2="509.9"/>
+        <line class="ed" data-a="asset-placement" data-b="naming-conventions" x1="603.1" y1="446.7" x2="519.4" y2="403.9"/>
+        <line class="ed" data-a="asset-placement" data-b="notebook-structure" x1="603.1" y1="446.7" x2="423.9" y2="349.6"/>
+        <line class="ed" data-a="asset-placement" data-b="project-context" x1="603.1" y1="446.7" x2="542.3" y2="310.2"/>
+        <line class="ed" data-a="asset-placement" data-b="unity-catalog-naming" x1="603.1" y1="446.7" x2="670.2" y2="363.6"/>
+        <line class="ed" data-a="data-quality-guardrails" data-b="eda-and-validation" x1="232.5" y1="456.5" x2="336.1" y2="296.2"/>
+        <line class="ed" data-a="data-quality-guardrails" data-b="medallion-architecture" x1="232.5" y1="456.5" x2="412.1" y2="509.9"/>
+        <line class="ed" data-a="data-quality-guardrails" data-b="notebook-structure" x1="232.5" y1="456.5" x2="423.9" y2="349.6"/>
+        <line class="ed" data-a="docs-sync" data-b="eda-and-validation" x1="520.4" y1="241.9" x2="336.1" y2="296.2"/>
+        <line class="ed" data-a="docs-sync" data-b="naming-conventions" x1="520.4" y1="241.9" x2="519.4" y2="403.9"/>
+        <line class="ed" data-a="docs-sync" data-b="notebook-structure" x1="520.4" y1="241.9" x2="423.9" y2="349.6"/>
+        <line class="ed" data-a="docs-sync" data-b="project-context" x1="520.4" y1="241.9" x2="542.3" y2="310.2"/>
+        <line class="ed" data-a="docs-sync" data-b="unity-catalog-naming" x1="520.4" y1="241.9" x2="670.2" y2="363.6"/>
+        <line class="ed" data-a="eda-and-validation" data-b="medallion-architecture" x1="336.1" y1="296.2" x2="412.1" y2="509.9"/>
+        <line class="ed" data-a="eda-and-validation" data-b="naming-conventions" x1="336.1" y1="296.2" x2="519.4" y2="403.9"/>
+        <line class="ed" data-a="eda-and-validation" data-b="notebook-structure" x1="336.1" y1="296.2" x2="423.9" y2="349.6"/>
+        <line class="ed" data-a="eda-and-validation" data-b="technical-writing" x1="336.1" y1="296.2" x2="442.3" y2="158.7"/>
+        <line class="ed" data-a="medallion-architecture" data-b="project-context" x1="412.1" y1="509.9" x2="542.3" y2="310.2"/>
+        <line class="ed" data-a="naming-conventions" data-b="notebook-structure" x1="519.4" y1="403.9" x2="423.9" y2="349.6"/>
+        <line class="ed" data-a="naming-conventions" data-b="project-context" x1="519.4" y1="403.9" x2="542.3" y2="310.2"/>
+        <line class="ed" data-a="naming-conventions" data-b="unity-catalog-naming" x1="519.4" y1="403.9" x2="670.2" y2="363.6"/>
+        <line class="ed" data-a="notebook-structure" data-b="project-context" x1="423.9" y1="349.6" x2="542.3" y2="310.2"/>
+        <line class="ed" data-a="notebook-structure" data-b="technical-writing" x1="423.9" y1="349.6" x2="442.3" y2="158.7"/>
+        <line class="ed" data-a="project-context" data-b="technical-writing" x1="542.3" y1="310.2" x2="442.3" y2="158.7"/>
+        <line class="ed" data-a="project-context" data-b="unity-catalog-naming" x1="542.3" y1="310.2" x2="670.2" y2="363.6"/>
+          </g>
+        <g class="nd" data-sk="artifact-documentation" tabindex="0" role="button" aria-label="artifact-documentation">
+          <circle class="hit" cx="637.8" cy="150.0" r="27.6"/>
+          <circle class="dot" cx="637.8" cy="150.0" r="11.6"/>
+          <text x="661.4" y="155.0" text-anchor="start">artifact-documentation</text>
+        </g>
+        <g class="nd" data-sk="asset-placement" tabindex="0" role="button" aria-label="asset-placement">
+          <circle class="hit" cx="603.1" cy="446.7" r="29.9"/>
+          <circle class="dot" cx="603.1" cy="446.7" r="13.9"/>
+          <text x="629.0" y="451.7" text-anchor="start">asset-placement</text>
+        </g>
+        <g class="nd" data-sk="code-review" tabindex="0" role="button" aria-label="code-review">
+          <circle class="hit" cx="790.0" cy="285.3" r="25.3"/>
+          <circle class="dot" cx="790.0" cy="285.3" r="9.3"/>
+          <text x="811.3" y="290.3" text-anchor="start">code-review</text>
+        </g>
+        <g class="nd" data-sk="data-quality-guardrails" tabindex="0" role="button" aria-label="data-quality-guardrails">
+          <circle class="hit" cx="232.5" cy="456.5" r="26.4"/>
+          <circle class="dot" cx="232.5" cy="456.5" r="10.4"/>
+          <text x="254.9" y="461.5" text-anchor="start">data-quality-guardrails</text>
+        </g>
+        <g class="nd" data-sk="docs-sync" tabindex="0" role="button" aria-label="docs-sync">
+          <circle class="hit" cx="520.4" cy="241.9" r="29.9"/>
+          <circle class="dot" cx="520.4" cy="241.9" r="13.9"/>
+          <text x="546.3" y="246.9" text-anchor="start">docs-sync</text>
+        </g>
+        <g class="nd" data-sk="eda-and-validation" tabindex="0" role="button" aria-label="eda-and-validation">
+          <circle class="hit" cx="336.1" cy="296.2" r="29.9"/>
+          <circle class="dot" cx="336.1" cy="296.2" r="13.9"/>
+          <text x="310.2" y="301.2" text-anchor="end">eda-and-validation</text>
+        </g>
+        <g class="nd iso" data-sk="git-workflow" tabindex="0" role="button" aria-label="git-workflow">
+          <circle class="hit" cx="520.0" cy="590.0" r="23.0"/>
+          <circle class="dot" cx="520.0" cy="590.0" r="7.0"/>
+          <text x="520.0" y="623.0" text-anchor="middle">git-workflow</text>
+        </g>
+        <g class="nd" data-sk="medallion-architecture" tabindex="0" role="button" aria-label="medallion-architecture">
+          <circle class="hit" cx="412.1" cy="509.9" r="27.6"/>
+          <circle class="dot" cx="412.1" cy="509.9" r="11.6"/>
+          <text x="388.5" y="514.9" text-anchor="end">medallion-architecture</text>
+        </g>
+        <g class="nd" data-sk="naming-conventions" tabindex="0" role="button" aria-label="naming-conventions">
+          <circle class="hit" cx="519.4" cy="403.9" r="29.9"/>
+          <circle class="dot" cx="519.4" cy="403.9" r="13.9"/>
+          <text x="493.5" y="408.9" text-anchor="end">naming-conventions</text>
+        </g>
+        <g class="nd" data-sk="notebook-structure" tabindex="0" role="button" aria-label="notebook-structure">
+          <circle class="hit" cx="423.9" cy="349.6" r="31.0"/>
+          <circle class="dot" cx="423.9" cy="349.6" r="15.0"/>
+          <text x="396.9" y="354.6" text-anchor="end">notebook-structure</text>
+        </g>
+        <g class="nd" data-sk="project-context" tabindex="0" role="button" aria-label="project-context">
+          <circle class="hit" cx="542.3" cy="310.2" r="32.2"/>
+          <circle class="dot" cx="542.3" cy="310.2" r="16.2"/>
+          <text x="570.5" y="315.2" text-anchor="start">project-context</text>
+        </g>
+        <g class="nd iso" data-sk="skill-patterns" tabindex="0" role="button" aria-label="skill-patterns">
+          <circle class="hit" cx="520.0" cy="56.0" r="23.0"/>
+          <circle class="dot" cx="520.0" cy="56.0" r="7.0"/>
+          <text x="520.0" y="33.0" text-anchor="middle">skill-patterns</text>
+        </g>
+        <g class="nd" data-sk="technical-writing" tabindex="0" role="button" aria-label="technical-writing">
+          <circle class="hit" cx="442.3" cy="158.7" r="27.6"/>
+          <circle class="dot" cx="442.3" cy="158.7" r="11.6"/>
+          <text x="418.7" y="163.7" text-anchor="end">technical-writing</text>
+        </g>
+        <g class="nd" data-sk="unity-catalog-naming" tabindex="0" role="button" aria-label="unity-catalog-naming">
+          <circle class="hit" cx="670.2" cy="363.6" r="27.6"/>
+          <circle class="dot" cx="670.2" cy="363.6" r="11.6"/>
+          <text x="693.8" y="368.6" text-anchor="start">unity-catalog-naming</text>
+        </g>
+        </svg>
+        <div class="redecard" id="redeCard">
+          <p class="rcdom" id="rcDom">catorze skills</p>
+          <h3 id="rcName">trinta fronteiras declaradas entre elas</h3>
+          <p id="rcTxt">Cada linha existe porque uma skill cita a outra pelo nome dentro do próprio arquivo, no trecho em que delimita o que não faz. Clique em um nó para ler o que ele governa, e clique de novo para soltar.</p>
+        </div>
+      </div>
     </section>
 
     <section id="skill">
       <p class="marker">o que é</p>
-      <h2>Uma skill é uma instrução que o agente carrega sozinho</h2>
+      <h2>O que é uma skill</h2>
       <p class="lede" style="margin-top:.8rem">
         O Genie Code é o assistente de programação do Databricks. Ele aceita arquivos de instrução
-        que ficam guardados no ambiente e que ele próprio decide carregar quando a tarefa combina
-        com o que aquele arquivo cobre. Ninguém precisa mandar usar.
+        guardados no ambiente e decide sozinho quando carregar cada um, comparando o pedido com o
+        que o arquivo diz cobrir. O usuário não precisa indicar qual usar.
       </p>
       <p style="margin-top:1.1rem">
-        Esses arquivos existem em três níveis, e a escolha do nível define quem é dono da regra.
+        Eles existem em três níveis, e o nível define quem manda na regra.
       </p>
 
       <div class="niveis">
@@ -517,8 +649,8 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
         <div class="niv on">
           <p class="nk">usuário <span class="here">este projeto</span></p>
           <p class="nv">Skills que moram no diretório pessoal e acompanham só quem as escreveu.
-          Foi onde escolhi operar, para poder mudar uma regra sem negociar com ninguém e sem
-          quebrar o trabalho de terceiros.</p>
+          Escolhi este nível para conseguir mudar uma regra sem depender de acordo com outras pessoas
+          e sem afetar o trabalho de quem usa o mesmo workspace.</p>
         </div>
       </div>
 
@@ -527,7 +659,7 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
 
     <section id="lacuna">
       <p class="marker">a lacuna</p>
-      <h2>O que as nativas não cobrem</h2>
+      <h2>A lacuna que elas preenchem</h2>
       <p class="lede" style="margin-top:.8rem">
         As skills da plataforma ensinam o agente a operar as ferramentas do Databricks. Elas não
         dizem qual estratégia de gravação escolher, que nome dar a uma tabela, o que olhar numa
@@ -536,9 +668,9 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
         escreve nada.
       </p>
       <p style="margin-top:1.1rem">
-        A peça que decide tudo isso é uma linha só dentro do arquivo: a <b>description</b>. Ela
-        não descreve a skill, ela declara em que situação acionar e em que situação não acionar.
-        Escolha uma tarefa abaixo e veja o conjunto se organizar.
+        Quem decide qual skill entra em cada tarefa é uma linha só dentro do arquivo, a
+        <b>description</b>. Ela lista as situações em que aquela skill deve ser acionada e as
+        situações em que não deve. Escolha uma tarefa abaixo.
       </p>
 
       <div class="sim">
@@ -589,8 +721,8 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
         <details class="first">
           <summary><h4>Verbo de ação distinto</h4></summary>
           <div class="dbody"><p>Cada skill responde por um verbo só: definir, criar, implementar,
-          revisar, atualizar, commitar, decidir, organizar. Duas skills com o mesmo verbo são duas
-          skills que vão brigar pela mesma tarefa.</p></div>
+          revisar, atualizar, commitar, decidir, organizar. Quando duas compartilham o mesmo verbo,
+          as duas são acionadas na mesma tarefa e o agente carrega instrução demais.</p></div>
         </details>
         <details>
           <summary><h4>Fronteira negativa explícita</h4></summary>
@@ -601,88 +733,22 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
         <details>
           <summary><h4>Especificidade máxima</h4></summary>
           <div class="dbody"><p>A description precisa deixar claro quando acionar e quando não
-          acionar. Descrição vaga aciona sempre, e skill que aciona sempre é ruído.</p></div>
+          acionar. Se ela for vaga, a skill é carregada em qualquer pedido, inclusive nos que não
+          têm nada a ver com ela.</p></div>
         </details>
       </div>
 
       <div class="temas"><em>termos</em><span>Agent Skills Specification</span><span>separação de responsabilidades</span><span>DRY</span></div>
     </section>
 
-    <section id="catalogo">
-      <p class="marker">catálogo</p>
-      <h2>As catorze</h2>
-      <p class="lede" style="margin-top:.8rem">
-        Agrupadas por domínio. Clique em uma para ler o que ela governa.
-      </p>
-      <div class="chips" role="group" aria-label="Catálogo de skills">
-          <button type="button" data-sk="medallion-architecture" aria-pressed="true">medallion-architecture</button>
-          <button type="button" data-sk="code-review" aria-pressed="false">code-review</button>
-          <button type="button" data-sk="notebook-structure" aria-pressed="false">notebook-structure</button>
-          <button type="button" data-sk="data-quality-guardrails" aria-pressed="false">data-quality-guardrails</button>
-          <button type="button" data-sk="eda-and-validation" aria-pressed="false">eda-and-validation</button>
-          <button type="button" data-sk="naming-conventions" aria-pressed="false">naming-conventions</button>
-          <button type="button" data-sk="unity-catalog-naming" aria-pressed="false">unity-catalog-naming</button>
-          <button type="button" data-sk="artifact-documentation" aria-pressed="false">artifact-documentation</button>
-          <button type="button" data-sk="docs-sync" aria-pressed="false">docs-sync</button>
-          <button type="button" data-sk="technical-writing" aria-pressed="false">technical-writing</button>
-          <button type="button" data-sk="git-workflow" aria-pressed="false">git-workflow</button>
-          <button type="button" data-sk="asset-placement" aria-pressed="false">asset-placement</button>
-          <button type="button" data-sk="project-context" aria-pressed="false">project-context</button>
-          <button type="button" data-sk="skill-patterns" aria-pressed="false">skill-patterns</button>
-      </div>
-      <div class="chipbody">
-          <div class="panel" data-skpanel="medallion-architecture">
-            <p class="dom">arquitetura</p><h3>medallion-architecture</h3><p>Escolher a estratégia de gravação de cada camada, definir idempotência e reprocessabilidade, decidir como versionar mudança de regra de negócio.</p>
-          </div>
-          <div class="panel" data-skpanel="code-review" hidden>
-            <p class="dom">qualidade de código</p><h3>code-review</h3><p>Revisar código existente em quatro frentes: correção semântica, premissa oculta, trecho morto e custo evitável de processamento.</p>
-          </div>
-          <div class="panel" data-skpanel="notebook-structure" hidden>
-            <p class="dom">qualidade de código</p><h3>notebook-structure</h3><p>Ordem fixa das células iniciais de um notebook novo e separação de responsabilidades entre elas.</p>
-          </div>
-          <div class="panel" data-skpanel="data-quality-guardrails" hidden>
-            <p class="dom">qualidade de dado</p><h3>data-quality-guardrails</h3><p>Que validações colocar em cada camada: integridade estrutural, reconciliação quantitativa e resiliência operacional.</p>
-          </div>
-          <div class="panel" data-skpanel="eda-and-validation" hidden>
-            <p class="dom">qualidade de dado</p><h3>eda-and-validation</h3><p>Quando investigar e quando apenas verificar, onde guardar cada coisa, e como registrar o caminho do achado até a validação.</p>
-          </div>
-          <div class="panel" data-skpanel="naming-conventions" hidden>
-            <p class="dom">nomenclatura</p><h3>naming-conventions</h3><p>Nomear asset novo, de notebook a variável, com numeração que se rastreia entre camadas.</p>
-          </div>
-          <div class="panel" data-skpanel="unity-catalog-naming" hidden>
-            <p class="dom">nomenclatura</p><h3>unity-catalog-naming</h3><p>Onde cada schema, tabela e volume fica dentro do Unity Catalog, por camada e por projeto.</p>
-          </div>
-          <div class="panel" data-skpanel="artifact-documentation" hidden>
-            <p class="dom">documentação</p><h3>artifact-documentation</h3><p>Documentar artefato que já existe a partir do que está no ambiente, tratando divergência entre fontes em vez de eleger uma.</p>
-          </div>
-          <div class="panel" data-skpanel="docs-sync" hidden>
-            <p class="dom">documentação</p><h3>docs-sync</h3><p>Depois de mudar código ou arquitetura, mapear quais documentos ficaram desatualizados.</p>
-          </div>
-          <div class="panel" data-skpanel="technical-writing" hidden>
-            <p class="dom">documentação</p><h3>technical-writing</h3><p>Tom da documentação versionada: verbo no presente, sem emoji, sem adjetivo de venda.</p>
-          </div>
-          <div class="panel" data-skpanel="git-workflow" hidden>
-            <p class="dom">versionamento</p><h3>git-workflow</h3><p>Dividir uma alteração em commits coerentes, staging parcial, mensagem neutra, e quando usar amend.</p>
-          </div>
-          <div class="panel" data-skpanel="asset-placement" hidden>
-            <p class="dom">projeto</p><h3>asset-placement</h3><p>Antes de criar um arquivo: a que projeto pertence, em que pasta vai, e o que conferir antes de gravar.</p>
-          </div>
-          <div class="panel" data-skpanel="project-context" hidden>
-            <p class="dom">projeto</p><h3>project-context</h3><p>Iniciar, retomar ou fechar um projeto de dados: classificar o estado, desenhar o mapa do pipeline, criar estrutura e documentos, declarar o próximo passo.</p>
-          </div>
-          <div class="panel" data-skpanel="skill-patterns" hidden>
-            <p class="dom">meta</p><h3>skill-patterns</h3><p>Escrever e revisar as próprias skills: validar a description, checar colisão com as nativas e passar pelo checklist de qualidade.</p>
-          </div>
-      </div>
-    </section>
 
     <section id="origem">
       <p class="marker">processo</p>
       <h2>Como nasceram</h2>
       <p class="lede" style="margin-top:.8rem">
-        Nenhuma foi planejada em mesa. Cada uma apareceu quando o agente errou a mesma coisa duas
-        vezes e ficou claro que corrigir na conversa não resolvia, porque a correção morria com a
-        sessão.
+        Cada uma apareceu depois que o agente errou a mesma coisa duas vezes. Corrigir na conversa
+        funcionava até o fim da sessão, e na sessão seguinte o erro voltava, porque nada tinha
+        ficado escrito.
       </p>
       <p style="margin-top:1.1rem">
         Elas começaram dentro do projeto da CVM, como instruções soltas para aquele pipeline. Em
@@ -709,15 +775,14 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
 
     <section id="avaliacao">
       <p class="marker">a pergunta em aberto</p>
-      <h2>Elas mudam alguma coisa?</h2>
+      <h2>A avaliação</h2>
       <p class="lede" style="margin-top:.8rem">
-        Escrever instrução é fácil. Provar que a instrução muda o resultado do trabalho é outra
-        coisa, e é a razão de existir a avaliação que está rodando agora.
+        A avaliação existe porque eu não tinha como saber se as skills mudavam mesmo o resultado do
+        trabalho, ou se o agente já fazia aquilo sozinho.
       </p>
       <p style="margin-top:1.1rem">
-        O desenho é simples de enunciar: o mesmo trabalho, os mesmos pedidos na mesma ordem, com
-        as skills ativas e com elas desligadas. O que a avaliação procura separar é a skill que
-        muda o resultado da skill que apenas descreve o que o agente já fazia sozinho.
+        O desenho é o mesmo trabalho feito duas vezes, com os mesmos pedidos na mesma ordem, uma
+        vez com as skills ativas e outra com elas desligadas.
       </p>
       <p class="go">
         <a class="main" href="https://1pedroosilva.github.io/genie-skills-eval/continuidade_aneel/99_chats-html/">ler a avaliação</a>
@@ -730,8 +795,8 @@ code{font-family:var(--mono);font-size:.85em;color:var(--ink)}
       <h2>Onde isso está hoje</h2>
       <div class="rows">
         <div class="row"><div class="k">em uso</div><div class="v">As catorze rodam no meu workspace, carregadas pelo agente durante o desenvolvimento dos projetos deste portfólio</div></div>
-        <div class="row"><div class="k">em avaliação</div><div class="v">Treze delas entram no teste. A <code>skill-patterns</code> fica fora por ser engenharia de IA, não de dados, e isso está declarado, não omitido</div></div>
-        <div class="row"><div class="k">o que vem</div><div class="v">Refatoração profunda quando os testes fecharem: o que não sustentar o próprio peso sai, o que sustentar ganha redação melhor</div></div>
+        <div class="row"><div class="k">em avaliação</div><div class="v">Treze delas entram no teste. A <code>skill-patterns</code> fica fora porque trata de escrever skills, e não de engenharia de dados</div></div>
+        <div class="row"><div class="k">o que vem</div><div class="v">Refatoração profunda quando os testes fecharem, com base no que a avaliação mostrar sobre cada uma</div></div>
       </div>
 
       <p class="go">
@@ -765,12 +830,54 @@ function pintaTr(i){
 trBtns.forEach((b,n)=>b.addEventListener('click',()=>pintaTr(n)));
 pintaTr(0);
 
-const cb=[...document.querySelectorAll('.chips button')];
-const cp=[...document.querySelectorAll('[data-skpanel]')];
-cb.forEach(b=>b.addEventListener('click',()=>{
-  cp.forEach(p=>{p.hidden = p.getAttribute('data-skpanel')!==b.dataset.sk;});
-  cb.forEach(o=>o.setAttribute('aria-pressed',String(o===b)));
-}));
+/* rede de abertura */
+const SK = {"artifact-documentation": {"dom": "documentação", "txt": "Documentar artefato que já existe a partir do que está no ambiente, tratando divergência entre fontes.", "grau": 4}, "asset-placement": {"dom": "projeto", "txt": "Antes de criar um arquivo: a que projeto pertence, em que pasta vai, e o que conferir antes de gravar.", "grau": 6}, "code-review": {"dom": "qualidade de código", "txt": "Revisar código existente em quatro frentes: correção semântica, premissa oculta, trecho morto e custo evitável de processamento.", "grau": 2}, "data-quality-guardrails": {"dom": "qualidade de dado", "txt": "Que validações colocar em cada camada: integridade estrutural, reconciliação quantitativa e resiliência operacional.", "grau": 3}, "docs-sync": {"dom": "documentação", "txt": "Depois de mudar código ou arquitetura, mapear quais documentos ficaram desatualizados.", "grau": 6}, "eda-and-validation": {"dom": "qualidade de dado", "txt": "Quando investigar e quando apenas verificar, onde guardar cada coisa, e como registrar o caminho do achado até a validação.", "grau": 6}, "git-workflow": {"dom": "versionamento", "txt": "Dividir uma alteração em commits coerentes, staging parcial, mensagem neutra, e quando usar amend.", "grau": 0}, "medallion-architecture": {"dom": "arquitetura", "txt": "Escolher a estratégia de gravação de cada camada, definir idempotência e reprocessabilidade, decidir como versionar mudança de regra de negócio.", "grau": 4}, "naming-conventions": {"dom": "nomenclatura", "txt": "Nomear asset novo, de notebook a variável, com numeração que se rastreia entre camadas.", "grau": 6}, "notebook-structure": {"dom": "qualidade de código", "txt": "Ordem fixa das células iniciais de um notebook novo e separação de responsabilidades entre elas.", "grau": 7}, "project-context": {"dom": "projeto", "txt": "Iniciar, retomar ou fechar um projeto de dados: classificar o estado, desenhar o mapa do pipeline, criar estrutura e documentos, declarar o próximo passo.", "grau": 8}, "skill-patterns": {"dom": "meta", "txt": "Escrever e revisar as próprias skills: validar a description, checar colisão com as nativas e passar pelo checklist de qualidade.", "grau": 0}, "technical-writing": {"dom": "documentação", "txt": "Tom da documentação versionada: verbo no presente, sem emoji, sem adjetivo de venda.", "grau": 4}, "unity-catalog-naming": {"dom": "nomenclatura", "txt": "Onde cada schema, tabela e volume fica dentro do Unity Catalog, por camada e por projeto.", "grau": 4}};
+const rede=document.getElementById('rede');
+const nds=[...rede.querySelectorAll('.nd')];
+const eds=[...rede.querySelectorAll('.ed')];
+const rcDom=document.getElementById('rcDom'),rcName=document.getElementById('rcName'),rcTxt=document.getElementById('rcTxt');
+const inicial={d:rcDom.textContent,n:rcName.textContent,t:rcTxt.textContent};
+let sel=null;
+
+function realca(sk){
+  const viz=new Set([sk]);
+  eds.forEach(e=>{
+    const on=e.dataset.a===sk||e.dataset.b===sk;
+    e.classList.toggle('on',on);
+    if(on){viz.add(e.dataset.a);viz.add(e.dataset.b);}
+  });
+  nds.forEach(n=>{
+    n.classList.toggle('on',viz.has(n.dataset.sk));
+    n.classList.toggle('sel',n.dataset.sk===sk);
+  });
+  rede.classList.add('ativa');
+}
+function limpa(){
+  eds.forEach(e=>e.classList.remove('on'));
+  nds.forEach(n=>n.classList.remove('on','sel'));
+  rede.classList.remove('ativa');
+}
+function escreve(sk){
+  if(!sk){rcDom.textContent=inicial.d;rcName.textContent=inicial.n;rcTxt.textContent=inicial.t;return;}
+  const d=SK[sk];
+  rcDom.textContent=d.dom; rcName.textContent=sk;
+  rcTxt.innerHTML=d.txt+'<span class="rcgrau">'+
+    (d.grau? d.grau+(d.grau>1?' fronteiras declaradas com outras skills':' fronteira declarada com outra skill')
+           : 'nenhuma fronteira declarada com outra skill')+'</span>';
+}
+function seleciona(sk){
+  sel = (sel===sk) ? null : sk;
+  if(sel){realca(sel);} else {limpa();}
+  escreve(sel);
+}
+nds.forEach(n=>{
+  const sk=n.dataset.sk;
+  // o mouse apenas ilumina a vizinhança; a descrição só muda no clique
+  n.addEventListener('mouseenter',()=>{if(!sel) realca(sk);});
+  n.addEventListener('mouseleave',()=>{if(!sel) limpa(); else realca(sel);});
+  n.addEventListener('click',()=>seleciona(sk));
+  n.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();seleciona(sk);}});
+});
 
 const btema=document.getElementById('tema');
 function pintaTema(t){
