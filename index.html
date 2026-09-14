@@ -124,7 +124,6 @@ code{font-family:var(--mono);font-size:.85em}
   border-bottom:1px solid var(--rule);
   font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--ink-soft);
 }
-.railbar.semprogresso .bar{display:none}
 .railbar .bar{position:absolute;left:0;right:0;bottom:-1px;height:1px;pointer-events:none}
 .railbar .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width 90ms linear}
 @media (min-width:1000px){.railbar{display:none}}
@@ -577,20 +576,15 @@ const abas = [...document.querySelectorAll('.atalhos a')];
 const secoes = [...document.querySelectorAll('main section:not(.hero)')];
 let atual = 'cvm';
 function aplicaAbas(){
-  const rb = document.querySelector('.railbar');
   const lb = document.getElementById('railLabel');
-  const fl = document.getElementById('railFill');
   if(mq.matches){
     secoes.forEach(sec => { sec.hidden = sec.id !== atual; });
     abas.forEach(a => a.setAttribute('aria-current', String(a.getAttribute('href') === '#'+atual)));
-    rb.classList.add('semprogresso');
-    fl.style.width = '0';
     const alvo = abas.find(a => a.getAttribute('href') === '#'+atual);
     if(alvo) lb.textContent = alvo.textContent.trim();
   } else {
     secoes.forEach(sec => { sec.hidden = false; });
     abas.forEach(a => a.removeAttribute('aria-current'));
-    rb.classList.remove('semprogresso');
   }
 }
 abas.forEach(a => a.addEventListener('click', e => {
@@ -598,8 +592,11 @@ abas.forEach(a => a.addEventListener('click', e => {
   e.preventDefault();
   atual = a.getAttribute('href').slice(1);
   aplicaAbas();
-  const topo = document.querySelector('.atalhos');
-  if(topo.getBoundingClientRect().top < 0) topo.scrollIntoView({block:'start'});
+  const sec = secoes.find(x => x.id === atual);
+  const barras = document.querySelector('.railbar').offsetHeight
+               + document.querySelector('.atalhos').offsetHeight;
+  const y = sec.getBoundingClientRect().top + scrollY - barras;
+  scrollTo({ top: Math.max(0, y), behavior: 'auto' });
 }));
 mq.addEventListener('change', aplicaAbas);
 aplicaAbas();
@@ -616,7 +613,6 @@ const obs=new IntersectionObserver(es=>{
 },{rootMargin:'-45% 0px -50% 0px'});
 [...document.querySelectorAll('main section')].forEach(s=>obs.observe(s));
 addEventListener('scroll',()=>{
-  if(mq.matches) return;
   const max=document.body.scrollHeight-innerHeight;
   fill.style.width=(max>0?(scrollY/max)*100:0)+'%';
 },{passive:true});
