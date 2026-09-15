@@ -265,6 +265,9 @@ footer .links{margin-bottom:1rem}
 .prancha{margin:2.6rem 0 0;border:1px solid var(--rule);background:var(--panel)}
 .prancha img{display:block;width:100%;height:auto}
 .prancha figcaption{padding:.7rem 1rem;border-top:1px solid var(--rule);font-family:var(--mono);font-size:.78rem;color:var(--ink-soft)}
+.prancha .escura{display:none}
+html[data-tema="escuro"] .prancha .clara{display:none}
+html[data-tema="escuro"] .prancha .escura{display:block}
 
 </style>
 </head>
@@ -502,11 +505,9 @@ footer .links{margin-bottom:1rem}
       </div>
 
       <figure class="prancha">
-        <picture>
-          <source srcset="/prancha-dark.png" media="(prefers-color-scheme: dark)">
-          <img src="/prancha.png" width="1200" height="630" loading="lazy" decoding="async"
-               alt="Vista explodida de três planos e uma esteira Delta de quatro camadas, com o agente operando sobre ela">
-        </picture>
+        <img class="clara" src="/prancha.png" width="1200" height="630" loading="lazy" decoding="async"
+             alt="Vista explodida de três planos e uma esteira Delta de quatro camadas, com o agente operando sobre ela">
+        <img class="escura" src="/prancha-dark.png" width="1200" height="630" loading="lazy" decoding="async" alt="">
         <figcaption>A camada de instruções entre a plataforma e o que o agente produz.</figcaption>
       </figure>
 
