@@ -1,10 +1,17 @@
 name: Gerar sitemap.xml
 
 on:
+  # Publicou HTML neste repositório: atualiza na hora
   push:
     branches: [main]
     paths:
       - '**.html'
+
+  # Publicou em qualquer outro repositório seu: a varredura diária pega
+  schedule:
+    - cron: '0 6 * * *'   # 06:00 UTC = 03:00 em Brasília
+
+  # Botão manual na aba Actions
   workflow_dispatch:
 
 permissions:
@@ -19,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # histórico completo: o lastmod vem do git log
 
-      - name: Montar sitemap
+      - name: Descobrir páginas e montar sitemap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 .github/scripts/gerar_sitemap.py
 
       - name: Commitar se mudou
