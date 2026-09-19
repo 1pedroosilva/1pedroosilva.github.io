@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://1pedroosilva.github.io/</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -13,8 +13,86 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/01_inicio-projeto-continuidade-aneel.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/02_ingestao_aneel_interrupcoes_bronze.html</loc>
+    <lastmod>2026-09-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/03_ingestao_aneel_indicadores_bronze.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/04_silver_interrupcoes_energia.html</loc>
+    <lastmod>2026-09-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/05_qualidade_bronze_interrupcoes.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/06_silver_indicadores_continuidade.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/07_gold_tempo_interrupcao_distribuidora.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/08_revisao_notebook_ingestao_interrupcoes.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/09_documentacao_notebook_gold.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/10_mudanca_chave_silver_docs.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/11_execucao_pipeline_ponta_a_ponta.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/12_documentacao_tecnica_e_negocio.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade_aneel/99_chats-html/</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://1pedroosilva.github.io/projeto-cvm/</loc>
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-09-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
