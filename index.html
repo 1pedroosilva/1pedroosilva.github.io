@@ -270,6 +270,42 @@ html[data-tema="escuro"] .prancha .clara{display:none}
 html[data-tema="escuro"] .prancha .escura{display:block}
 
 </style>
+
+<style>
+.hero .stmt2{
+  margin-top:.9rem;font-size:.97rem;line-height:1.62;color:var(--ink-soft);
+  max-width:var(--col);
+}
+.mapa{
+  display:grid;gap:1px;margin:2.4rem 0 0;
+  background:var(--rule);border:1px solid var(--rule);
+}
+@media (min-width:860px){.mapa{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.mp{
+  display:flex;flex-direction:column;gap:.3rem;
+  padding:1.15rem 1.2rem 1.3rem;background:var(--paper);text-decoration:none;
+  transition:background var(--step);
+}
+.mp:hover{background:var(--panel)}
+.mp .et{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.mp .tt{font-size:1rem;color:var(--accent);line-height:1.3}
+.mp:hover .tt{color:var(--ink)}
+.mp .ds{font-size:.87rem;line-height:1.5;color:var(--ink-soft)}
+.mp.forte{background:var(--panel)}
+.mp.forte:hover{background:var(--panel-deep)}
+.mp.forte .et{color:var(--accent)}
+.mp.forte .tt::after{content:" \2192";font-family:var(--mono);font-size:.82em}
+
+.atalhos a.fora{color:var(--accent)}
+.atalhos a.fora:hover{color:var(--ink)}
+.index a.fora{color:var(--accent)}
+.index a.fora:hover{color:var(--ink)}
+.index li.gap{height:.9rem}
+</style>
+
 </head>
 
 <body>
@@ -289,6 +325,8 @@ html[data-tema="escuro"] .prancha .escura{display:block}
       <li><a href="#stack">3.01 stack</a></li>
       <li><a href="#trajetoria">4.01 trajetória</a></li>
       <li><a href="#formacao">5.01 formação</a></li>
+          <li class="gap"></li>
+          <li><a class="fora" href="/genie-skills-eval/">a avaliação &#8599;</a></li>
     </ol>
   </nav>
 
@@ -298,15 +336,37 @@ html[data-tema="escuro"] .prancha .escura{display:block}
       <p class="role reveal">Engenharia de dados · Databricks · Business Intelligence e governança financeira</p>
       <h1 class="reveal">Pedro Oliveira</h1>
       <p class="stmt reveal">
-        Construo pipelines em Databricks com dado público, em repositório aberto. Hoje trabalho na
-        Controladoria do Bradesco, em planejamento e análise financeira (FP&amp;A) e na governança
-        dos custos de tecnologia da informação (TI).
+        Construo pipelines de dados em Databricks e investigo como um agente de código
+        participa desse trabalho. Os dois projetos abaixo são as duas metades disso:
+        um constrói, o outro testa o agente construindo.
+      </p>
+      <p class="stmt2 reveal">
+        Tudo com dado público, em repositório aberto, incluindo as transcrições das sessões
+        de trabalho com o agente. Hoje trabalho na Controladoria do Bradesco, em planejamento
+        e análise financeira (FP&amp;A) e na governança dos custos de tecnologia da informação.
       </p>
       <p class="links reveal">
         <a href="https://www.linkedin.com/in/1pedroosilva/" target="_blank" rel="noopener noreferrer">linkedin</a>
         <a href="https://github.com/1pedroosilva" target="_blank" rel="noopener noreferrer">github</a>
         <a href="mailto:1pedro.osilva@gmail.com">e-mail</a>
       </p>
+      <nav class="mapa reveal" aria-label="O trabalho">
+        <a class="mp" href="#skills">
+          <span class="et">investigar</span>
+          <span class="tt">Skills para o Genie Code</span>
+          <span class="ds">Instruções escritas para orientar o agente, e um teste para saber se funcionam</span>
+        </a>
+        <a class="mp" href="#cvm">
+          <span class="et">construir</span>
+          <span class="tt">Pipeline da CVM</span>
+          <span class="ds">Demonstrações financeiras públicas, da ingestão à camada analítica</span>
+        </a>
+        <a class="mp forte" href="/genie-skills-eval/">
+          <span class="et">evidência</span>
+          <span class="tt">A avaliação das skills</span>
+          <span class="ds">O mesmo projeto feito duas vezes, com as skills e sem. 24 sessões registradas, com transcrição completa</span>
+        </a>
+      </nav>
     </section>
 
       <nav class="atalhos" aria-label="Seções da página">
@@ -315,6 +375,7 @@ html[data-tema="escuro"] .prancha .escura{display:block}
         <a href="#stack">stack</a>
         <a href="#trajetoria">experiência</a>
         <a href="#formacao">formação</a>
+        <a class="fora" href="/genie-skills-eval/">avaliação &#8599;</a>
       </nav>
 
 
