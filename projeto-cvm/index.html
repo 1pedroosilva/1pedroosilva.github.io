@@ -447,7 +447,7 @@ p,li,.lede{hyphens:none}
       <a class="back reveal" href="/">&#8592; pedro oliveira</a>
       <p class="marker reveal"><b>1.01</b> &nbsp;projeto</p>
       <h1 class="reveal">Pipeline de demonstrações financeiras da CVM</h1>
-      <p class="pstatus reveal">&#9675; <b>em pausa</b> &nbsp;·&nbsp; três das quatro etapas em execução</p>
+      <p class="pstatus reveal">&#9679; <b>em curso</b> &nbsp;·&nbsp; três das quatro etapas em execução agendada</p>
       <p class="ask reveal">
         Como um pipeline que roda sozinho entrega o número certo, se a fonte muda de formato
         entre um ano e outro e a companhia republica um valor corrigido sem avisar ninguém?
@@ -508,6 +508,22 @@ p,li,.lede{hyphens:none}
             <p class="tech-note">Landing zone em volume do <b>Unity Catalog</b>. Tabela de
             controle guardando o cabeçalho <b>Last-Modified</b> da origem, o que permite
             reprocessamento seletivo em vez de recarga completa.</p>
+          </div>
+        </details>
+        <details>
+          <summary><h4>quem olha para a fonte, e quando</h4></summary>
+          <div class="dbody">
+            <p>Perguntar à CVM se algo mudou é uma tarefa diária e barata. Processar os dados é
+            uma tarefa pesada e mais espaçada. Juntar as duas faz a segunda esperar pela primeira
+            toda vez, e deixa o pipeline refém da origem estar no ar no momento exato em que ele
+            precisa rodar.</p>
+            <p>Uma rotina separada acorda todo dia, pergunta à origem se o pacote de cada
+            exercício mudou e, quando mudou, guarda a versão antiga antes de trazer a nova. Nada
+            do que já estava ali é sobrescrito sem cópia.</p>
+            <p class="tech-note">Notebook diário de verificação da landing: requisição
+            <b>HEAD</b> por exercício, comparação com os metadados gravados ao lado do arquivo,
+            arquivamento da versão anterior com carimbo de tempo e download da nova. As etapas de
+            processamento não fazem chamada de rede à origem.</p>
           </div>
         </details>
       </div>
@@ -651,8 +667,9 @@ df_silver = df_transformado.select(
       <p class="q"><em>o que seria</em>
         A entrega é onde o dado tratado viraria tabela pronta para análise, organizada para quem
         vai consultar e não para quem processou. Ela existe hoje na estrutura de pastas e na
-        declaração de ambiente, e os notebooks dela não foram escritos. Quando eu retomar o
-        projeto, a fila começa por aqui.
+        declaração de ambiente, e os notebooks dela não foram escritos. É o próximo item da fila,
+        e só faz sentido depois que o valor que chega até aqui estiver comparável entre
+        companhias, que era o que faltava até setembro.
       </p>
       <div class="temas"><em>termos</em><span>modelagem dimensional</span><span>esquema estrela</span><span>tabela fato</span></div>
     </section>
@@ -679,9 +696,11 @@ df_silver = df_transformado.select(
         <div class="log" id="gdLog"></div>
       </div>
 
-      <p class="hint" style="margin-top:2rem">quatro escolhas sustentam a execução sem ninguém olhando</p>
+      <p class="hint" style="margin-top:2rem">seis escolhas sustentam a execução sem ninguém olhando</p>
       <div class="tabs" role="tablist" aria-label="Escolhas de execução autônoma">
         <button type="button" role="tab" data-tab="interrupção" aria-selected="true">interrupção</button>
+        <button type="button" role="tab" data-tab="detecção" aria-selected="false">detecção</button>
+        <button type="button" role="tab" data-tab="observabilidade" aria-selected="false">observabilidade</button>
         <button type="button" role="tab" data-tab="verificação" aria-selected="false">verificação</button>
         <button type="button" role="tab" data-tab="ambiente" aria-selected="false">ambiente</button>
         <button type="button" role="tab" data-tab="reprocessamento" aria-selected="false">reprocessamento</button>
@@ -698,6 +717,37 @@ df_silver = df_transformado.select(
           seção sobre <b>quando não usar guardrail</b>, já que nem toda verificação compensa o
           custo de manter.</p>
           <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>fail-fast</span><span>validação de schema</span><span>guardrails de qualidade</span></div>
+        </div>
+        <div class="tabpanel" data-tabpanel="detecção" hidden>
+          <h4>Decidir sozinho o que precisa ser processado</h4>
+          <p class="one">três perguntas, nenhuma delas feita à origem</p>
+          <p>Antes de processar, o pipeline precisa saber o que processar. Ele faz três perguntas
+          sobre cada exercício: este ano já foi processado alguma vez, a execução anterior
+          registrou sucesso mas não deixou linha na tabela, e o arquivo guardado aqui ainda é o
+          mesmo que a origem publicou. Qualquer resposta desconfortável coloca o ano de volta na
+          fila.</p>
+          <p>A segunda pergunta existe porque registro de sucesso não é prova de dado gravado.
+          Confiar só na marca de sucesso deixa um buraco que ninguém procura, porque o painel
+          está verde.</p>
+          <p class="tech-note">Detecção por leitura local, sem chamada de rede em tempo de
+          execução. O estado de republicação vem de comparar os metadados gravados ao lado do
+          arquivo com o que a tabela de controle registrou, e o estado de dado ausente vem de
+          conferir a tabela de destino, não a flag. Seis fontes cobertas, três de histórico e
+          três de tratamento.</p>
+          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>detecção de mudança</span><span>reconciliação</span><span>watermark</span><span>carga incremental</span></div>
+        </div>
+        <div class="tabpanel" data-tabpanel="observabilidade" hidden>
+          <h4>Cada execução deixa registro do que fez</h4>
+          <p class="one">o histórico das execuções é consultável como dado</p>
+          <p>Log de execução rola para fora da tela e não responde pergunta comparativa. Quantos
+          arquivos vieram naquela noite, quanto tempo a rotina levou em relação à semana passada,
+          em que ponto ela parou quando parou: isso é pergunta de consulta, e por isso o registro
+          de execução mora em tabela, não em saída de console.</p>
+          <p class="tech-note">Tabela de observabilidade com <b>26 colunas</b> por execução:
+          identificação, janela de tempo, contagem e volume de arquivos, resultado e mensagem de
+          erro. Hoje só a verificação diária da origem escreve nela. Instrumentar as etapas de
+          processamento é trabalho pendente.</p>
+          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>observabilidade</span><span>métricas de pipeline</span><span>rastreabilidade de execução</span></div>
         </div>
         <div class="tabpanel" data-tabpanel="verificação" hidden>
           <h4>Verificação automática a cada alteração de código</h4>
@@ -745,6 +795,47 @@ df_silver = df_transformado.select(
       </p>
       <ul class="tl">
         <li data-undo="true">
+          <p class="d">20 set</p>
+          <h4>Troquei uma estratégia por um critério</h4>
+          <p>A forma de gravar o histórico tinha ido e voltado duas vezes em dois meses. Fui
+          entender por quê e a resposta não estava em nenhuma das duas decisões: estava no fato
+          de eu ter registrado &ldquo;uso esta estratégia&rdquo; em vez de registrar o que não
+          pode ser perdido. Estratégia escrita assim não sobrevive ao primeiro bug, porque o bug
+          é um argumento e ela não é. Reescrevi como critério, e as duas idas e voltas viraram
+          consequência dele.</p>
+          <p class="tech-note">O histórico preserva toda versão publicada pela origem, e a
+          garantia de não duplicar vem da verificação prévia do <b>Last-Modified</b>, nunca de
+          apagar linha. Quem sustenta o critério é o mecanismo de verificação, que por isso
+          precisa de teste próprio.</p>
+        </li>
+        <li data-undo="true">
+          <p class="d">20 set</p>
+          <h4>Tirei a chamada à origem de dentro da execução</h4>
+          <p>Quem descobre que a fonte mudou não pode ser a mesma rotina que já assumiu que nada
+          mudou. Era o que estava acontecendo, e por isso o pipeline não tinha como enxergar um
+          exercício republicado depois de já processado.</p>
+          <p class="tech-note">Duas funções que faziam requisição HTTP em tempo de execução foram
+          removidas. A detecção ganhou um terceiro estado, resolvido por leitura local.</p>
+        </li>
+        <li>
+          <p class="d">19 set</p>
+          <h4>Converti a escala antes de qualquer soma</h4>
+          <p>Cerca de quinhentas e quarenta companhias reportam em milhares e quinze em unidades.
+          Enquanto a conversão não existiu, qualquer ranking entre elas estava errado por um fator
+          de mil, sem nada na tabela denunciando isso.</p>
+          <p class="tech-note">Conversão aplicada na camada de padronização, não na de entrega,
+          para que nenhum consumidor precise conferir a escala. A coluna original permanece.</p>
+        </li>
+        <li data-undo="true">
+          <p class="d">19 set</p>
+          <h4>Descobri que meu laço rodava só a última volta</h4>
+          <p>O laço que percorria os exercícios estava escrito ao longo de várias células, e só a
+          primeira delas repetia. As outras rodavam uma vez, com o último ano. O resultado é que
+          faltavam três exercícios inteiros na base e nada tinha falhado.</p>
+          <p class="tech-note">Laço consolidado em célula única, padrão que já existia em um dos
+          notebooks e não tinha sido propagado.</p>
+        </li>
+        <li data-undo="true">
           <p class="d">19 ago</p>
           <h4>Troquei a forma de regravar os dados</h4>
           <p>A original apagava o período e reescrevia em duas operações, e entre uma e outra
@@ -780,11 +871,14 @@ df_silver = df_transformado.select(
       <h2>O que está aberto</h2>
       <p class="lede" style="margin-top:.8rem">
         A investigação de qualidade da base reúne quinze achados numerados, contando os que ainda
-        não resolvi.
+        não resolvi. O que sai daqui sai com data, e o que fica também.
       </p>
       <div class="rows">
-        <div class="row"><div class="k">em aberto</div><div class="v">Valores em escalas diferentes sem conversão em parte das contas</div></div>
+        <div class="row"><div class="k">resolvido em set</div><div class="v">Valores em escalas diferentes sem conversão, o que invertia a ordem entre companhias</div></div>
         <div class="row"><div class="k">em aberto</div><div class="v">Contas contábeis ainda sem classificação de hierarquia</div></div>
+        <div class="row"><div class="k">em aberto</div><div class="v">O mecanismo que sustenta a preservação do histórico não tem teste próprio. Ele já foi removido duas vezes por motivo pequeno, e das duas o desenho perdeu capacidade sem ninguém perceber</div></div>
+        <div class="row"><div class="k">em aberto</div><div class="v">A janela de anos processados entrega seis exercícios onde a configuração diz cinco. Está identificado, documentado e não corrigido, porque seis não atrapalha</div></div>
+        <div class="row"><div class="k">em aberto</div><div class="v">Só a verificação diária da origem grava na tabela de observabilidade. As etapas de processamento ainda não</div></div>
         <div class="row"><div class="k">não construído</div><div class="v">Camada de entrega</div></div>
       </div>
 
