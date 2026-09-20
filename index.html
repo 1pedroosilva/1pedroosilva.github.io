@@ -596,7 +596,7 @@ const links=[...document.querySelectorAll('.index a')];
 const mq = matchMedia('(max-width:999px)');
 const abas = [...document.querySelectorAll('.atalhos a')];
 const secoes = [...document.querySelectorAll('main section:not(.hero)')];
-let atual = 'cvm';
+let atual = (document.querySelector('.atalhos a')||{}).getAttribute?.('href')?.slice(1) || 'skills';
 function aplicaAbas(){
   const lb = document.getElementById('railLabel');
   if(mq.matches){
