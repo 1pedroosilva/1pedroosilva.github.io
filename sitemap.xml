@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://1pedroosilva.github.io/</loc>
-    <lastmod>2026-09-15</lastmod>
+    <lastmod>2026-09-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -13,80 +13,92 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/01_inicio-projeto-continuidade-aneel.html</loc>
-    <lastmod>2026-09-08</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/02_ingestao_aneel_interrupcoes_bronze.html</loc>
-    <lastmod>2026-09-11</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/com-skills/chats/</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/03_ingestao_aneel_indicadores_bronze.html</loc>
-    <lastmod>2026-09-12</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/01-inicio-projeto-continuidade-aneel.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/04_silver_interrupcoes_energia.html</loc>
-    <lastmod>2026-09-12</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/02-ingestao-bronze-interrupcoes-aneel.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/05_qualidade_bronze_interrupcoes.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/03-ingestao-bronze-indicadores-continuidade.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/06_silver_indicadores_continuidade.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/04-transformacao-silver-interrupcoes.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/07_gold_tempo_interrupcao_distribuidora.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/05-qualidade-bronze-regras-silver.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/08_revisao_notebook_ingestao_interrupcoes.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/06-transformacao-silver-indicadores.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/09_documentacao_notebook_gold.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/07-tabela-gold-tempo-interrupcao.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/10_mudanca_chave_silver_docs.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/08-revisao-notebook-ingestao.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/11_execucao_pipeline_ponta_a_ponta.html</loc>
-    <lastmod>2026-09-16</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/09-documentacao-notebook-gold.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade-energia-aneel/99_chats-html/12_documentacao_tecnica_e_negocio.html</loc>
-    <lastmod>2026-09-17</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/10-mudanca-chave-silver.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://1pedroosilva.github.io/genie-skills-eval/continuidade_aneel/99_chats-html/</loc>
-    <lastmod>2026-09-16</lastmod>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/11-execucao-pipeline-ponta-a-ponta.html</loc>
+    <lastmod>2026-09-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://1pedroosilva.github.io/genie-skills-eval/aneel/sem-skills/chats/12-documentacao-tecnica-negocio.html</loc>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
