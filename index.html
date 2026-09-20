@@ -245,11 +245,11 @@ html[data-tema="escuro"] .chips button[aria-pressed="true"]{color:#101614}
   border:1px solid var(--rule);border-radius:2px;color:var(--ink-soft);
   transition:background var(--step),color var(--step),border-color var(--step);
 }
-.go a:hover{color:var(--ink);border-color:var(--ink-soft)}
+.go a:hover{color:var(--ink);border-color:var(--ink-soft);background:var(--panel-deep)}
 .go a.main{background:var(--accent);border-color:var(--accent);color:var(--panel)}
-.go a.main:hover{background:transparent;color:var(--ink);border-color:var(--ink-soft)}
+.go a.main:hover{background:color-mix(in srgb,var(--accent) 62%,var(--ink));border-color:color-mix(in srgb,var(--accent) 62%,var(--ink));color:var(--panel)}
 html[data-tema="escuro"] .go a.main{color:#101614}
-html[data-tema="escuro"] .go a.main:hover{color:var(--ink)}
+html[data-tema="escuro"] .go a.main:hover{color:#101614}
 .go a svg{width:14px;height:14px;fill:currentColor;flex:0 0 auto}
 
 @media (max-width:520px){
@@ -284,8 +284,8 @@ html[data-tema="escuro"] .prancha .escura{display:block}
 <div class="shell">
   <nav class="index" aria-label="Índice">
     <ol>
-      <li><a href="#cvm">1.01 pipeline cvm</a></li>
-      <li><a href="#skills">2.01 genie code</a></li>
+      <li><a href="#skills">1.01 genie code</a></li>
+          <li><a href="#cvm">2.01 pipeline cvm</a></li>
       <li><a href="#stack">3.01 stack</a></li>
       <li><a href="#trajetoria">4.01 trajetória</a></li>
       <li><a href="#formacao">5.01 formação</a></li>
@@ -310,8 +310,8 @@ html[data-tema="escuro"] .prancha .escura{display:block}
     </section>
 
       <nav class="atalhos" aria-label="Seções da página">
-        <a href="#cvm">cvm</a>
         <a href="#skills">skills</a>
+        <a href="#cvm">cvm</a>
         <a href="#stack">stack</a>
         <a href="#trajetoria">experiência</a>
         <a href="#formacao">formação</a>
@@ -319,82 +319,8 @@ html[data-tema="escuro"] .prancha .escura{display:block}
 
 
     <!-- 1.01 -->
-    <section id="cvm">
-      <p class="marker"><b>1.01</b> &nbsp;projeto</p>
-      <h2>Pipeline de demonstrações financeiras da CVM</h2>
-      <p class="pstatus">&#9675; <b>em pausa</b> &nbsp;·&nbsp; três das quatro etapas em execução</p>
-      <p class="lede" style="margin-top:.9rem">
-        Ingestão e tratamento das Demonstrações Financeiras Padronizadas (DFP) que as companhias
-        abertas entregam à Comissão de Valores Mobiliários (CVM). Dado público e bruto, em pacotes
-        anuais, com formato que muda de um ano para outro.
-      </p>
-
-      <p class="ask">
-        Como um pipeline que roda sozinho entrega o número certo, se a fonte muda de formato
-        entre um ano e outro e a companhia republica um valor corrigido sem avisar ninguém?
-      </p>
-
-      <div class="acc">
-        <details class="first">
-          <summary><span class="k">arquitetura<br>medalhão</span><span>Captura, histórico, tratamento e entrega</span></summary>
-          <div class="dbody">
-            <p>Cada etapa faz uma coisa. A captura guarda o arquivo exatamente como veio da CVM.
-            O histórico acumula todas as versões, sem sobrescrever nenhuma. O tratamento escolhe
-            a versão vigente e padroniza. A entrega organiza para análise.</p>
-            <p class="tech-note">Databricks com <b>PySpark</b> sobre <b>Delta Lake</b>, landing zone em volume do <b>Unity Catalog</b>.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">cobertura</span><span>Resultado e balanço patrimonial, de 2021 a 2025</span></summary>
-          <div class="dbody">
-            <p>Demonstração do Resultado do Exercício, Balanço Patrimonial Ativo e Balanço
-            Patrimonial Passivo, de todas as companhias abertas que entregaram DFP no período.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">o que roda</span><span>A camada de entrega ainda não foi construída</span></summary>
-          <div class="dbody">
-            <p>Captura, histórico e tratamento rodam sozinhos, em execução agendada. A entrega
-            está prevista na estrutura do projeto e na declaração de ambiente, e os notebooks
-            dela não existem.</p>
-            <p>Duas padronizações seguem abertas, as duas documentadas: valores que chegam em
-            escalas diferentes, e contas contábeis ainda sem classificação de hierarquia.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">garantias</span><span>O que impede um número errado de passar em silêncio</span></summary>
-          <div class="dbody">
-            <p>Quando um pipeline quebra, alguém percebe. O risco está em ele terminar com
-            sucesso e entregar número errado calado. A checagem de estrutura acontece antes da
-            escrita, e nenhuma alteração de código entra sem passar por verificação automática.</p>
-            <p class="tech-note">Falha explícita antes da gravação, <b>Ruff</b> e <b>pytest</b> em cada push, ambiente e jobs declarados em <b>Databricks Asset Bundles</b>.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">estado</span><span>Por que está em pausa</span></summary>
-          <div class="dbody">
-            <p>Estou concentrado na avaliação das skills, e prefiro terminar uma frente antes de
-            abrir outra. O pipeline segue rodando agendado: o que parou foi o desenvolvimento,
-            não a execução.</p>
-            <p>Quando voltar, a fila começa pela camada de entrega e pelas duas padronizações
-            que deixei em aberto.</p>
-          </div>
-        </details>
-      </div>
-
-      <p class="go">
-        <a class="main" href="/projeto-cvm/">conhecer o projeto</a>
-        <a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros" target="_blank" rel="noopener noreferrer" aria-label="Repositório do projeto CVM no GitHub">
-          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-          repositório
-        </a>
-      </p>
-      <p class="hint">as decisões estão registradas com data, contexto e o que aprendi com cada uma</p>
-    </section>
-
-    <!-- 2.01 -->
     <section id="skills">
-      <p class="marker"><b>2.01</b> &nbsp;projeto</p>
+      <p class="marker"><b>1.01</b> &nbsp;projeto</p>
       <h2>Skills para o Genie Code</h2>
       <p class="sub">o agente de IA para engenharia de dados da Databricks</p>
       <p class="pstatus">&#9679; <b>em curso</b> &nbsp;·&nbsp; catorze skills em uso</p>
@@ -485,13 +411,17 @@ html[data-tema="escuro"] .prancha .escura{display:block}
           </div>
         </details>
         <details>
-          <summary><span class="k">avaliação</span><span>Dezoito sessões em dois braços pareados</span></summary>
+          <summary><span class="k">avaliação</span><span>As skills acertam onde o arquivo nasce, e param aí</span></summary>
           <div class="dbody">
-            <p>O mesmo trabalho, os mesmos prompts na mesma ordem, com as skills ativas e com elas
-            desligadas. Cada sessão tem transcrição completa publicada, incluindo o raciocínio do
+            <p>O mesmo trabalho feito duas vezes, com os mesmos pedidos na mesma ordem, uma vez
+            com as skills ativas e outra com elas desligadas. Vinte e quatro sessões registradas
+            até aqui, cada uma com transcrição completa publicada, incluindo o raciocínio do
             agente.</p>
-            <p>A versão das skills usada no teste está congelada por identificador de commit, para
-            que qualquer pessoa reconstrua exatamente o que foi avaliado.</p>
+            <p>O resultado é mais interessante do que um placar: as skills acertam onde o
+            artefato nasce e como se chama, e nenhum dos dois braços acertou o que estava fora
+            do arquivo. A versão testada está congelada por commit, para que qualquer pessoa
+            reconstrua o que foi avaliado.</p>
+            <p class="go"><a class="main" href="/genie-skills-eval/">ver a avaliação</a></p>
           </div>
         </details>
         <details>
@@ -512,13 +442,87 @@ html[data-tema="escuro"] .prancha .escura{display:block}
       </figure>
 
       <p class="go">
-        <a class="main" href="/projeto-databricks-skills/">conhecer o projeto</a>
+        <a class="main" href="/projeto-databricks-skills/">conhecer o projeto</a><a href="/genie-skills-eval/">ver a avaliação</a>
         <a href="https://github.com/1pedroosilva/databricks-genie-skills" target="_blank" rel="noopener noreferrer" aria-label="Repositório das skills no GitHub">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
           repositório
         </a>
       </p>
-      <p class="hint">a avaliação completa fica dentro da página do projeto</p>
+      <p class="hint">a avaliação tem página própria, com as sessões e as transcrições</p>
+    </section>
+
+    <!-- 2.01 -->
+    <section id="cvm">
+      <p class="marker"><b>2.01</b> &nbsp;projeto</p>
+      <h2>Pipeline de demonstrações financeiras da CVM</h2>
+      <p class="pstatus">&#9675; <b>em pausa</b> &nbsp;·&nbsp; três das quatro etapas em execução</p>
+      <p class="lede" style="margin-top:.9rem">
+        Ingestão e tratamento das Demonstrações Financeiras Padronizadas (DFP) que as companhias
+        abertas entregam à Comissão de Valores Mobiliários (CVM). Dado público e bruto, em pacotes
+        anuais, com formato que muda de um ano para outro.
+      </p>
+
+      <p class="ask">
+        Como um pipeline que roda sozinho entrega o número certo, se a fonte muda de formato
+        entre um ano e outro e a companhia republica um valor corrigido sem avisar ninguém?
+      </p>
+
+      <div class="acc">
+        <details class="first">
+          <summary><span class="k">arquitetura<br>medalhão</span><span>Captura, histórico, tratamento e entrega</span></summary>
+          <div class="dbody">
+            <p>Cada etapa faz uma coisa. A captura guarda o arquivo exatamente como veio da CVM.
+            O histórico acumula todas as versões, sem sobrescrever nenhuma. O tratamento escolhe
+            a versão vigente e padroniza. A entrega organiza para análise.</p>
+            <p class="tech-note">Databricks com <b>PySpark</b> sobre <b>Delta Lake</b>, landing zone em volume do <b>Unity Catalog</b>.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span class="k">cobertura</span><span>Resultado e balanço patrimonial, de 2021 a 2025</span></summary>
+          <div class="dbody">
+            <p>Demonstração do Resultado do Exercício, Balanço Patrimonial Ativo e Balanço
+            Patrimonial Passivo, de todas as companhias abertas que entregaram DFP no período.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span class="k">o que roda</span><span>A camada de entrega ainda não foi construída</span></summary>
+          <div class="dbody">
+            <p>Captura, histórico e tratamento rodam sozinhos, em execução agendada. A entrega
+            está prevista na estrutura do projeto e na declaração de ambiente, e os notebooks
+            dela não existem.</p>
+            <p>Duas padronizações seguem abertas, as duas documentadas: valores que chegam em
+            escalas diferentes, e contas contábeis ainda sem classificação de hierarquia.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span class="k">garantias</span><span>O que impede um número errado de passar em silêncio</span></summary>
+          <div class="dbody">
+            <p>Quando um pipeline quebra, alguém percebe. O risco está em ele terminar com
+            sucesso e entregar número errado calado. A checagem de estrutura acontece antes da
+            escrita, e nenhuma alteração de código entra sem passar por verificação automática.</p>
+            <p class="tech-note">Falha explícita antes da gravação, <b>Ruff</b> e <b>pytest</b> em cada push, ambiente e jobs declarados em <b>Databricks Asset Bundles</b>.</p>
+          </div>
+        </details>
+        <details>
+          <summary><span class="k">estado</span><span>Por que está em pausa</span></summary>
+          <div class="dbody">
+            <p>Estou concentrado na avaliação das skills, e prefiro terminar uma frente antes de
+            abrir outra. O pipeline segue rodando agendado: o que parou foi o desenvolvimento,
+            não a execução.</p>
+            <p>Quando voltar, a fila começa pela camada de entrega e pelas duas padronizações
+            que deixei em aberto.</p>
+          </div>
+        </details>
+      </div>
+
+      <p class="go">
+        <a class="main" href="/projeto-cvm/">conhecer o projeto</a>
+        <a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros" target="_blank" rel="noopener noreferrer" aria-label="Repositório do projeto CVM no GitHub">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          repositório
+        </a>
+      </p>
+      <p class="hint">as decisões estão registradas com data, contexto e o que aprendi com cada uma</p>
     </section>
 
     <section id="stack">
