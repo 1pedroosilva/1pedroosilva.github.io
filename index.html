@@ -7,7 +7,7 @@
 
 <meta name="robots" content="index, follow">
 <meta name="author" content="Pedro Oliveira">
-<meta name="description" content="Engenheiro de dados em Databricks. Dois projetos em construção: pipeline das demonstrações financeiras padronizadas da CVM em arquitetura medalhão, e skills para o Genie Code, o agente de IA para engenharia de dados da Databricks.">
+<meta name="description" content="Engenheiro de dados em Databricks. Projetos em Databricks com dados públicos, pipelines de engenharia de dados e investigação sobre o uso de skills com o Genie Code.">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -333,17 +333,16 @@ html[data-tema="escuro"] .prancha .escura{display:block}
   <main>
 
     <section class="hero" id="topo">
-      <p class="role reveal">Engenharia de dados · Databricks · Business Intelligence e governança financeira</p>
+      <p class="role reveal">Engenharia de dados · Databricks · dados e automação</p>
       <h1 class="reveal">Pedro Oliveira</h1>
       <p class="stmt reveal">
-        Construo pipelines de dados em Databricks e investigo como um agente de código
-        participa desse trabalho. Os dois projetos abaixo são as duas metades disso:
-        um constrói, o outro testa o agente construindo.
+        Construo projetos de dados em Databricks e registro as decisões, o código e o
+        que acontece quando um agente de código participa do trabalho.
+        Dois projetos concentram o site: um pipeline de dados financeiros da CVM
+        e um conjunto de skills para o Genie Code, acompanhado de uma avaliação das próprias skills.
       </p>
       <p class="stmt2 reveal">
-        Tudo com dado público, em repositório aberto, incluindo as transcrições das sessões
-        de trabalho com o agente. Hoje trabalho na Controladoria do Bradesco, em planejamento
-        e análise financeira (FP&amp;A) e na governança dos custos de tecnologia da informação.
+        Código e experimentos estão publicados em repositórios abertos.
       </p>
       <p class="links reveal">
         <a href="https://www.linkedin.com/in/1pedroosilva/" target="_blank" rel="noopener noreferrer">linkedin</a>
@@ -354,17 +353,17 @@ html[data-tema="escuro"] .prancha .escura{display:block}
         <a class="mp" href="/projeto-databricks-skills/">
           <span class="et">investigar</span>
           <span class="tt">Skills para o Genie Code</span>
-          <span class="ds">Instruções escritas para orientar o agente, e um teste para saber se funcionam</span>
+          <span class="ds">14 skills para orientar o agente em decisões recorrentes de engenharia, acompanhadas por uma avaliação.</span>
         </a>
         <a class="mp" href="/projeto-cvm/">
           <span class="et">construir</span>
           <span class="tt">Pipeline da CVM</span>
-          <span class="ds">Demonstrações financeiras públicas, da ingestão à camada analítica</span>
+          <span class="ds">Pipeline de dados financeiros da CVM, desde a captura e ingestão ao tratamento.</span>
         </a>
         <a class="mp forte" href="/genie-skills-eval/">
           <span class="et">evidência</span>
           <span class="tt">A avaliação das skills</span>
-          <span class="ds">O mesmo projeto feito duas vezes, com as skills e sem. 24 sessões registradas, com transcrição completa</span>
+          <span class="ds">O mesmo trabalho executado com e sem as skills, com as 24 sessões registradas para comparação.</span>
         </a>
       </nav>
     </section>
@@ -386,21 +385,22 @@ html[data-tema="escuro"] .prancha .escura{display:block}
       <p class="sub">o agente de IA para engenharia de dados da Databricks</p>
       <p class="pstatus">&#9679; <b>em curso</b> &nbsp;·&nbsp; catorze skills em uso</p>
       <p class="lede" style="margin-top:.9rem">
-        O Genie Code aceita skills: instruções que o orientam em domínios específicos. As nativas
-        da plataforma cobrem notebooks, Unity Catalog, dashboards e pipelines. Não cobrem critério
-        de decisão arquitetural, convenção de nomenclatura nem padrão de revisão.
-      </p>
+        O Genie Code trabalha com skills: instruções que acrescentam contexto e o orientam em domínios específicos.
+        Skilla nativas da plataforma cobrem notebooks, Unity Catalog, dashboards e pipelines,
+        mas mão cobrem critério de decisão arquitetural, convenção de nomenclatura nem padrões de revisão.
+        </p>
 
       <p class="ask">
-        O agente de código acerta a lógica, mas erra onde salvar, como nomear e o que registrar.
-        Dá para corrigir isso com instrução escrita? E como é que se prova que corrigiu?
+        O agente de código sabe fazer bem o trabalho, mas não sabe, sozinho, como aquele projeto organiza as coisas:
+        onde salvar, como nomear, o que registrar. Dá para corrigir isso com instrução escrita?
+        E como é que se prova que corrigiu?
       </p>
 
       <div class="acc">
         <details class="first">
-          <summary><span class="k">as catorze<br>skills</span><span>Escritas para o que as nativas não cobrem</span></summary>
+          <summary><span class="k">as 14 skills</span><span>Escritas para o que as nativas não cobrem</span></summary>
           <div class="dbody">
-            <p>Cada uma nasceu de um problema que apareceu na prática, uma de cada vez.</p>
+            <p>Cada skill nasceu de um problema prático, uma por vez.</p>
             <p class="hint" style="margin-top:1.1rem">clique em uma para ler o que ela faz</p>
             <div class="chips" role="group" aria-label="Catálogo de skills">
               <button type="button" data-skill="medallion-architecture" aria-pressed="true">medallion-architecture</button>
@@ -465,10 +465,10 @@ html[data-tema="escuro"] .prancha .escura{display:block}
           </div>
         </details>
         <details>
-          <summary><span class="k">em uso</span><span>Carregadas pelo agente em trabalho real</span></summary>
+          <summary><span class="k">em uso</span><span>Carregadas pelo agente durante as sessões</span></summary>
           <div class="dbody">
-            <p>Não são exercício de laboratório. Rodam no meu workspace, acionadas pelo próprio
-            agente durante o desenvolvimento dos projetos que estão nesta página.</p>
+            <p>As skills estão carregadas durante as sessões e podem ser acionadas pelo
+              Genie Code durante o desenvolvimento dos projetosa.</p>
           </div>
         </details>
         <details>
