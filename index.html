@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pedro Oliveira · Engenharia de dados em Databricks</title>
-
 <meta name="robots" content="index, follow">
 <meta name="author" content="Pedro Oliveira">
 <meta name="description" content="Engenheiro de dados em Databricks. Projetos em Databricks com dados públicos, pipelines de engenharia de dados e investigação sobre o uso de skills com o Genie Code.">
@@ -12,7 +11,6 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="canonical" href="https://1pedroosilva.github.io/">
-
 <meta property="og:type" content="profile">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://1pedroosilva.github.io/">
@@ -24,7 +22,6 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Três planos sobrepostos em vista explodida: a plataforma, a camada de instruções e o artefato">
 <meta name="twitter:card" content="summary_large_image">
-
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -41,7 +38,6 @@
   "sameAs":["https://github.com/1pedroosilva","https://www.linkedin.com/in/1pedroosilva/"]
 }
 </script>
-
 <meta name="color-scheme" content="light dark">
 <script>
 (function(){
@@ -51,11 +47,9 @@
   document.documentElement.dataset.tema=t;
 })();
 </script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
 <style>
 :root{
   --paper:#E4E7E3; --panel:#EDEFEC; --panel-deep:#D9DDD8;
@@ -63,14 +57,15 @@
   --accent:#0F4C42;
   --serif:"Newsreader",Georgia,serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --col:60ch; --step:220ms;
+  /* medida em unidade absoluta: o mesmo valor vale para qualquer corpo de fonte,
+     então todo bloco do corpo termina exatamente na mesma coluna */
+  --col:32rem; --rotulo:140px; --step:220ms;
 }
 html[data-tema="escuro"]{
   --paper:#151B19; --panel:#1C2321; --panel-deep:#111716;
   --ink:#DCE3DE; --ink-soft:#8B9891; --rule:#2C3633;
   --accent:#79C4B0; --flag:#D4785C;
 }
-
 @media (prefers-reduced-motion:reduce){
   :root{--step:1ms}
   *,*::before,*::after{animation-duration:1ms!important;transition-duration:1ms!important}
@@ -78,7 +73,6 @@ html[data-tema="escuro"]{
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-
 body{
   margin:0;background:var(--paper);color:var(--ink);
   font-family:var(--serif);font-size:17px;line-height:1.62;
@@ -87,15 +81,13 @@ body{
 a{color:var(--accent);text-underline-offset:.22em;text-decoration-thickness:.055em}
 a:hover{color:var(--ink)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-
 h1,h2,h3{font-weight:500;line-height:1.18;letter-spacing:-.012em;margin:0}
 h1{font-size:clamp(2.4rem,7vw,3.9rem);font-weight:400}
 h2{font-size:clamp(1.5rem,4vw,2rem)}
 h3{font-size:1rem;font-weight:600}
-p{margin:0 0 1em;max-width:var(--col)}
+p{margin:0 0 1em;max-width:var(--col);text-wrap:pretty}
 p:last-child{margin-bottom:0}
 code{font-family:var(--mono);font-size:.85em}
-
 .shell{max-width:1040px;margin:0 auto;padding:0 clamp(1.15rem,4vw,3rem);display:grid;grid-template-columns:minmax(0,1fr)}
 @media (min-width:1000px){.shell{grid-template-columns:172px minmax(0,1fr);column-gap:4rem}}
 .index{display:none}
@@ -120,7 +112,6 @@ code{font-family:var(--mono);font-size:.85em}
   transition:color var(--step),border-color var(--step);
 }
 .tema:hover{color:var(--ink);border-color:var(--ink-soft)}
-
 .railbar{
   position:sticky;top:0;z-index:40;display:flex;align-items:center;
   padding:.55rem clamp(1.15rem,4vw,3rem);
@@ -131,19 +122,15 @@ code{font-family:var(--mono);font-size:.85em}
 .railbar .bar{position:absolute;left:0;right:0;bottom:-1px;height:1px;pointer-events:none}
 .railbar .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width 90ms linear}
 @media (min-width:1000px){.railbar{display:none}}
-
 main{padding-bottom:5rem;min-width:0}
-
 /* medida única: todo bloco do corpo termina na mesma borda direita */
-.lede,.pstatus,.rows,.acc,.ask,.go,.hint,h2,.hero .stmt{max-width:var(--col)}
+.lede,.pstatus,.rows,.ask,.go,.tech-note,h2,.hero .stmt{max-width:var(--col)}
 section{min-width:0}
 section{padding:4.2rem 0;border-top:1px solid var(--rule)}
 section:first-of-type{border-top:0}
 .marker{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:.55rem}
 .marker b{color:var(--ink);font-weight:500}
 .lede{font-size:1.06rem;color:var(--ink-soft)}
-.sub{font-family:var(--mono);font-size:.73rem;letter-spacing:.03em;color:var(--ink-soft);margin:.55rem 0 0;max-width:var(--col)}
-
 .hero{padding:7.5rem 0 4.2rem}
 .hero h1{margin-bottom:1.1rem}
 .hero .role{font-family:var(--mono);font-size:.8rem;letter-spacing:.05em;color:var(--accent);margin-bottom:2rem}
@@ -156,7 +143,6 @@ section:first-of-type{border-top:0}
 @keyframes rise{to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;animation:none}}
 .links{display:flex;flex-wrap:wrap;gap:1.4rem;font-family:var(--mono);font-size:.78rem}
-
 .atalhos{
   display:flex;gap:1.15rem;position:sticky;top:2.15rem;z-index:35;
   padding:.6rem 0 .65rem;margin:0;
@@ -176,66 +162,26 @@ section:first-of-type{border-top:0}
 .atalhos a[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 @media (min-width:1000px){.atalhos{display:none}}
 main section[hidden]{display:none}
-
 .pstatus{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);letter-spacing:.03em;margin:.7rem 0 0}
 .pstatus b{color:var(--ink);font-weight:500}
-.hint{font-family:var(--mono);font-size:.67rem;color:var(--ink-soft);margin-top:.8rem}
-
 /* linhas simples */
 .rows{margin-top:1.3rem}
 .row{display:grid;gap:.25rem 2rem;padding:.85rem 0;border-top:1px solid var(--rule)}
-@media (min-width:640px){.row{grid-template-columns:152px 1fr}}
+@media (min-width:640px){.row{grid-template-columns:var(--rotulo) 1fr}}
 .row .k{font-family:var(--mono);font-size:.71rem;color:var(--ink-soft);letter-spacing:.03em;padding-top:.22em}
-.row .v{max-width:var(--col)}
-.row .v small{display:block;color:var(--ink-soft);font-size:.9rem;margin-top:.15rem}
-
+.row .v{min-width:0;text-wrap:pretty}
+.row .v small{display:block;color:var(--ink-soft);font-size:.9rem;margin-top:.15rem;text-wrap:pretty}
 /* a pergunta que o projeto responde */
 .ask{
   margin:2.2rem 0 0;padding:.1rem 0 .1rem 1.15rem;
   border-left:2px solid var(--accent);
   font-size:1.16rem;line-height:1.5;color:var(--ink);
 }
-
-/* acordeão */
-.acc{margin-top:1.6rem}
-details{border-bottom:1px solid var(--rule)}
-details.first{border-top:1px solid var(--rule)}
-summary{cursor:pointer;list-style:none;padding:.85rem 0;display:flex;gap:.9rem;align-items:baseline}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";margin-left:auto;color:var(--ink-soft);font-family:var(--mono);font-size:.9rem}
-details[open] summary::after{content:"\2212";color:var(--accent)}
-summary:hover{color:var(--accent)}
-summary .k{
-  font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--ink-soft);
-  flex:0 0 auto;width:124px;line-height:1.5;
-}
-@media (max-width:560px){summary{flex-wrap:wrap;gap:.15rem .9rem}summary .k{width:100%}}
-.dbody{padding:0 0 1.25rem;max-width:var(--col)}
-.dbody p{font-size:.95rem}
 .tech-note{
   font-family:var(--mono);font-size:.69rem;line-height:1.8;color:var(--ink-soft);
-  margin-top:.75rem;padding-left:.85rem;border-left:2px solid var(--rule);
+  margin-top:1.4rem;padding-left:.85rem;border-left:2px solid var(--rule);
 }
 .tech-note b{color:var(--ink);font-weight:500}
-
-/* catálogo das skills */
-.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.7rem}
-.chips button{
-  font-family:var(--mono);font-size:.68rem;padding:.36rem .6rem;cursor:pointer;
-  background:transparent;color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
-  transition:background var(--step),color var(--step),border-color var(--step);
-}
-.chips button:hover{color:var(--ink);border-color:var(--ink-soft)}
-.chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
-html[data-tema="escuro"] .chips button[aria-pressed="true"]{color:#101614}
-.chipbody{margin-top:.75rem;padding:1rem 1.1rem;background:var(--panel);border:1px solid var(--rule);border-radius:2px;min-height:128px}
-.chipbody .dom{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:.25rem}
-.chipbody h3{font-family:var(--mono);font-size:.82rem;font-weight:500}
-.chipbody p{margin:.35rem 0 0;font-size:.95rem}
-.panel[hidden]{display:none}
-.panel{animation:fadein var(--step) ease-out}
-@keyframes fadein{from{opacity:.4}to{opacity:1}}
-
 /* saída para a página do projeto */
 .go{display:flex;flex-wrap:wrap;align-items:stretch;gap:.5rem;margin-top:2.2rem}
 .go a{
@@ -251,31 +197,15 @@ html[data-tema="escuro"] .chips button[aria-pressed="true"]{color:#101614}
 html[data-tema="escuro"] .go a.main{color:#101614}
 html[data-tema="escuro"] .go a.main:hover{color:#101614}
 .go a svg{width:14px;height:14px;fill:currentColor;flex:0 0 auto}
-
 @media (max-width:520px){
   body{font-size:16px}
   .hero{padding:5.5rem 0 3.4rem}
   .hero .stmt{font-size:1.08rem}
   .ask{font-size:1.06rem}
 }
-
 footer{border-top:1px solid var(--rule);padding:2.4rem 0 4rem;font-family:var(--mono);font-size:.73rem;color:var(--ink-soft)}
 footer .links{margin-bottom:1rem}
-
-.prancha{margin:2.6rem 0 0;border:1px solid var(--rule);background:var(--panel)}
-.prancha img{display:block;width:100%;height:auto}
-.prancha figcaption{padding:.7rem 1rem;border-top:1px solid var(--rule);font-family:var(--mono);font-size:.78rem;color:var(--ink-soft)}
-.prancha .escura{display:none}
-html[data-tema="escuro"] .prancha .clara{display:none}
-html[data-tema="escuro"] .prancha .escura{display:block}
-
-</style>
-
-<style>
-.hero .stmt2{
-  margin-top:.9rem;font-size:.97rem;line-height:1.62;color:var(--ink-soft);
-  max-width:var(--col);
-}
+/* mapa do trabalho */
 .mapa{
   display:grid;gap:1px;margin:2.4rem 0 0;
   background:var(--rule);border:1px solid var(--rule);
@@ -293,23 +223,19 @@ html[data-tema="escuro"] .prancha .escura{display:block}
 }
 .mp .tt{font-size:1rem;color:var(--accent);line-height:1.3}
 .mp:hover .tt{color:var(--ink)}
-.mp .ds{font-size:.87rem;line-height:1.5;color:var(--ink-soft)}
+.mp .ds{font-size:.87rem;line-height:1.5;color:var(--ink-soft);text-wrap:pretty}
 .mp.forte{background:var(--panel)}
 .mp.forte:hover{background:var(--panel-deep)}
 .mp.forte .et{color:var(--accent)}
 .mp.forte .tt::after{content:" \2192";font-family:var(--mono);font-size:.82em}
-
 .atalhos a.fora{color:var(--accent)}
 .atalhos a.fora:hover{color:var(--ink)}
 .index a.fora{color:var(--accent)}
 .index a.fora:hover{color:var(--ink)}
 .index li.gap{height:.9rem}
 </style>
-
 </head>
-
 <body>
-
 <button class="tema" id="tema" type="button" aria-label="Alternar tema"></button>
 
 <div class="railbar">
@@ -321,27 +247,22 @@ html[data-tema="escuro"] .prancha .escura{display:block}
   <nav class="index" aria-label="Índice">
     <ol>
       <li><a href="#skills">1.01 genie code</a></li>
-          <li><a href="#cvm">2.01 pipeline cvm</a></li>
+      <li><a href="#cvm">2.01 pipeline cvm</a></li>
       <li><a href="#stack">3.01 stack</a></li>
       <li><a href="#trajetoria">4.01 trajetória</a></li>
       <li><a href="#formacao">5.01 formação</a></li>
-          <li class="gap"></li>
-          <li><a class="fora" href="/genie-skills-eval/">a avaliação &#8599;</a></li>
+      <li class="gap"></li>
+      <li><a class="fora" href="/genie-skills-eval/">a avaliação &#8599;</a></li>
     </ol>
   </nav>
 
   <main>
-
     <section class="hero" id="topo">
       <p class="role reveal">Engenharia de dados · Databricks · dados e automação</p>
       <h1 class="reveal">Pedro Oliveira</h1>
       <p class="stmt reveal">
         Construo projetos de dados em Databricks e registro as decisões, o código e o
         que acontece quando um agente de código participa do trabalho.
-        Dois projetos concentram o site: um pipeline de dados financeiros da CVM
-        e um conjunto de skills para o Genie Code, acompanhado de uma avaliação das próprias skills.
-      </p>
-      <p class="stmt2 reveal">
         Código e experimentos estão publicados em repositórios abertos.
       </p>
       <p class="links reveal">
@@ -349,11 +270,12 @@ html[data-tema="escuro"] .prancha .escura{display:block}
         <a href="https://github.com/1pedroosilva" target="_blank" rel="noopener noreferrer">github</a>
         <a href="mailto:1pedro.osilva@gmail.com">e-mail</a>
       </p>
+
       <nav class="mapa reveal" aria-label="O trabalho">
         <a class="mp" href="/projeto-databricks-skills/">
           <span class="et">investigar</span>
           <span class="tt">Skills para o Genie Code</span>
-          <span class="ds">14 skills para orientar o agente em decisões recorrentes de engenharia, acompanhadas por uma avaliação.</span>
+          <span class="ds">14 skills para orientar o agente em decisões recorrentes de engenharia.</span>
         </a>
         <a class="mp" href="/projeto-cvm/">
           <span class="et">construir</span>
@@ -363,158 +285,71 @@ html[data-tema="escuro"] .prancha .escura{display:block}
         <a class="mp forte" href="/genie-skills-eval/">
           <span class="et">evidência</span>
           <span class="tt">A avaliação das skills</span>
-          <span class="ds"> Um experimento controlado para medir o efeito das skills no trabalho do agente.</span>
+          <span class="ds">Um experimento controlado para medir o efeito das skills no trabalho do agente.</span>
         </a>
       </nav>
     </section>
 
-      <nav class="atalhos" aria-label="Seções da página">
-        <a href="#skills">skills</a>
-        <a href="#cvm">cvm</a>
-        <a href="#stack">stack</a>
-        <a href="#trajetoria">experiência</a>
-        <a href="#formacao">formação</a>
-        <a class="fora" href="/genie-skills-eval/">avaliação &#8599;</a>
-      </nav>
+    <nav class="atalhos" aria-label="Seções da página">
+      <a href="#skills">skills</a>
+      <a href="#cvm">cvm</a>
+      <a href="#stack">stack</a>
+      <a href="#trajetoria">experiência</a>
+      <a href="#formacao">formação</a>
+      <a class="fora" href="/genie-skills-eval/">avaliação &#8599;</a>
+    </nav>
 
-
-    <!-- 1.01 -->
+    <!-- 1.01 · molde espelhado com 2.01: cada bloco tem a mesma contagem de caracteres
+         do seu par (±5), para quebrar no mesmo número de linhas em qualquer tela.
+         h2 24 · status 21 · lede ~235 · ask ~130 · linha: destaque ~52 / apoio ~58 · nota ~125 -->
     <section id="skills">
       <p class="marker"><b>1.01</b> &nbsp;projeto</p>
       <h2>Skills para o Genie Code</h2>
-      <p class="sub">o agente de IA para engenharia de dados da Databricks</p>
       <p class="pstatus">&#9679; <b>em curso</b> &nbsp;·&nbsp; catorze skills em uso</p>
+
       <p class="lede" style="margin-top:.9rem">
-        O Genie Code trabalha com skills: instruções que acrescentam contexto e o orientam em domínios específicos.
-        As skills nativas da plataforma cobrem notebooks, Unity Catalog, dashboards e pipelines,
-        mas não cobrem critérios de decisão arquitetural, convenções de nomenclatura nem padrões de revisão.
-        </p>
+        O Genie Code trabalha com skills, instruções que o orientam em domínios específicos.
+        Skills nativas cobrem notebooks, Unity Catalog, dashboards e pipelines, mas não cobrem
+        decisão arquitetural, convenções de nomenclatura nem padrões de revisão.
+      </p>
+
       <p class="ask">
         O agente de código sabe fazer bem o trabalho. Mas quem diz onde salvar,
         como nomear e o que registrar? Dá para ensinar isso ao agente?
       </p>
 
-      <div class="acc">
-        <details class="first">
-          <summary><span class="k">as 14 skills</span><span>Escritas para o que as nativas não cobrem</span></summary>
-          <div class="dbody">
-            <p>Cada skill nasceu de um problema prático, uma por vez.</p>
-            <p class="hint" style="margin-top:1.1rem">clique em uma para ler o que ela faz</p>
-            <div class="chips" role="group" aria-label="Catálogo de skills">
-              <button type="button" data-skill="medallion-architecture" aria-pressed="true">medallion-architecture</button>
-              <button type="button" data-skill="code-review" aria-pressed="false">code-review</button>
-              <button type="button" data-skill="notebook-structure" aria-pressed="false">notebook-structure</button>
-              <button type="button" data-skill="data-quality-guardrails" aria-pressed="false">data-quality-guardrails</button>
-              <button type="button" data-skill="eda-and-validation" aria-pressed="false">eda-and-validation</button>
-              <button type="button" data-skill="naming-conventions" aria-pressed="false">naming-conventions</button>
-              <button type="button" data-skill="unity-catalog-naming" aria-pressed="false">unity-catalog-naming</button>
-              <button type="button" data-skill="artifact-documentation" aria-pressed="false">artifact-documentation</button>
-              <button type="button" data-skill="docs-sync" aria-pressed="false">docs-sync</button>
-              <button type="button" data-skill="technical-writing" aria-pressed="false">technical-writing</button>
-              <button type="button" data-skill="git-workflow" aria-pressed="false">git-workflow</button>
-              <button type="button" data-skill="asset-placement" aria-pressed="false">asset-placement</button>
-              <button type="button" data-skill="project-context" aria-pressed="false">project-context</button>
-              <button type="button" data-skill="skill-patterns" aria-pressed="false">skill-patterns</button>
-            </div>
-            <div class="chipbody">
-              <div class="panel" data-skillpanel="medallion-architecture">
-                <p class="dom">arquitetura</p><h3>medallion-architecture</h3><p>Como decidir a forma de gravar cada camada, garantir que reprocessar não duplique, e versionar mudanças de regra de negócio.</p>
-              </div>
-              <div class="panel" data-skillpanel="code-review" hidden>
-                <p class="dom">revisão</p><h3>code-review</h3><p>O que olhar ao revisar código: erro de lógica, suposição não verificada, trecho que virou inútil e custo desnecessário de processamento.</p>
-              </div>
-              <div class="panel" data-skillpanel="notebook-structure" hidden>
-                <p class="dom">revisão</p><h3>notebook-structure</h3><p>A ordem de um notebook novo: o que vem primeiro e o que não deve se misturar.</p>
-              </div>
-              <div class="panel" data-skillpanel="data-quality-guardrails" hidden>
-                <p class="dom">qualidade</p><h3>data-quality-guardrails</h3><p>Que verificações colocar para o pipeline falhar cedo e de forma visível, em vez de entregar número errado em silêncio.</p>
-              </div>
-              <div class="panel" data-skillpanel="eda-and-validation" hidden>
-                <p class="dom">qualidade</p><h3>eda-and-validation</h3><p>Quando investigar a base, quando apenas verificar, onde guardar cada coisa e como registrar o que apareceu.</p>
-              </div>
-              <div class="panel" data-skillpanel="naming-conventions" hidden>
-                <p class="dom">nomenclatura</p><h3>naming-conventions</h3><p>Nomear notebook, tabela e variável de um jeito que o nome já diga a que camada aquilo pertence.</p>
-              </div>
-              <div class="panel" data-skillpanel="unity-catalog-naming" hidden>
-                <p class="dom">nomenclatura</p><h3>unity-catalog-naming</h3><p>Onde cada schema, tabela e volume fica dentro do Unity Catalog, camada por camada.</p>
-              </div>
-              <div class="panel" data-skillpanel="artifact-documentation" hidden>
-                <p class="dom">documentação</p><h3>artifact-documentation</h3><p>Documentar algo que já existe a partir do que está no ambiente, tratando as divergências entre fontes em vez de eleger uma e ignorar o resto.</p>
-              </div>
-              <div class="panel" data-skillpanel="docs-sync" hidden>
-                <p class="dom">documentação</p><h3>docs-sync</h3><p>Depois de mudar o código, quais documentos ficaram desatualizados e precisam acompanhar.</p>
-              </div>
-              <div class="panel" data-skillpanel="technical-writing" hidden>
-                <p class="dom">documentação</p><h3>technical-writing</h3><p>Tom de documentação técnica: verbo no presente, sem emoji, sem adjetivo de venda.</p>
-              </div>
-              <div class="panel" data-skillpanel="git-workflow" hidden>
-                <p class="dom">versionamento</p><h3>git-workflow</h3><p>Dividir uma alteração em commits coerentes e escrever a mensagem de cada um.</p>
-              </div>
-              <div class="panel" data-skillpanel="asset-placement" hidden>
-                <p class="dom">organização</p><h3>asset-placement</h3><p>Antes de criar um arquivo: a que projeto pertence, em que pasta vai e o que conferir antes.</p>
-              </div>
-              <div class="panel" data-skillpanel="project-context" hidden>
-                <p class="dom">projeto</p><h3>project-context</h3><p>Iniciar, retomar ou fechar um projeto de dados: classificar o estado, desenhar o mapa do pipeline, criar estrutura e documentos, declarar o próximo passo.</p>
-              </div>
-              <div class="panel" data-skillpanel="skill-patterns" hidden>
-                <p class="dom">meta</p><h3>skill-patterns</h3><p>Escrever e revisar as próprias skills, checando antes se já existe algo equivalente entre as nativas da plataforma.</p>
-              </div>
-            </div>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">em uso</span><span>Carregadas pelo agente durante as sessões</span></summary>
-          <div class="dbody">
-            <p>As skills estão carregadas durante as sessões e podem ser acionadas pelo
-              Genie Code durante o desenvolvimento dos projetos.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">avaliação</span><span>As skills acertam onde o arquivo nasce, e param aí</span></summary>
-          <div class="dbody">
-            <p>O mesmo trabalho feito duas vezes, com os mesmos pedidos na mesma ordem, uma vez
-            com as skills ativas e outra com elas desligadas. Vinte e quatro sessões registradas
-            até aqui, cada uma com transcrição completa publicada, incluindo o raciocínio do
-            agente.</p>
-            <p>O resultado é mais interessante do que um placar: as skills acertam onde o
-            artefato nasce e como se chama, e nenhum dos dois braços acertou o que estava fora
-            do arquivo. A versão testada está congelada por commit, para que qualquer pessoa
-            reconstrua o que foi avaliado.</p>
-            <p class="go"><a class="main" href="/genie-skills-eval/">ver a avaliação</a></p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">o que vem</span><span>Refatoração depois que os testes fecharem</span></summary>
-          <div class="dbody">
-            <p>A avaliação existe para separar as skills que mudam o resultado do trabalho das que
-            só descrevem o que o agente já fazia sozinho. Com esse resultado, reescrevo o conjunto:
-            o que não sustenta o próprio peso sai, o que sustenta ganha redação melhor.</p>
-          </div>
-        </details>
+      <div class="rows">
+        <div class="row">
+          <div class="k">as skills</div>
+          <div class="v">Catorze, escritas para o que as nativas não cobrem.<small>Cada skill nasceu de um problema prático, uma por vez.</small></div>
+        </div>
+        <div class="row">
+          <div class="k">a avaliação</div>
+          <div class="v">O mesmo trabalho feito duas vezes, com e sem skills.<small>Vinte e quatro sessões, cada uma com transcrição publicada.</small></div>
+        </div>
+        <div class="row">
+          <div class="k">o que vem</div>
+          <div class="v">Reescrever o conjunto depois que os testes fecharem.<small>Sai o que não sustenta o próprio peso, fica o que sustenta.</small></div>
+        </div>
       </div>
 
-      <figure class="prancha">
-        <img class="clara" src="/prancha.png" width="1200" height="630" loading="lazy" decoding="async"
-             alt="Vista explodida de três planos e uma esteira Delta de quatro camadas, com o agente operando sobre ela">
-        <img class="escura" src="/prancha-dark.png" width="1200" height="630" loading="lazy" decoding="async" alt="">
-        <figcaption>A camada de instruções entre a plataforma e o que o agente produz.</figcaption>
-      </figure>
+      <p class="tech-note">Skills em <b>Markdown</b>, versionadas em <b>Git</b>, carregadas pelo <b>Genie Code</b> durante as sessões. Versão avaliada congelada por commit.</p>
 
       <p class="go">
-        <a class="main" href="/projeto-databricks-skills/">conhecer o projeto</a><a href="/genie-skills-eval/">ver a avaliação</a>
+        <a class="main" href="/projeto-databricks-skills/">conhecer o projeto</a>
         <a href="https://github.com/1pedroosilva/databricks-genie-skills" target="_blank" rel="noopener noreferrer" aria-label="Repositório das skills no GitHub">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
           repositório
         </a>
       </p>
-      <p class="hint">a avaliação tem página própria, com as sessões e as transcrições</p>
     </section>
 
-    <!-- 2.01 -->
+    <!-- 2.01 · molde espelhado com 1.01 (ver comentário da seção anterior) -->
     <section id="cvm">
       <p class="marker"><b>2.01</b> &nbsp;projeto</p>
-      <h2>Pipeline de demonstrações financeiras da CVM</h2>
-      <p class="pstatus">&#9679; <b>em curso</b> &nbsp;·&nbsp; três das quatro etapas em execução agendada</p>
+      <h2>Pipeline de dados da CVM</h2>
+      <p class="pstatus">&#9679; <b>em curso</b> &nbsp;·&nbsp; três etapas agendadas</p>
+
       <p class="lede" style="margin-top:.9rem">
         Ingestão e tratamento das Demonstrações Financeiras Padronizadas (DFP) que as companhias
         abertas entregam à Comissão de Valores Mobiliários (CVM). Dado público e bruto, em pacotes
@@ -523,61 +358,25 @@ html[data-tema="escuro"] .prancha .escura{display:block}
 
       <p class="ask">
         Como um pipeline que roda sozinho entrega o número certo, se a fonte muda de formato
-        entre um ano e outro e a companhia republica um valor corrigido sem avisar ninguém?
+        e a companhia republica um valor sem aviso?
       </p>
 
-      <div class="acc">
-        <details class="first">
-          <summary><span class="k">arquitetura<br>medalhão</span><span>Captura, histórico, tratamento e entrega</span></summary>
-          <div class="dbody">
-            <p>Cada etapa faz uma coisa. A captura guarda o arquivo exatamente como veio da CVM.
-            O histórico acumula todas as versões, sem sobrescrever nenhuma. O tratamento escolhe
-            a versão vigente e padroniza. A entrega organiza para análise.</p>
-            <p class="tech-note">Databricks com <b>PySpark</b> sobre <b>Delta Lake</b>, landing zone em volume do <b>Unity Catalog</b>.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">cobertura</span><span>Resultado e balanço patrimonial, de 2021 a 2026</span></summary>
-          <div class="dbody">
-            <p>Demonstração do Resultado do Exercício, Balanço Patrimonial Ativo e Balanço
-            Patrimonial Passivo, de todas as companhias abertas que entregaram DFP no período.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">o que roda</span><span>A camada de entrega ainda não foi construída</span></summary>
-          <div class="dbody">
-            <p>Captura, histórico e tratamento rodam sozinhos, em execução agendada. A entrega
-            está prevista na estrutura do projeto e na declaração de ambiente, e os notebooks
-            dela não existem.</p>
-            <p>A conversão de escala, que era a padronização mais grave em aberto, entrou em
-            setembro: sem ela, ordenar companhias devolvia a ordem invertida. Segue aberta a
-            classificação de hierarquia das contas contábeis.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">garantias</span><span>O que impede um número errado de passar em silêncio</span></summary>
-          <div class="dbody">
-            <p>Quando um pipeline quebra, alguém percebe. O risco está em ele terminar com
-            sucesso e entregar número errado calado. A checagem de estrutura acontece antes da
-            escrita, e nenhuma alteração de código entra sem passar por verificação automática.</p>
-            <p>Ele também não confia no próprio registro de sucesso: antes de processar, confere
-            se o exercício realmente deixou linha na tabela e se a origem republicou o arquivo
-            desde a última vez.</p>
-            <p class="tech-note">Falha explícita antes da gravação, <b>Ruff</b> e <b>pytest</b> em cada push, ambiente e jobs declarados em <b>Databricks Asset Bundles</b>. Detecção por leitura local, sem chamada de rede em tempo de execução.</p>
-          </div>
-        </details>
-        <details>
-          <summary><span class="k">estado</span><span>Duas frentes, uma de cada vez</span></summary>
-          <div class="dbody">
-            <p>Ficou parado por um tempo enquanto eu terminava a avaliação das skills, porque
-            prefiro fechar uma frente antes de abrir outra. A execução agendada nunca parou: o
-            que tinha parado era o desenvolvimento.</p>
-            <p>Voltou em setembro, com a conversão de escala, a detecção de republicação e o
-            registro de execução. A fila daqui é a camada de entrega e a hierarquia das
-            contas.</p>
-          </div>
-        </details>
+      <div class="rows">
+        <div class="row">
+          <div class="k">arquitetura</div>
+          <div class="v">Quatro etapas: captura, histórico, tratamento, entrega.<small>Cada etapa faz uma coisa, e nenhuma versão é sobrescrita.</small></div>
+        </div>
+        <div class="row">
+          <div class="k">cobertura</div>
+          <div class="v">Resultado e balanço patrimonial, de 2021 a 2026.<small>Todas as companhias abertas que entregaram DFP no período.</small></div>
+        </div>
+        <div class="row">
+          <div class="k">garantias</div>
+          <div class="v">O que impede um número errado de passar em silêncio.<small>A estrutura é conferida antes da escrita, e o código, testado.</small></div>
+        </div>
       </div>
+
+      <p class="tech-note"><b>PySpark</b> sobre <b>Delta Lake</b> e <b>Unity Catalog</b>. <b>Ruff</b> e <b>pytest</b> em cada push, ambiente e jobs declarados em <b>Databricks Asset Bundles</b>.</p>
 
       <p class="go">
         <a class="main" href="/projeto-cvm/">conhecer o projeto</a>
@@ -586,7 +385,6 @@ html[data-tema="escuro"] .prancha .escura{display:block}
           repositório
         </a>
       </p>
-      <p class="hint">as decisões estão registradas com data, contexto e o que aprendi com cada uma</p>
     </section>
 
     <section id="stack">
@@ -630,18 +428,10 @@ html[data-tema="escuro"] .prancha .escura{display:block}
       </p>
       <p>São Paulo, Brasil.</p>
     </footer>
-
   </main>
 </div>
 
 <script>
-const cb=[...document.querySelectorAll('.chips button')];
-const cp=[...document.querySelectorAll('[data-skillpanel]')];
-cb.forEach(b=>b.addEventListener('click',()=>{
-  cp.forEach(p=>{p.hidden = p.getAttribute('data-skillpanel')!==b.dataset.skill;});
-  cb.forEach(o=>o.setAttribute('aria-pressed',String(o===b)));
-}));
-
 const btema=document.getElementById('tema');
 function pintaTema(t){
   document.documentElement.dataset.tema=t;
@@ -661,6 +451,7 @@ const mq = matchMedia('(max-width:999px)');
 const abas = [...document.querySelectorAll('.atalhos a')];
 const secoes = [...document.querySelectorAll('main section:not(.hero)')];
 let atual = (document.querySelector('.atalhos a')||{}).getAttribute?.('href')?.slice(1) || 'skills';
+
 function aplicaAbas(){
   const lb = document.getElementById('railLabel');
   if(mq.matches){
@@ -686,6 +477,7 @@ abas.forEach(a => a.addEventListener('click', e => {
 }));
 mq.addEventListener('change', aplicaAbas);
 aplicaAbas();
+
 const label=document.getElementById('railLabel'),fill=document.getElementById('railFill');
 const obs=new IntersectionObserver(es=>{
   if(mq.matches) return;
@@ -698,6 +490,7 @@ const obs=new IntersectionObserver(es=>{
   });
 },{rootMargin:'-45% 0px -50% 0px'});
 [...document.querySelectorAll('main section')].forEach(s=>obs.observe(s));
+
 addEventListener('scroll',()=>{
   const max=document.body.scrollHeight-innerHeight;
   fill.style.width=(max>0?(scrollY/max)*100:0)+'%';
