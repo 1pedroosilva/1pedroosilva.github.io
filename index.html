@@ -56,7 +56,7 @@
   --accent:#0F4C42; --flag:#9C4A2F;
   --serif:"Newsreader",Georgia,serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --col:60ch; --step:220ms;
+  --col:31.5rem; --step:220ms;
 }
 html[data-tema="escuro"]{
   --paper:#151B19; --panel:#1C2321; --panel-deep:#111716;
@@ -190,9 +190,7 @@ section:first-of-type{border-top:0}
 }
 .passo a{color:var(--ink-soft);text-decoration:none;transition:color var(--step)}
 .passo a:hover{color:var(--accent)}
-.passo .segue{margin-left:auto;color:var(--ink)}
-.passo .segue b{font-weight:400;color:var(--ink-soft)}
-.passo .segue:hover b{color:var(--accent)}
+.passo .segue{margin-left:auto;display:flex;gap:1.5rem}
 
 /* botão flutuante de topo */
 .topo{
@@ -485,7 +483,9 @@ p,li,.lede{hyphens:none}
       <div class="stage"><span class="n">01</span><h2>Captura</h2></div>
       <p class="passo">
         <a href="#fonte">&#8593; mapa das etapas</a>
-        <a class="segue" href="#historico"><b>próxima</b> 02 histórico &#8595;</a>
+        <span class="segue">
+          <a href="#historico">próxima &#8595;</a>
+        </span>
       </p>
       <p class="q"><em>o problema</em>
         O pipeline precisa dos pacotes no ambiente antes de qualquer outra coisa. Baixar todos
@@ -543,7 +543,10 @@ p,li,.lede{hyphens:none}
       <div class="stage"><span class="n">02</span><h2>Histórico</h2></div>
       <p class="passo">
         <a href="#fonte">&#8593; mapa das etapas</a>
-        <a class="segue" href="#tratamento"><b>próxima</b> 03 tratamento &#8595;</a>
+        <span class="segue">
+          <a href="#captura">&#8593; anterior</a>
+          <a href="#tratamento">próxima &#8595;</a>
+        </span>
       </p>
       <p class="q"><em>o problema</em>
         Uma companhia entrega a demonstração de 2024 em março de 2025. Em julho, reentrega o mesmo
@@ -609,7 +612,10 @@ df_bronze.write \
       <div class="stage"><span class="n">03</span><h2>Tratamento</h2></div>
       <p class="passo">
         <a href="#fonte">&#8593; mapa das etapas</a>
-        <a class="segue" href="#entrega"><b>próxima</b> 04 entrega &#8595;</a>
+        <span class="segue">
+          <a href="#historico">&#8593; anterior</a>
+          <a href="#entrega">próxima &#8595;</a>
+        </span>
       </p>
       <p class="q"><em>o problema</em>
         O valor de uma conta chega em um campo, e a escala em que ele foi reportado chega em
@@ -689,7 +695,10 @@ df_silver = df_transformado.select(
       <div class="stage"><span class="n">04</span><h2>Entrega</h2></div>
       <p class="passo">
         <a href="#fonte">&#8593; mapa das etapas</a>
-        <a class="segue" href="#transversal"><b>adiante</b> o que atravessa &#8595;</a>
+        <span class="segue">
+          <a href="#tratamento">&#8593; anterior</a>
+          <a href="#transversal">adiante &#8595;</a>
+        </span>
       </p>
       <p class="q"><em>o que seria</em>
         A entrega é onde o dado tratado viraria tabela pronta para análise, organizada para quem
