@@ -171,7 +171,8 @@ section:first-of-type{border-top:0}
 /* cadeia das etapas */
 .chain{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:1.6rem;max-width:var(--col)}
 .chain a{
-  font-family:var(--mono);font-size:.68rem;padding:.42rem .68rem;text-decoration:none;
+  flex:1 1 0;min-width:max-content;white-space:nowrap;text-align:center;
+  font-family:var(--mono);font-size:.68rem;padding:.42rem .55rem;text-decoration:none;
   color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
   transition:color var(--step),border-color var(--step);
 }
@@ -413,7 +414,7 @@ html[data-tema="escuro"] .tabs button[aria-selected="true"]{color:#101614}
 
 /* diagramação: sem palavra órfã na última linha */
 h1,h2,h3,h4,summary,.ask,.q em,.hint,.wlabel,.simhead,.marker,
-.tabbody .one,.chain a,.row .k,.tl .d,.temas span{text-wrap:balance}
+.tabbody .one,.row .k,.tl .d,.temas span{text-wrap:balance}
 p,li,.lede,.dbody p,.tech-note,.row .v,.readout{text-wrap:pretty}
 p,li,.lede{hyphens:none}
 </style>
@@ -451,7 +452,7 @@ p,li,.lede{hyphens:none}
       <a class="back reveal" href="/">&#8592; pedro oliveira</a>
       <p class="marker reveal"><b>1.01</b> &nbsp;projeto</p>
       <h1 class="reveal">Pipeline de demonstrações financeiras da CVM</h1>
-      <p class="pstatus reveal">&#9679; <b>em curso</b> &nbsp;·&nbsp; três das quatro etapas já rodam agendadas</p>
+      <p class="pstatus reveal">&#9679; <b>em curso</b> &nbsp;·&nbsp; três etapas já rodam agendadas</p>
       <p class="ask reveal">
         Como um pipeline que roda sozinho entregaria o valor certo, se a CVM republica o pacote
         de um exercício com valores corrigidos, mas o arquivo não informa o que foi alterado?
@@ -697,7 +698,7 @@ df_silver = df_transformado.select(
         <a href="#fonte">&#8593; mapa das etapas</a>
         <span class="segue">
           <a href="#tratamento">&#8593; anterior</a>
-          <a href="#transversal">adiante &#8595;</a>
+          <a href="#transversal">próxima &#8595;</a>
         </span>
       </p>
       <p class="q"><em>o que seria</em>
@@ -710,8 +711,15 @@ df_silver = df_transformado.select(
     </section>
 
     <section id="transversal">
-      <p class="marker">o que atravessa as quatro etapas</p>
+      <p class="marker">em todas as etapas</p>
       <h2>Execução autônoma</h2>
+      <p class="passo">
+        <a href="#fonte">&#8593; mapa das etapas</a>
+        <span class="segue">
+          <a href="#entrega">&#8593; anterior</a>
+          <a href="#decisoes">próxima &#8595;</a>
+        </span>
+      </p>
       <p class="lede" style="margin-top:.8rem">
         As quatro etapas acima rodam em horário agendado. Uma quebra é fácil de ver. O risco
         está no que termina com sucesso e entrega número errado em silêncio.
@@ -822,6 +830,13 @@ df_silver = df_transformado.select(
     <section id="decisoes">
       <p class="marker">registro</p>
       <h2>Decisões</h2>
+      <p class="passo">
+        <a href="#fonte">&#8593; mapa das etapas</a>
+        <span class="segue">
+          <a href="#transversal">&#8593; anterior</a>
+          <a href="#aberto">próxima &#8595;</a>
+        </span>
+      </p>
       <p class="lede" style="margin-top:.8rem">
         Cada decisão fica registrada no repositório, inclusive as que desfizeram uma escolha
         anterior, marcadas em terracota.
@@ -927,6 +942,12 @@ df_silver = df_transformado.select(
     <section id="aberto">
       <p class="marker">próximos passos</p>
       <h2>O que está aberto</h2>
+      <p class="passo">
+        <a href="#fonte">&#8593; mapa das etapas</a>
+        <span class="segue">
+          <a href="#decisoes">&#8593; anterior</a>
+        </span>
+      </p>
       <p class="lede" style="margin-top:.8rem">
         A investigação de qualidade da base reúne quinze achados numerados. Estes são os que
         ainda estão na fila.
