@@ -17,7 +17,7 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://1pedroosilva.github.io/projeto-cvm/">
 <meta property="og:title" content="Pipeline de demonstrações financeiras da CVM">
-<meta property="og:description" content="Como um pipeline que roda sozinho entrega o número certo, se a fonte muda de formato e a companhia republica um valor corrigido sem avisar ninguém.">
+<meta property="og:description" content="Como um pipeline que roda sozinho entregaria o valor certo, se a CVM republica o pacote de um exercício com valores corrigidos, mas o arquivo não informa o que foi alterado.">
 <meta property="og:image" content="https://1pedroosilva.github.io/og.png">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -56,7 +56,7 @@
   --accent:#0F4C42; --flag:#9C4A2F;
   --serif:"Newsreader",Georgia,serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --col:60ch; --step:220ms;
+  --col:31.5rem; --step:220ms;
 }
 html[data-tema="escuro"]{
   --paper:#151B19; --panel:#1C2321; --panel-deep:#111716;
@@ -182,17 +182,15 @@ section:first-of-type{border-top:0}
 .chain a .ar{color:var(--rule);margin-left:.15rem;transition:transform var(--step),color var(--step);display:inline-block}
 .chain a:hover .ar{color:var(--accent);transform:translateY(2px)}
 
-/* retorno ao mapa das etapas */
-.nav{display:flex;align-items:center;gap:.1rem;margin-left:auto;flex:0 0 auto}
-.nav a,.nav span{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:28px;height:28px;border-radius:2px;color:var(--ink-soft);
-  transition:color var(--step),background var(--step);
+/* navegação entre etapas */
+.passo{
+  display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;align-items:baseline;
+  margin:.25rem 0 1.5rem;max-width:var(--col);
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.03em;
 }
-.nav a:hover{color:var(--accent);background:var(--panel)}
-.nav span{color:var(--rule);cursor:default}
-.nav svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6;
-  stroke-linecap:round;stroke-linejoin:round}
+.passo a{color:var(--ink-soft);text-decoration:none;transition:color var(--step)}
+.passo a:hover{color:var(--accent)}
+.passo .segue{margin-left:auto;display:flex;gap:1.5rem}
 
 /* botão flutuante de topo */
 .topo{
@@ -287,6 +285,12 @@ summary h4{font-family:var(--serif);font-size:1.02rem;font-weight:500;letter-spa
 .tl .d{font-family:var(--mono);font-size:.66rem;color:var(--ink-soft);letter-spacing:.04em}
 .tl h4{margin:.15rem 0 .45rem;font-family:var(--serif);font-size:1.02rem;font-weight:500;letter-spacing:-.01em}
 .tl p{font-size:.95rem}
+.tl li{padding-bottom:1.15rem}
+.tl details{border:0}
+.tl summary{padding:0 0 .1rem;gap:.9rem}
+.tl summary h4{margin:0}
+.tl summary::after{font-size:.85rem}
+.tl .dbody{padding:.55rem 0 0}
 
 .rows{margin-top:1.3rem}
 .row{display:grid;gap:.25rem 2rem;padding:.8rem 0;border-top:1px solid var(--rule)}
@@ -408,7 +412,7 @@ html[data-tema="escuro"] .tabs button[aria-selected="true"]{color:#101614}
 .prob:hover .g{color:var(--ink)}
 
 /* diagramação: sem palavra órfã na última linha */
-h1,h2,h3,h4,summary,.ask,.q em,.hint,.wlabel,.simhead,.marker,.pstatus,
+h1,h2,h3,h4,summary,.ask,.q em,.hint,.wlabel,.simhead,.marker,
 .tabbody .one,.chain a,.row .k,.tl .d,.temas span{text-wrap:balance}
 p,li,.lede,.dbody p,.tech-note,.row .v,.readout{text-wrap:pretty}
 p,li,.lede{hyphens:none}
@@ -447,10 +451,10 @@ p,li,.lede{hyphens:none}
       <a class="back reveal" href="/">&#8592; pedro oliveira</a>
       <p class="marker reveal"><b>1.01</b> &nbsp;projeto</p>
       <h1 class="reveal">Pipeline de demonstrações financeiras da CVM</h1>
-      <p class="pstatus reveal">&#9679; <b>em curso</b> &nbsp;·&nbsp; três das quatro etapas em execução agendada</p>
+      <p class="pstatus reveal">&#9679; <b>em curso</b> &nbsp;·&nbsp; três das quatro etapas já rodam agendadas</p>
       <p class="ask reveal">
-        Como um pipeline que roda sozinho entrega o número certo, se a fonte muda de formato
-        entre um ano e outro e a companhia republica um valor corrigido sem avisar ninguém?
+        Como um pipeline que roda sozinho entregaria o valor certo, se a CVM republica o pacote
+        de um exercício com valores corrigidos, mas o arquivo não informa o que foi alterado?
       </p>
     </section>
 
@@ -459,9 +463,9 @@ p,li,.lede{hyphens:none}
       <h2>O que a CVM publica</h2>
       <p class="lede" style="margin-top:.8rem">
         Toda companhia aberta entrega à CVM, uma vez por ano, a demonstração financeira do
-        exercício anterior. A CVM reúne essas entregas em um pacote por ano e disponibiliza para
-        download direto, sem cadastro. O pipeline pega esse pacote e o leva até virar tabela
-        consultável, em quatro etapas.
+        exercício anterior. A CVM reúne essas entregas em um pacote por exercício, substituído a
+        cada reentrega, e disponibiliza para download direto, sem cadastro. O pipeline pega esse
+        pacote e o leva até virar tabela consultável, em quatro etapas.
       </p>
 
       <div class="chain">
@@ -476,7 +480,13 @@ p,li,.lede{hyphens:none}
     </section>
 
     <section id="captura">
-      <div class="stage"><span class="n">01</span><h2>Captura</h2><span class="nav"><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></span><a href="#fonte" aria-label="Voltar ao mapa das etapas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></svg></a><a href="#historico" aria-label="Próxima etapa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></a></span></div>
+      <div class="stage"><span class="n">01</span><h2>Captura</h2></div>
+      <p class="passo">
+        <a href="#fonte">&#8593; mapa das etapas</a>
+        <span class="segue">
+          <a href="#historico">próxima &#8595;</a>
+        </span>
+      </p>
       <p class="q"><em>o problema</em>
         O pipeline precisa dos pacotes no ambiente antes de qualquer outra coisa. Baixar todos
         eles a cada execução é desperdício, porque quase nunca mudam. Baixar uma vez só e nunca
@@ -530,7 +540,14 @@ p,li,.lede{hyphens:none}
     </section>
 
     <section id="historico">
-      <div class="stage"><span class="n">02</span><h2>Histórico</h2><span class="nav"><a href="#captura" aria-label="Etapa anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></a><a href="#fonte" aria-label="Voltar ao mapa das etapas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></svg></a><a href="#tratamento" aria-label="Próxima etapa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></a></span></div>
+      <div class="stage"><span class="n">02</span><h2>Histórico</h2></div>
+      <p class="passo">
+        <a href="#fonte">&#8593; mapa das etapas</a>
+        <span class="segue">
+          <a href="#captura">&#8593; anterior</a>
+          <a href="#tratamento">próxima &#8595;</a>
+        </span>
+      </p>
       <p class="q"><em>o problema</em>
         Uma companhia entrega a demonstração de 2024 em março de 2025. Em julho, reentrega o mesmo
         exercício com o lucro corrigido. Em novembro, corrige outra vez. Nada no arquivo avisa que
@@ -569,17 +586,22 @@ p,li,.lede{hyphens:none}
             <p>Guardar só a primeira entrega deixa o valor desatualizado. Sobrescrever a cada nova
             entrega apaga o fato de que houve correção, e o tamanho dela. O histórico acumula
             todas as versões, cada uma com a data em que chegou.</p>
-            <p>O valor vigente passa a ser uma consulta, não uma sobrescrita.</p>
+            <p>Para saber o valor vigente, o pipeline procura a versão mais recente, em vez
+            de ter apagado as anteriores.</p>
             <p class="tech-note">Escrita que acumula por chave de negócio mais data de entrega.
             Nenhuma versão é sobrescrita, e a vigente é resolvida na leitura.</p>
             <div class="code">
-              <div class="file">02_silver/<b>201_cvm_dfp_dre.py</b></div>
-<pre><span class="cm"># ETAPA 3: REPLACE WHERE (substituição atômica por período)</span>
-df_silver.write \
+              <div class="file">01_bronze/<b>101_cvm_dfp_dre.py</b></div>
+<pre><span class="cm"># CARGA APPEND-ONLY: nenhuma versão é sobrescrita</span>
+df_bronze = df_validado \
+    .withColumn(<span class="st">"_versao_ingestao"</span>, lit(versao_atual)) \
+    .withColumn(<span class="st">"_last_modified_cvm"</span>, lit(last_modified_cvm)) \
+    .withColumn(<span class="st">"_ingest_ts"</span>, current_timestamp())
+
+df_bronze.write \
     .format(<span class="st">"delta"</span>) \
-    .mode(<span class="st">"overwrite"</span>) \
-    .option(<span class="st">"replaceWhere"</span>, f<span class="st">"ANO = {ano}"</span>) \
-    .saveAsTable(<span class="st">"proj_cvm_02_silver.201_dre_dfp"</span>)</pre>
+    .mode(<span class="st">"append"</span>) \
+    .saveAsTable(f<span class="st">"{SCHEMA_BRONZE}.101_dre_dfp"</span>)</pre>
             </div>
           </div>
         </details>
@@ -587,7 +609,14 @@ df_silver.write \
     </section>
 
     <section id="tratamento">
-      <div class="stage"><span class="n">03</span><h2>Tratamento</h2><span class="nav"><a href="#historico" aria-label="Etapa anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></a><a href="#fonte" aria-label="Voltar ao mapa das etapas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></svg></a><a href="#entrega" aria-label="Próxima etapa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></a></span></div>
+      <div class="stage"><span class="n">03</span><h2>Tratamento</h2></div>
+      <p class="passo">
+        <a href="#fonte">&#8593; mapa das etapas</a>
+        <span class="segue">
+          <a href="#historico">&#8593; anterior</a>
+          <a href="#entrega">próxima &#8595;</a>
+        </span>
+      </p>
       <p class="q"><em>o problema</em>
         O valor de uma conta chega em um campo, e a escala em que ele foi reportado chega em
         outro. Uma companhia informa em milhares, a vizinha informa em unidades, e a coluna de
@@ -627,9 +656,9 @@ df_silver.write \
         <details class="first">
           <summary><h4>como funciona</h4></summary>
           <div class="dbody">
-            <p>Sem aplicar a conversão, nenhuma soma e nenhum ranking sobre a coluna fecha. Esta
-            é a etapa em que regra de negócio vira código, e por isso é a mais fácil de errar em
-            silêncio.</p>
+            <p>Sem aplicar a conversão, nenhuma soma e nenhum ranking sobre a coluna fecha. É
+            aqui que uma regra de contabilidade vira linha de código, e errar nessa passagem não
+            derruba nada: só devolve número errado.</p>
             <p class="tech-note">Conversão de escala aplicada antes de qualquer agregação. A
             gravação recebe uma projeção explícita das colunas da camada, então uma coluna nova
             que apareça na origem é descartada em vez de derrubar a etapa.</p>
@@ -652,8 +681,8 @@ df_silver = df_transformado.select(
           <div class="dbody">
             <p>Uma checagem de consistência contábil que eu tinha escrito vinha passando sempre.
             O motivo não era o dado estar correto: a amostra que eu usava não era representativa,
-            e nela a verificação não tinha como falhar. Verificação que não pode falhar não
-            verifica nada, só produz confiança.</p>
+            e nela a verificação não tinha como falhar. Se a verificação não tem como falhar,
+            ela não está verificando nada, só dando a impressão de que está.</p>
             <p class="tech-note">Premissa oculta em validação hierárquica, encontrada na análise
             exploratória. A correção exigiu identificar antes uma amostra em que a hierarquia
             pudesse de fato ser testada.</p>
@@ -663,13 +692,19 @@ df_silver = df_transformado.select(
     </section>
 
     <section id="entrega">
-      <div class="stage"><span class="n">04</span><h2>Entrega</h2><span class="nav"><a href="#tratamento" aria-label="Etapa anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></a><a href="#fonte" aria-label="Voltar ao mapa das etapas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6"/><path d="M6 12l6-6 6 6"/></svg></a><span aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></span></span></div>
+      <div class="stage"><span class="n">04</span><h2>Entrega</h2></div>
+      <p class="passo">
+        <a href="#fonte">&#8593; mapa das etapas</a>
+        <span class="segue">
+          <a href="#tratamento">&#8593; anterior</a>
+          <a href="#transversal">adiante &#8595;</a>
+        </span>
+      </p>
       <p class="q"><em>o que seria</em>
         A entrega é onde o dado tratado viraria tabela pronta para análise, organizada para quem
         vai consultar e não para quem processou. Ela existe hoje na estrutura de pastas e na
-        declaração de ambiente, e os notebooks dela não foram escritos. É o próximo item da fila,
-        e só faz sentido depois que o valor que chega até aqui estiver comparável entre
-        companhias, que era o que faltava até setembro.
+        declaração de ambiente, e os notebooks dela não foram escritos. É o próximo item da
+        fila. Só fazia sentido depois da conversão de escala, que ficou pronta em setembro.
       </p>
       <div class="temas"><em>termos</em><span>modelagem dimensional</span><span>esquema estrela</span><span>tabela fato</span></div>
     </section>
@@ -678,13 +713,12 @@ df_silver = df_transformado.select(
       <p class="marker">o que atravessa as quatro etapas</p>
       <h2>Execução autônoma</h2>
       <p class="lede" style="margin-top:.8rem">
-        As quatro etapas acima rodam em horário agendado, sem ninguém acompanhando. Quando um
-        pipeline quebra, alguém percebe. O risco está em ele terminar com sucesso e entregar
-        número errado em silêncio.
+        As quatro etapas acima rodam em horário agendado. Uma quebra é fácil de ver. O risco
+        está no que termina com sucesso e entrega número errado em silêncio.
       </p>
       <p style="margin-top:1.2rem">
         Suponha que um arquivo chegue sem uma coluna que o pipeline espera encontrar. O que
-        acontece a partir daí não é acaso, é escolha de projeto.
+        acontece a partir daí depende de uma escolha que eu fiz no desenho.
       </p>
 
       <div class="sim">
@@ -696,17 +730,17 @@ df_silver = df_transformado.select(
         <div class="log" id="gdLog"></div>
       </div>
 
-      <p class="hint" style="margin-top:2rem">seis escolhas sustentam a execução sem ninguém olhando</p>
+      <p class="hint" style="margin-top:2rem">seis escolhas sustentam a execução agendada</p>
       <div class="tabs" role="tablist" aria-label="Escolhas de execução autônoma">
-        <button type="button" role="tab" data-tab="interrupção" aria-selected="true">interrupção</button>
+        <button type="button" role="tab" data-tab="verificação" aria-selected="true">verificação</button>
+        <button type="button" role="tab" data-tab="interrupção" aria-selected="false">interrupção</button>
         <button type="button" role="tab" data-tab="detecção" aria-selected="false">detecção</button>
         <button type="button" role="tab" data-tab="observabilidade" aria-selected="false">observabilidade</button>
-        <button type="button" role="tab" data-tab="verificação" aria-selected="false">verificação</button>
         <button type="button" role="tab" data-tab="ambiente" aria-selected="false">ambiente</button>
         <button type="button" role="tab" data-tab="reprocessamento" aria-selected="false">reprocessamento</button>
       </div>
       <div class="tabbody">
-        <div class="tabpanel" data-tabpanel="interrupção">
+        <div class="tabpanel" data-tabpanel="interrupção" hidden>
           <h4>Interrupção antes da gravação, não depois</h4>
           <p class="one">para na etapa em que o problema nasceu</p>
           <p>A checagem de estrutura acontece antes da escrita. Faltando informação essencial, a
@@ -724,11 +758,11 @@ df_silver = df_transformado.select(
           <p>Antes de processar, o pipeline precisa saber o que processar. Ele faz três perguntas
           sobre cada exercício: este ano já foi processado alguma vez, a execução anterior
           registrou sucesso mas não deixou linha na tabela, e o arquivo guardado aqui ainda é o
-          mesmo que a origem publicou. Qualquer resposta desconfortável coloca o ano de volta na
-          fila.</p>
+          mesmo que a origem publicou. Se alguma das três respostas não fecha, o ano volta para
+          a fila.</p>
           <p>A segunda pergunta existe porque registro de sucesso não é prova de dado gravado.
-          Confiar só na marca de sucesso deixa um buraco que ninguém procura, porque o painel
-          está verde.</p>
+          Confiar só no registro de sucesso deixa um exercício faltando na base, sem nada
+          indicando isso.</p>
           <p class="tech-note">Detecção por leitura local, sem chamada de rede em tempo de
           execução. O estado de republicação vem de comparar os metadados gravados ao lado do
           arquivo com o que a tabela de controle registrou, e o estado de dado ausente vem de
@@ -738,26 +772,25 @@ df_silver = df_transformado.select(
         </div>
         <div class="tabpanel" data-tabpanel="observabilidade" hidden>
           <h4>Cada execução deixa registro do que fez</h4>
-          <p class="one">o histórico das execuções é consultável como dado</p>
+          <p class="one">dá para consultar as execuções passadas como qualquer tabela</p>
           <p>Log de execução rola para fora da tela e não responde pergunta comparativa. Quantos
           arquivos vieram naquela noite, quanto tempo a rotina levou em relação à semana passada,
-          em que ponto ela parou quando parou: isso é pergunta de consulta, e por isso o registro
-          de execução mora em tabela, não em saída de console.</p>
-          <p class="tech-note">Tabela de observabilidade com <b>26 colunas</b> por execução:
-          identificação, janela de tempo, contagem e volume de arquivos, resultado e mensagem de
-          erro. Hoje só a verificação diária da origem escreve nela. Instrumentar as etapas de
-          processamento é trabalho pendente.</p>
+          em que ponto ela parou quando parou: isso se responde com uma consulta, e não rolando
+          o log até achar. Por isso o registro de execução fica em tabela.</p>
+          <p class="tech-note">Cada execução grava um registro em tabela: identificação do job e
+          da task, janela de tempo, duração, volume processado, resultado e mensagem de erro.</p>
           <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>observabilidade</span><span>métricas de pipeline</span><span>rastreabilidade de execução</span></div>
         </div>
-        <div class="tabpanel" data-tabpanel="verificação" hidden>
+        <div class="tabpanel" data-tabpanel="verificação">
           <h4>Verificação automática a cada alteração de código</h4>
           <p class="one">a quebra aparece no momento da alteração</p>
           <p>Nenhuma alteração entra sem passar por checagem automática. A quebra aparece no momento
-          da mudança, e não na execução agendada de madrugada.</p>
+          da mudança, e não na próxima execução agendada.</p>
           <p class="tech-note"><b>GitHub Actions</b> em cada push e pull request na main:
-          <b>Ruff</b> para padrão de código e <b>pytest</b> para os testes. Testes unitários das
-          funções puras de configuração, mais um teste de integração ponta a ponta em job
-          separado.</p>
+          <b>Ruff</b> para padrão de código e <b>pytest</b> nos testes das funções puras de
+          configuração. Em job separado, um teste ponta a ponta sobe o pipeline num ambiente
+          isolado e o executa sobre o arquivo real da CVM, conferindo cinco validações no
+          resultado.</p>
           <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>CI/CD</span><span>linting</span><span>testes unitários</span><span>teste de integração</span></div>
         </div>
         <div class="tabpanel" data-tabpanel="ambiente" hidden>
@@ -769,7 +802,7 @@ df_silver = df_transformado.select(
           <p class="tech-note"><b>Databricks Asset Bundles</b> com targets de desenvolvimento,
           integração contínua e produção. Jobs declarados em YAML, com notificação de falha por
           e-mail.</p>
-          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>infraestrutura como código</span><span>orquestração de jobs</span><span>dev/staging/prod</span></div>
+          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>infraestrutura como código</span><span>orquestração de jobs</span><span>dev/test/prod</span></div>
         </div>
         <div class="tabpanel" data-tabpanel="reprocessamento" hidden>
           <h4>Reprocessamento sem duplicação</h4>
@@ -788,98 +821,121 @@ df_silver = df_transformado.select(
 
     <section id="decisoes">
       <p class="marker">registro</p>
-      <h2>Decisões, com data</h2>
+      <h2>Decisões</h2>
       <p class="lede" style="margin-top:.8rem">
-        Cada decisão fica no repositório com data e contexto. Inclusive as que desfizeram uma
-        escolha que eu mesmo tinha feito antes, marcadas em terracota.
+        Cada decisão fica registrada no repositório, inclusive as que desfizeram uma escolha
+        anterior, marcadas em terracota.
       </p>
       <ul class="tl">
         <li data-undo="true">
-          <p class="d">20 set</p>
-          <h4>Troquei uma estratégia por um critério</h4>
-          <p>A forma de gravar o histórico tinha ido e voltado duas vezes em dois meses. Fui
-          entender por quê e a resposta não estava em nenhuma das duas decisões: estava no fato
-          de eu ter registrado &ldquo;uso esta estratégia&rdquo; em vez de registrar o que não
-          pode ser perdido. Estratégia escrita assim não sobrevive ao primeiro bug, porque o bug
-          é um argumento e ela não é. Reescrevi como critério, e as duas idas e voltas viraram
-          consequência dele.</p>
-          <p class="tech-note">O histórico preserva toda versão publicada pela origem, e a
-          garantia de não duplicar vem da verificação prévia do <b>Last-Modified</b>, nunca de
-          apagar linha. Quem sustenta o critério é o mecanismo de verificação, que por isso
-          precisa de teste próprio.</p>
+          <details>
+            <summary><span class="d">20 set</span><h4>Registrei a estratégia e não o que ela protegia</h4></summary>
+            <div class="dbody">
+              <p>A forma de gravar o histórico tinha mudado duas vezes em dois meses. Fui entender
+              por quê e o problema não estava em nenhuma das duas escolhas: estava no que eu tinha
+              deixado escrito. Registrei &ldquo;uso esta estratégia&rdquo; e não o que ela existia
+              para garantir. Anotada assim, ela cai no primeiro bug, porque quem lê não sabe o que
+              perde ao trocá-la. Reescrevi dizendo o que não pode ser perdido: toda versão
+              publicada pela CVM fica guardada, e nenhuma linha é apagada para evitar duplicata.</p>
+              <p class="tech-note">O histórico preserva toda versão publicada pela origem, e a
+              garantia de não duplicar vem da verificação prévia do <b>Last-Modified</b>, nunca de
+              apagar linha. Quem sustenta o critério é o mecanismo de verificação, que por isso
+              precisa de teste próprio.</p>
+            </div>
+          </details>
         </li>
         <li data-undo="true">
-          <p class="d">20 set</p>
-          <h4>Tirei a chamada à origem de dentro da execução</h4>
-          <p>Quem descobre que a fonte mudou não pode ser a mesma rotina que já assumiu que nada
-          mudou. Era o que estava acontecendo, e por isso o pipeline não tinha como enxergar um
-          exercício republicado depois de já processado.</p>
-          <p class="tech-note">Duas funções que faziam requisição HTTP em tempo de execução foram
-          removidas. A detecção ganhou um terceiro estado, resolvido por leitura local.</p>
+          <details>
+            <summary><span class="d">20 set</span><h4>Tirei a chamada à origem de dentro da execução</h4></summary>
+            <div class="dbody">
+              <p>Quem descobre que a fonte mudou não pode ser a mesma rotina que já assumiu que nada
+              mudou. Era o que estava acontecendo, e por isso o pipeline não tinha como enxergar um
+              exercício republicado depois de já processado.</p>
+              <p class="tech-note">Duas funções que faziam requisição HTTP em tempo de execução foram
+              removidas. A detecção ganhou um terceiro estado, resolvido por leitura local.</p>
+            </div>
+          </details>
         </li>
         <li>
-          <p class="d">19 set</p>
-          <h4>Converti a escala antes de qualquer soma</h4>
-          <p>Cerca de quinhentas e quarenta companhias reportam em milhares e quinze em unidades.
-          Enquanto a conversão não existiu, qualquer ranking entre elas estava errado por um fator
-          de mil, sem nada na tabela denunciando isso.</p>
-          <p class="tech-note">Conversão aplicada na camada de padronização, não na de entrega,
-          para que nenhum consumidor precise conferir a escala. A coluna original permanece.</p>
+          <details>
+            <summary><span class="d">19 set</span><h4>Converti a escala antes de qualquer soma</h4></summary>
+            <div class="dbody">
+              <p>Cerca de quinhentas e quarenta companhias reportam em milhares e quinze em unidades.
+              Enquanto a conversão não existiu, qualquer ranking entre elas estava errado por um fator
+              de mil, sem nada na tabela denunciando isso.</p>
+              <p class="tech-note">Conversão aplicada na camada de padronização, não na de entrega,
+              para que nenhum consumidor precise conferir a escala. A coluna original permanece.</p>
+            </div>
+          </details>
         </li>
         <li data-undo="true">
-          <p class="d">19 set</p>
-          <h4>Descobri que meu laço rodava só a última volta</h4>
-          <p>O laço que percorria os exercícios estava escrito ao longo de várias células, e só a
-          primeira delas repetia. As outras rodavam uma vez, com o último ano. O resultado é que
-          faltavam três exercícios inteiros na base e nada tinha falhado.</p>
-          <p class="tech-note">Laço consolidado em célula única, padrão que já existia em um dos
-          notebooks e não tinha sido propagado.</p>
+          <details>
+            <summary><span class="d">19 set</span><h4>Descobri que meu laço rodava só a última volta</h4></summary>
+            <div class="dbody">
+              <p>O laço que percorria os exercícios estava escrito ao longo de várias células, e só a
+              primeira delas repetia. As outras rodavam uma vez, com o último ano. Faltavam três
+              exercícios inteiros na base e nenhuma execução tinha acusado erro.</p>
+              <p class="tech-note">Laço consolidado em célula única, padrão que já existia em um dos
+              notebooks e não tinha sido propagado.</p>
+            </div>
+          </details>
         </li>
         <li data-undo="true">
-          <p class="d">19 ago</p>
-          <h4>Troquei a forma de regravar os dados</h4>
-          <p>A original apagava o período e reescrevia em duas operações, e entre uma e outra
-          existia um instante com a base incompleta. A nova faz as duas de uma vez.</p>
-          <p class="tech-note">De DELETE seguido de APPEND para <b>replaceWhere</b>.</p>
+          <details>
+            <summary><span class="d">19 ago</span><h4>Troquei a forma de regravar os dados</h4></summary>
+            <div class="dbody">
+              <p>A original apagava o período e reescrevia em duas operações, e entre uma e outra
+              existia um instante com a base incompleta. A nova troca o período inteiro numa
+              operação só, e esse instante deixa de existir.</p>
+              <p class="tech-note">De DELETE seguido de APPEND para <b>replaceWhere</b>.</p>
+            </div>
+          </details>
         </li>
         <li data-undo="true">
-          <p class="d">19 ago</p>
-          <h4>Parei de configurar o ambiente na mão</h4>
-          <p>O agendamento tinha sido montado clicando na interface. Isso não é versionável nem
-          replicável.</p>
-          <p class="tech-note">Migração para <b>Databricks Asset Bundles</b>, com três targets.</p>
+          <details>
+            <summary><span class="d">19 ago</span><h4>Parei de configurar o ambiente na mão</h4></summary>
+            <div class="dbody">
+              <p>O agendamento tinha sido montado clicando na interface. Isso não é versionável nem
+              replicável.</p>
+              <p class="tech-note">Migração para <b>Databricks Asset Bundles</b>, com três targets.</p>
+            </div>
+          </details>
         </li>
         <li data-undo="true">
-          <p class="d">17 ago</p>
-          <h4>Descobri que uma verificação minha estava errada</h4>
-          <p>Uma checagem de consistência vinha passando sempre, e o motivo era a amostra: não era
-          representativa, então não tinha como falhar.</p>
-          <p class="tech-note">Premissa oculta em validação hierárquica, encontrada na EDA.</p>
+          <details>
+            <summary><span class="d">17 ago</span><h4>Descobri que uma verificação minha estava errada</h4></summary>
+            <div class="dbody">
+              <p>Uma checagem de consistência vinha passando sempre, e o motivo era a amostra: não era
+              representativa, então não tinha como falhar.</p>
+              <p class="tech-note">Premissa oculta em validação hierárquica, encontrada na EDA.</p>
+            </div>
+          </details>
         </li>
         <li>
-          <p class="d">15 ago</p>
-          <h4>Separei um pedaço em projeto próprio</h4>
-          <p>As instruções que eu escrevia para o assistente de código nasceram aqui dentro. Como
-          servem para qualquer projeto, passaram a viver sozinhas.</p>
-          <p class="tech-note">Extração das skills para repositório independente.</p>
+          <details>
+            <summary><span class="d">15 ago</span><h4>Separei um pedaço em projeto próprio</h4></summary>
+            <div class="dbody">
+              <p>As instruções que eu escrevia para o assistente de código nasceram aqui dentro. Como
+              servem para qualquer projeto, passaram a viver sozinhas.</p>
+              <p class="tech-note">Extração das skills para repositório independente.</p>
+            </div>
+          </details>
         </li>
-      </ul>
+</ul>
     </section>
 
     <section id="aberto">
-      <p class="marker">honestidade</p>
+      <p class="marker">próximos passos</p>
       <h2>O que está aberto</h2>
       <p class="lede" style="margin-top:.8rem">
-        A investigação de qualidade da base reúne quinze achados numerados, contando os que ainda
-        não resolvi. O que sai daqui sai com data, e o que fica também.
+        A investigação de qualidade da base reúne quinze achados numerados. Estes são os que
+        ainda estão na fila.
       </p>
       <div class="rows">
-        <div class="row"><div class="k">resolvido em set</div><div class="v">Valores em escalas diferentes sem conversão, o que invertia a ordem entre companhias</div></div>
-        <div class="row"><div class="k">em aberto</div><div class="v">Contas contábeis ainda sem classificação de hierarquia</div></div>
-        <div class="row"><div class="k">em aberto</div><div class="v">O mecanismo que sustenta a preservação do histórico não tem teste próprio. Ele já foi removido duas vezes por motivo pequeno, e das duas o desenho perdeu capacidade sem ninguém perceber</div></div>
-        <div class="row"><div class="k">em aberto</div><div class="v">A janela de anos processados entrega seis exercícios onde a configuração diz cinco. Está identificado, documentado e não corrigido, porque seis não atrapalha</div></div>
-        <div class="row"><div class="k">em aberto</div><div class="v">Só a verificação diária da origem grava na tabela de observabilidade. As etapas de processamento ainda não</div></div>
-        <div class="row"><div class="k">não construído</div><div class="v">Camada de entrega</div></div>
+        <div class="row"><div class="k">em construção</div><div class="v">Contas contábeis ainda sem classificação de hierarquia</div></div>
+        <div class="row"><div class="k">em construção</div><div class="v">O mecanismo que sustenta a preservação do histórico não tem teste próprio. Ele já foi removido duas vezes em ajustes pequenos, e nas duas o pipeline deixou de enxergar republicação sem acusar nada</div></div>
+        <div class="row"><div class="k">em construção</div><div class="v">A janela de anos processados entrega seis exercícios onde a configuração diz cinco. Está identificado, documentado e não corrigido, porque seis não atrapalha</div></div>
+        <div class="row"><div class="k">em construção</div><div class="v">Camada de entrega</div></div>
       </div>
 
       <p class="go">
