@@ -1,1082 +1,733 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pipeline de demonstrações financeiras da CVM · Pedro Oliveira</title>
-
-<meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pipeline CVM — Dados Financeiros · Pedro Oliveira</title>
+<meta name="description" content="Pipeline de dados financeiros da CVM em Databricks: arquitetura medalhão, três demonstrações contábeis, observabilidade, testes E2E e infraestrutura declarada em Asset Bundles.">
 <meta name="author" content="Pedro Oliveira">
-<meta name="description" content="Pipeline em Databricks das Demonstrações Financeiras Padronizadas da CVM: captura, histórico, tratamento e entrega em arquitetura medalhão, com versionamento de republicação, conversão de escala, guardrails de qualidade e ambiente declarado em Asset Bundles.">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="index, follow">
 <link rel="canonical" href="https://1pedroosilva.github.io/projeto-cvm/">
-
+<meta property="og:title" content="Pipeline CVM — Dados Financeiros">
+<meta property="og:description" content="Pipeline que captura, versiona, padroniza e entrega demonstrações financeiras de companhias abertas brasileiras, com arquitetura medalhão em Databricks.">
+<meta property="og:url" content="https://1pedroosilva.github.io/projeto-cvm/">
 <meta property="og:type" content="article">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:url" content="https://1pedroosilva.github.io/projeto-cvm/">
-<meta property="og:title" content="Pipeline de demonstrações financeiras da CVM">
-<meta property="og:description" content="Como um pipeline que roda sozinho entregaria o valor certo, se a CVM republica o pacote de um exercício com valores corrigidos, mas o arquivo não informa o que foi alterado.">
-<meta property="og:image" content="https://1pedroosilva.github.io/og.png">
 <meta name="twitter:card" content="summary_large_image">
-
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"SoftwareSourceCode",
-  "name":"Pipeline de demonstrações financeiras da CVM",
-  "description":"Ingestão e tratamento das Demonstrações Financeiras Padronizadas da Comissão de Valores Mobiliários em arquitetura medalhão sobre Databricks.",
-  "url":"https://1pedroosilva.github.io/projeto-cvm/",
-  "codeRepository":"https://github.com/1pedroosilva/projeto-cvm-dados-financeiros",
-  "programmingLanguage":["Python","SQL"],
-  "runtimePlatform":"Databricks",
-  "author":{"@type":"Person","name":"Pedro Oliveira","url":"https://1pedroosilva.github.io/"}
-}
-</script>
-
-<meta name="color-scheme" content="light dark">
-<script>
-(function(){
-  var t=null;
-  try{t=localStorage.getItem('tema');}catch(e){}
-  if(!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro';
-  document.documentElement.dataset.tema=t;
-})();
-</script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
+/* ══ TOKENS ══ */
 :root{
-  --paper:#E4E7E3; --panel:#EDEFEC; --panel-deep:#D9DDD8;
-  --ink:#16201C; --ink-soft:#5A6560; --rule:#BFC6C0;
-  --accent:#0F4C42; --flag:#9C4A2F;
-  --serif:"Newsreader",Georgia,serif;
-  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
-  --col:31.5rem; --step:220ms;
+  --bg:#fafaf8;--fg:#1a1a1a;--fg2:#555;--fg3:#888;
+  --accent:#2563eb;--accent-soft:#dbeafe;
+  --border:#e0ddd8;--card-bg:#fff;--code-bg:#f4f2ef;
+  --tag-bg:#f0eee9;--tag-fg:#6b6560;
+  --green:#16a34a;--amber:#d97706;--red:#dc2626;
+  --serif:'Source Serif 4',Georgia,serif;
+  --sans:'Inter',-apple-system,system-ui,sans-serif;
+  --mono:'JetBrains Mono','Fira Code',monospace;
+  --measure:38em;--gutter:clamp(1rem,4vw,3rem);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0);
 }
-html[data-tema="escuro"]{
-  --paper:#151B19; --panel:#1C2321; --panel-deep:#111716;
-  --ink:#DCE3DE; --ink-soft:#8B9891; --rule:#2C3633;
-  --accent:#79C4B0; --flag:#D4785C;
-}
-@media (prefers-reduced-motion:reduce){
-  :root{--step:1ms}
-  *,*::before,*::after{animation-duration:1ms!important;transition-duration:1ms!important}
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-
-body{
-  margin:0;background:var(--paper);color:var(--ink);
-  font-family:var(--serif);font-size:17px;line-height:1.62;
-  font-optical-sizing:auto;-webkit-font-smoothing:antialiased;
-}
-a{color:var(--accent);text-underline-offset:.22em;text-decoration-thickness:.055em}
-a:hover{color:var(--ink)}
-:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
-
-h1,h2,h3,h4{font-weight:500;line-height:1.2;letter-spacing:-.012em;margin:0}
-h1{font-size:clamp(1.95rem,5.2vw,3rem);font-weight:400}
-h2{font-size:clamp(1.4rem,3.6vw,1.85rem)}
-h3{font-size:1.08rem}
-h4{font-family:var(--mono);font-size:.84rem;font-weight:500}
-p{margin:0 0 1em;max-width:var(--col)}
-p:last-child{margin-bottom:0}
-
-.shell{max-width:1040px;margin:0 auto;padding:0 clamp(1.15rem,4vw,3rem);display:grid;grid-template-columns:minmax(0,1fr)}
-@media (min-width:1000px){.shell{grid-template-columns:186px minmax(0,1fr);column-gap:3.6rem}}
-.index{display:none}
-@media (min-width:1000px){
-  .index{display:block;position:sticky;top:0;align-self:start;height:100vh;padding-top:7.5rem;overflow:hidden}
-  .index ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule)}
-  .index a{
-    display:flex;gap:.5rem;padding:.3rem 0 .3rem .8rem;margin-left:-1px;border-left:1px solid transparent;
-    font-family:var(--mono);font-size:.69rem;letter-spacing:.03em;color:var(--ink-soft);
-    text-decoration:none;transition:color var(--step),border-color var(--step);
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#141413;--fg:#e8e6e1;--fg2:#aaa8a3;--fg3:#777;
+    --accent:#60a5fa;--accent-soft:#1e3a5f;
+    --border:#2a2926;--card-bg:#1c1b19;--code-bg:#1f1e1c;
+    --tag-bg:#262523;--tag-fg:#9a958e;
   }
-  .index a[aria-current="true"]{color:var(--ink);border-left-color:var(--accent)}
-  .index a:hover{color:var(--ink)}
-  .index .num{color:var(--rule);font-variant-numeric:tabular-nums}
-  .index a[aria-current="true"] .num{color:var(--accent)}
-  .index .gap{height:.75rem}
 }
-.tema{
-  position:fixed;top:.5rem;right:clamp(.8rem,3vw,1.6rem);z-index:60;
-  font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;
-  padding:.34rem .6rem;cursor:pointer;
-  background:color-mix(in srgb,var(--paper) 82%,transparent);backdrop-filter:blur(9px);
-  color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
-  transition:color var(--step),border-color var(--step);
+:root[data-theme="dark"]{
+  --bg:#141413;--fg:#e8e6e1;--fg2:#aaa8a3;--fg3:#777;
+  --accent:#60a5fa;--accent-soft:#1e3a5f;
+  --border:#2a2926;--card-bg:#1c1b19;--code-bg:#1f1e1c;
+  --tag-bg:#262523;--tag-fg:#9a958e;
 }
-.tema:hover{color:var(--ink);border-color:var(--ink-soft)}
+*,*::before,*::after{box-sizing:inherit;margin:0;padding:0}
+html{scroll-padding-top:env(safe-area-inset-top,0);scroll-behavior:smooth}
+body{font-family:var(--sans);font-size:16px;line-height:1.7;color:var(--fg);background:var(--bg);-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:var(--measure);margin:0 auto;padding:0 var(--gutter)}
 
-.railbar{
-  position:sticky;top:0;z-index:40;display:flex;align-items:center;
-  padding:.55rem clamp(1.15rem,4vw,3rem);
-  background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(9px);
-  border-bottom:1px solid var(--rule);
-  font-family:var(--mono);font-size:.68rem;letter-spacing:.05em;color:var(--ink-soft);
-}
-.railbar .bar{position:absolute;left:0;right:0;bottom:-1px;height:1px;pointer-events:none}
-.railbar .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width 90ms linear}
-@media (min-width:1000px){.railbar{display:none}}
+/* ── header ── */
+header{padding:4rem 0 2rem;border-bottom:1px solid var(--border)}
+header .back{font-size:.85rem;color:var(--fg3);display:inline-block;margin-bottom:1rem}
+header h1{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600;line-height:1.25;letter-spacing:-.01em}
+header .subtitle{margin-top:.75rem;font-size:.95rem;color:var(--fg2);line-height:1.6;max-width:34em}
+.status-badge{display:inline-flex;align-items:center;gap:.4em;font-size:.8rem;font-weight:500;color:var(--green);margin-top:1rem}
+.status-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green)}
 
-main{padding-bottom:4rem;min-width:0}
-section{padding:3.6rem 0;border-top:1px solid var(--rule);min-width:0}
-section:first-of-type{border-top:0}
-.marker{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:.5rem}
-.marker b{color:var(--ink);font-weight:500}
-.lede{font-size:1.06rem;color:var(--ink-soft);max-width:var(--col)}
-.pstatus{font-family:var(--mono);font-size:.68rem;color:var(--ink-soft);letter-spacing:.03em;margin:.7rem 0 0}
-.pstatus b{color:var(--ink);font-weight:500}
-.hint{font-family:var(--mono);font-size:.67rem;color:var(--ink-soft);margin-top:.8rem;max-width:var(--col)}
+/* ── nav ── */
+nav.toc{position:sticky;top:env(safe-area-inset-top,0);z-index:10;background:var(--bg);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.6rem 0}
+nav.toc .wrap{display:flex;gap:1.5rem;white-space:nowrap}
+nav.toc a{font-size:.8rem;font-weight:500;color:var(--fg3);padding:.25rem 0;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+nav.toc a:hover,nav.toc a.active{color:var(--fg);border-bottom-color:var(--accent);text-decoration:none}
 
-.back{
-  display:inline-flex;gap:.45rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.03em;
-  text-decoration:none;color:var(--ink-soft);margin-bottom:2rem;
-}
-.back:hover{color:var(--ink)}
-.hero{padding:6.5rem 0 3.4rem}
-.hero h1{margin-bottom:.2rem;max-width:22ch}
-.reveal{opacity:0;transform:translateY(9px);animation:rise .6s cubic-bezier(.2,.7,.3,1) forwards}
-.reveal:nth-child(2){animation-delay:.06s}
-.reveal:nth-child(3){animation-delay:.13s}
-.reveal:nth-child(4){animation-delay:.2s}
-.reveal:nth-child(5){animation-delay:.27s}
-@keyframes rise{to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;animation:none}}
+/* ── sections ── */
+section{padding:3.5rem 0 2rem;border-bottom:1px solid var(--border)}
+section:last-of-type{border-bottom:none}
+.section-label{font-size:.75rem;font-weight:600;color:var(--fg3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+section h2{font-family:var(--serif);font-size:clamp(1.25rem,3vw,1.6rem);font-weight:600;line-height:1.3;margin-bottom:1rem}
+section p{color:var(--fg2);margin-bottom:1rem;max-width:36em}
+section p strong{color:var(--fg);font-weight:500}
+section h3{font-size:.95rem;font-weight:600;margin-top:2rem;margin-bottom:.5rem}
 
-.ask{
-  margin:2rem 0 0;padding:.1rem 0 .1rem 1.15rem;border-left:2px solid var(--accent);
-  font-size:1.14rem;line-height:1.5;color:var(--ink);max-width:var(--col);
-}
+/* ── numbers ── */
+.numbers{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:2rem 0}
+.numbers .n{background:var(--card-bg);padding:1.1rem 1rem}
+.numbers .n .val{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--fg);line-height:1.1}
+.numbers .n .lbl{font-size:.78rem;color:var(--fg3);margin-top:.25rem;line-height:1.3}
 
-/* cabeçalho de etapa */
-.stage{display:flex;align-items:baseline;gap:1rem;margin-bottom:.35rem;max-width:var(--col)}
-.stage .n{
-  font-family:var(--mono);font-size:.72rem;color:var(--accent);letter-spacing:.06em;
-  flex:0 0 auto;padding-top:.1rem;
-}
-.q{margin:.7rem 0 1.4rem;max-width:var(--col);font-size:1.02rem}
-.q em{
-  display:block;font-family:var(--mono);font-style:normal;font-size:.65rem;
-  letter-spacing:.07em;color:var(--ink-soft);margin-bottom:.4rem;
-}
+/* ── pipeline flow ── */
+.pipeline-flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1.5rem 0 2rem;font-size:.82rem;font-weight:500}
+.pipeline-flow .step{padding:.4rem .8rem;border-radius:6px;white-space:nowrap}
+.pipeline-flow .step.done{background:var(--accent-soft);color:var(--accent)}
+.pipeline-flow .step.pending{background:var(--tag-bg);color:var(--tag-fg);border:1px dashed var(--border)}
+.pipeline-flow .arrow{color:var(--fg3);font-size:.7rem}
 
-/* cadeia das etapas */
-.chain{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:1.6rem;max-width:var(--col)}
-.chain a{
-  flex:1 1 0;min-width:max-content;white-space:nowrap;text-align:center;
-  font-family:var(--mono);font-size:.68rem;padding:.42rem .55rem;text-decoration:none;
-  color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
-  transition:color var(--step),border-color var(--step);
-}
-.chain a:hover{color:var(--ink);border-color:var(--ink-soft)}
-.chain a .dot{color:var(--accent)}
-.chain a.off{color:var(--rule)}
-.chain a.off .dot{color:var(--rule)}
-.chain a .ar{color:var(--rule);margin-left:.15rem;transition:transform var(--step),color var(--step);display:inline-block}
-.chain a:hover .ar{color:var(--accent);transform:translateY(2px)}
+/* ── cards ── */
+.card-grid{display:grid;grid-template-columns:1fr;gap:1rem;margin:1.5rem 0}
+@media(min-width:600px){.card-grid.two{grid-template-columns:1fr 1fr}}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:1.2rem}
+.card h4{font-size:.9rem;font-weight:600;margin-bottom:.5rem;color:var(--fg)}
+.card p{font-size:.85rem;color:var(--fg2);margin-bottom:.5rem;line-height:1.55}
+.card .detail{font-size:.78rem;color:var(--fg3);line-height:1.5}
 
-/* navegação entre etapas */
-.passo{
-  display:flex;flex-wrap:wrap;gap:.4rem 1.5rem;align-items:baseline;
-  margin:.25rem 0 1.5rem;max-width:var(--col);
-  font-family:var(--mono);font-size:.68rem;letter-spacing:.03em;
-}
-.passo a{color:var(--ink-soft);text-decoration:none;transition:color var(--step)}
-.passo a:hover{color:var(--accent)}
-.passo .segue{margin-left:auto;display:flex;gap:1.5rem}
+/* ── tags ── */
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.tag{font-size:.72rem;font-weight:500;padding:.2rem .55rem;border-radius:4px;background:var(--tag-bg);color:var(--tag-fg)}
 
-/* botão flutuante de topo */
-.topo{
-  position:fixed;right:clamp(.8rem,3vw,1.6rem);bottom:1.1rem;z-index:55;
-  display:flex;align-items:center;gap:.4rem;padding:.45rem .7rem;cursor:pointer;
-  font-family:var(--mono);font-size:.65rem;letter-spacing:.04em;
-  background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(9px);
-  color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
-  opacity:0;pointer-events:none;transform:translateY(6px);
-  transition:opacity var(--step),transform var(--step),color var(--step),border-color var(--step);
-}
-.topo.on{opacity:1;pointer-events:auto;transform:none}
-.topo:hover{color:var(--ink);border-color:var(--ink-soft)}
+/* ── code ── */
+pre{font-family:var(--mono);font-size:.78rem;line-height:1.6;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;padding:1rem;overflow-x:auto;margin:1rem 0}
+code{font-family:var(--mono);font-size:.85em}
+p code,li code{background:var(--code-bg);padding:.15rem .35rem;border-radius:3px}
 
-/* etiquetas de tema */
-.temas{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;margin-top:1.4rem;max-width:var(--col)}
-.temas em{
-  font-family:var(--mono);font-size:.62rem;font-style:normal;letter-spacing:.06em;
-  color:var(--rule);margin-right:.2rem;
-}
-.temas span{
-  font-family:var(--mono);font-size:.64rem;letter-spacing:.02em;color:var(--ink-soft);
-  border:1px solid var(--rule);border-radius:2px;padding:.22rem .5rem;
-}
+/* ── reveal (accordion) ── */
+.reveal{border:1px solid var(--border);border-radius:8px;margin:1rem 0;overflow:hidden;background:var(--card-bg)}
+.reveal summary{cursor:pointer;padding:1rem 1.2rem;font-size:.88rem;font-weight:500;color:var(--fg);list-style:none;display:flex;align-items:center;gap:.6rem;transition:background .15s}
+.reveal summary:hover{background:var(--code-bg)}
+.reveal summary::before{content:'▸';font-size:.7rem;color:var(--fg3);transition:transform .2s;flex-shrink:0}
+.reveal[open] summary::before{transform:rotate(90deg)}
+.reveal .inner{padding:0 1.2rem 1.2rem;font-size:.85rem;color:var(--fg2);line-height:1.65}
+.reveal .inner p{margin-bottom:.75rem}
+.reveal .inner pre{font-size:.75rem}
 
-/* nota técnica */
-.tech-note{
-  font-family:var(--mono);font-size:.69rem;line-height:1.85;color:var(--ink-soft);
-  margin-top:1.1rem;padding-left:.9rem;border-left:2px solid var(--rule);max-width:var(--col);
-}
-.tech-note b{color:var(--ink);font-weight:500}
+/* ── interactive demo boxes ── */
+.demo-box{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.5rem 0;background:var(--card-bg)}
+.demo-box .demo-header{padding:.75rem 1.2rem;background:var(--code-bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.demo-box .demo-header .demo-title{font-size:.78rem;font-weight:600;color:var(--fg3);text-transform:uppercase;letter-spacing:.04em}
+.demo-box .demo-header .demo-badge{font-size:.7rem;font-weight:500;padding:.15rem .5rem;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+.demo-box .demo-body{padding:1.5rem 1.2rem}
 
-/* widget: republicação */
-.widget{margin-top:1.7rem;border:1px solid var(--rule);border-radius:2px;background:var(--panel);padding:1.1rem 1.15rem;max-width:var(--col)}
-.wlabel{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:.9rem}
-input[type=range]{
-  -webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--rule);
-  border-radius:2px;outline:none;cursor:pointer;margin:.2rem 0;
-}
-input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:17px;height:17px;border-radius:50%;
-  background:var(--accent);border:3px solid var(--panel);cursor:grab;
-}
-input[type=range]::-moz-range-thumb{
-  width:17px;height:17px;border-radius:50%;background:var(--accent);
-  border:3px solid var(--panel);cursor:grab;
-}
-.scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62rem;color:var(--ink-soft);margin-top:.35rem}
-.readout{margin-top:1rem;padding-top:.9rem;border-top:1px solid var(--rule);font-family:var(--mono);font-size:.72rem;line-height:1.85}
-.readout .big{font-size:1.5rem;color:var(--ink);letter-spacing:-.01em;display:block;margin:.15rem 0 .35rem;font-variant-numeric:tabular-nums}
-.readout .meta{color:var(--ink-soft)}
+/* ── scale demo ── */
+.scale-demo{display:grid;gap:1rem}
+.scale-row{display:flex;align-items:stretch;gap:1rem;flex-wrap:wrap}
+@media(min-width:500px){.scale-row{flex-wrap:nowrap}}
+.scale-company{flex:1;min-width:0;border:1px solid var(--border);border-radius:8px;padding:1rem;position:relative;transition:border-color .3s}
+.scale-company .name{font-size:.78rem;font-weight:600;color:var(--fg3)}
+.scale-company .value{font-family:var(--mono);font-size:1.1rem;font-weight:600;color:var(--fg);margin-top:.4rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:all .4s}
+.scale-company .escala-tag{font-size:.68rem;padding:.15rem .4rem;border-radius:3px;background:var(--tag-bg);color:var(--tag-fg);margin-top:.4rem;display:inline-block}
+.scale-company .bar{height:6px;border-radius:3px;margin-top:.6rem;transition:width .6s ease}
+.scale-company.a .bar{background:var(--accent)}
+.scale-company.b .bar{background:var(--green)}
+.scale-toggle{display:flex;gap:.5rem;justify-content:center;margin-top:1rem}
+.scale-toggle button{font-family:var(--sans);font-size:.8rem;font-weight:500;padding:.5rem 1rem;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--fg2);cursor:pointer;transition:all .15s}
+.scale-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.scale-caption{text-align:center;font-size:.8rem;color:var(--fg3);margin-top:.75rem;min-height:2.5em;transition:opacity .3s}
 
-table{border-collapse:collapse;width:100%;margin-top:1.2rem;font-family:var(--mono);font-size:.68rem;max-width:var(--col)}
-th{text-align:left;font-weight:400;color:var(--ink-soft);letter-spacing:.04em;padding:.45rem .6rem .45rem 0;border-bottom:1px solid var(--rule)}
-td{padding:.5rem .6rem .5rem 0;border-bottom:1px solid var(--rule);color:var(--ink-soft);font-variant-numeric:tabular-nums;transition:color var(--step)}
-tr[data-on="true"] td{color:var(--ink)}
-tr[data-on="true"] td:first-child::before{content:"\25B8 ";color:var(--accent)}
+/* ── hierarchy demo ── */
+.hier-tree{font-family:var(--mono);font-size:.8rem;line-height:2;color:var(--fg2);padding:0 .5rem}
+.hier-tree .node{padding-left:1.5rem;border-left:2px solid var(--border);margin-left:.5rem;position:relative}
+.hier-tree .node::before{content:'';position:absolute;left:-2px;top:1em;width:1rem;height:0;border-bottom:2px solid var(--border)}
+.hier-tree .node-label{display:inline-flex;align-items:center;gap:.5rem;padding:.1rem .5rem;border-radius:4px;cursor:default;transition:background .15s}
+.hier-tree .node-label:hover{background:var(--code-bg)}
+.hier-tree .node-label .code{color:var(--accent);font-weight:600}
+.hier-tree .node-label .desc{color:var(--fg2)}
+.hier-tree .node-label .meta{font-size:.68rem;padding:.1rem .4rem;border-radius:3px;background:var(--tag-bg);color:var(--tag-fg)}
+.hier-root{padding-left:0;border-left:none;margin-left:0}
+.hier-root::before{display:none}
 
-/* widget: comparador de escala */
-.diff{display:grid;position:relative;border:1px solid var(--rule);border-radius:2px;overflow:hidden;background:var(--panel)}
-.pane{grid-area:1/1;padding:1.1rem 1.15rem;font-family:var(--mono);font-size:.7rem;line-height:1.95}
-.pane.b{background:var(--panel-deep)}
-.pane.a{background:var(--panel);border-right:2px solid var(--accent)}
-.pane .co{color:var(--ink-soft);letter-spacing:.03em}
-.pane .vl{color:var(--ink);font-variant-numeric:tabular-nums;font-size:.86rem}
-.pane .note{display:block;margin-top:.9rem;color:var(--ink-soft);line-height:1.7}
-.pane .warn{color:var(--flag)}
+/* ── guardrail sim ── */
+.guard-sim{display:grid;gap:.75rem}
+.guard-step{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem;border-radius:6px;background:var(--code-bg);transition:all .4s}
+.guard-step .icon{font-size:1rem;flex-shrink:0;width:1.5rem;text-align:center}
+.guard-step .text{font-size:.82rem;color:var(--fg2);line-height:1.5}
+.guard-step .text strong{color:var(--fg);font-weight:500}
+.guard-step.pass{border-left:3px solid var(--green)}
+.guard-step.fail{border-left:3px solid var(--red);background:color-mix(in srgb,var(--red) 5%,var(--code-bg))}
+.guard-step.skip{border-left:3px solid var(--amber)}
+.guard-step.neutral{border-left:3px solid var(--border)}
+.guard-buttons{display:flex;gap:.5rem;flex-wrap:wrap}
+.guard-buttons button{font-family:var(--sans);font-size:.78rem;font-weight:500;padding:.4rem .8rem;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--fg2);cursor:pointer;transition:all .15s}
+.guard-buttons button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
-/* pilar em acordeão */
-.acc{margin-top:1.8rem;max-width:var(--col)}
-details{border-bottom:1px solid var(--rule)}
-details.first{border-top:1px solid var(--rule)}
-summary{cursor:pointer;list-style:none;padding:.9rem 0;display:flex;gap:.9rem;align-items:baseline}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";margin-left:auto;color:var(--ink-soft);font-family:var(--mono);font-size:.9rem}
-details[open] summary::after{content:"\2212";color:var(--accent)}
-summary:hover{color:var(--accent)}
-summary h4{font-family:var(--serif);font-size:1.02rem;font-weight:500;letter-spacing:-.01em}
-.dbody{padding:0 0 1.3rem}
-.dbody p{font-size:.95rem}
+/* ── timeline ── */
+.timeline{margin:1.5rem 0}
+.timeline-item{padding:.75rem 0 .75rem 1.5rem;border-left:2px solid var(--border);position:relative}
+.timeline-item::before{content:'';position:absolute;left:-5px;top:1.1rem;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.timeline-item .date{font-size:.75rem;color:var(--fg3);font-weight:500}
+.timeline-item .desc{font-size:.85rem;color:var(--fg2);margin-top:.15rem}
 
-/* linha do tempo */
-.tl{margin-top:1.6rem;border-left:1px solid var(--rule);padding-left:1.4rem}
-.tl li{list-style:none;position:relative;padding-bottom:1.9rem}
-.tl li:last-child{padding-bottom:0}
-.tl li::before{
-  content:"";position:absolute;left:calc(-1.4rem - 4px);top:.55rem;
-  width:7px;height:7px;border-radius:50%;background:var(--paper);border:1px solid var(--ink-soft);
-}
-.tl li[data-undo="true"]::before{background:var(--flag);border-color:var(--flag)}
-.tl ul{margin:0;padding:0}
-.tl .d{font-family:var(--mono);font-size:.66rem;color:var(--ink-soft);letter-spacing:.04em}
-.tl h4{margin:.15rem 0 .45rem;font-family:var(--serif);font-size:1.02rem;font-weight:500;letter-spacing:-.01em}
-.tl p{font-size:.95rem}
-.tl li{padding-bottom:1.15rem}
-.tl details{border:0}
-.tl summary{padding:0 0 .1rem;gap:.9rem}
-.tl summary h4{margin:0}
-.tl summary::after{font-size:.85rem}
-.tl .dbody{padding:.55rem 0 0}
+/* ── footer ── */
+footer{padding:2.5rem 0;font-size:.82rem;color:var(--fg3)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:1.5rem}
+footer a{color:var(--fg3)}footer a:hover{color:var(--fg)}
 
-.rows{margin-top:1.3rem}
-.row{display:grid;gap:.25rem 2rem;padding:.8rem 0;border-top:1px solid var(--rule)}
-@media (min-width:640px){.row{grid-template-columns:132px 1fr}}
-.row .k{font-family:var(--mono);font-size:.7rem;color:var(--ink-soft);letter-spacing:.03em;padding-top:.22em}
-.row .v{max-width:var(--col)}
-
-.go{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2.2rem}
-.go a{
-  display:inline-flex;align-items:center;gap:.45rem;
-  font-family:var(--mono);font-size:.74rem;padding:.58rem .95rem;text-decoration:none;
-  border:1px solid var(--rule);border-radius:2px;color:var(--ink-soft);
-  transition:background var(--step),color var(--step),border-color var(--step);
-}
-.go a:hover{color:var(--ink);border-color:var(--ink-soft)}
-.go a.main{background:var(--accent);border-color:var(--accent);color:var(--panel)}
-.go a.main:hover{background:transparent;color:var(--ink);border-color:var(--ink-soft)}
-html[data-tema="escuro"] .go a.main{color:#101614}
-html[data-tema="escuro"] .go a.main:hover{color:var(--ink)}
-.go a svg{width:14px;height:14px;fill:currentColor;flex:0 0 auto}
-
-@media (max-width:520px){
-  body{font-size:16px}
-  .hero{padding:5rem 0 3rem}
-  .ask{font-size:1.04rem}
-  .stage{gap:.7rem}
-  .pane{font-size:.64rem;padding:.9rem}
-}
-
-footer{border-top:1px solid var(--rule);padding:2.2rem 0 4rem;font-family:var(--mono);font-size:.72rem;color:var(--ink-soft)}
-footer a{margin-right:1.3rem}
-
-/* ── simulações ───────────────────────────── */
-.sim{margin-top:1.5rem;border:1px solid var(--rule);border-radius:2px;background:var(--panel);max-width:var(--col);overflow:hidden}
-.simhead{
-  display:flex;align-items:center;gap:.6rem;padding:.6rem .95rem;border-bottom:1px solid var(--rule);
-  font-family:var(--mono);font-size:.65rem;letter-spacing:.04em;color:var(--ink-soft);
-}
-.tag{
-  margin-left:auto;font-size:.58rem;letter-spacing:.07em;padding:.12rem .38rem;
-  border:1px solid var(--rule);border-radius:2px;color:var(--ink-soft);
-}
-.btns{display:flex;flex-wrap:wrap;gap:.35rem;padding:.8rem .95rem 0}
-.btns button{
-  font-family:var(--mono);font-size:.65rem;padding:.36rem .6rem;cursor:pointer;
-  background:transparent;color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
-  transition:background var(--step),color var(--step),border-color var(--step);
-}
-.btns button:hover{color:var(--ink);border-color:var(--ink-soft)}
-.btns button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
-html[data-tema="escuro"] .btns button[aria-pressed="true"]{color:#101614}
-.log{padding:.9rem .95rem 1.05rem;font-family:var(--mono);font-size:.67rem;line-height:1.95}
-.log .ln{display:flex;gap:.7rem;opacity:0;animation:slidein .3s ease-out forwards}
-.log .ln .y{color:var(--ink-soft);flex:0 0 3.4em;font-variant-numeric:tabular-nums}
-.log .ln .s{color:var(--ink)}
-.log .ln.mut .s{color:var(--ink-soft)}
-.log .ln.hit .s{color:var(--accent)}
-.log .ln.bad .s{color:var(--flag)}
-.log .sum{
-  display:block;margin-top:.75rem;padding-top:.6rem;border-top:1px solid var(--rule);
-  color:var(--ink-soft);opacity:0;animation:slidein .3s .18s ease-out forwards;
-}
-.log .sum b{color:var(--ink);font-weight:500}
-@keyframes slidein{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.log .ln,.log .sum{animation:none;opacity:1}}
-
-/* trecho de código */
-.code{
-  margin-top:1.2rem;border:1px solid var(--rule);border-radius:2px;
-  background:var(--panel-deep);overflow:hidden;
-}
-.code .file{
-  display:flex;align-items:center;gap:.5rem;padding:.5rem .85rem;border-bottom:1px solid var(--rule);
-  font-family:var(--mono);font-size:.62rem;letter-spacing:.03em;color:var(--ink-soft);
-}
-.code .file b{color:var(--ink);font-weight:500}
-.code pre{
-  margin:0;padding:.85rem .85rem .95rem;overflow-x:auto;
-  font-family:var(--mono);font-size:.66rem;line-height:1.85;color:var(--ink);
-}
-.code .cm{color:var(--ink-soft)}
-.code .kw{color:var(--accent)}
-.code .st{color:var(--ink-soft)}
-
-/* abas dos pilares */
-.tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.7rem;max-width:var(--col)}
-.tabs button{
-  font-family:var(--mono);font-size:.68rem;padding:.45rem .75rem;cursor:pointer;
-  background:transparent;color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
-  transition:background var(--step),color var(--step),border-color var(--step);
-}
-.tabs button:hover{color:var(--ink);border-color:var(--ink-soft)}
-.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)}
-html[data-tema="escuro"] .tabs button[aria-selected="true"]{color:#101614}
-.tabbody{
-  margin-top:.75rem;max-width:var(--col);border:1px solid var(--rule);border-radius:2px;
-  background:var(--panel);padding:1.2rem 1.25rem;
-}
-.tabbody h4{font-family:var(--serif);font-size:1.06rem;font-weight:500;letter-spacing:-.01em}
-.tabbody .one{font-family:var(--mono);font-size:.7rem;color:var(--ink-soft);margin:.3rem 0 .9rem}
-.tabbody p{font-size:.95rem}
-.tabpanel[hidden]{display:none}
-.tabpanel{animation:fadein var(--step) ease-out}
-@keyframes fadein{from{opacity:.35}to{opacity:1}}
-@media (prefers-reduced-motion:reduce){.tabpanel{animation:none}}
-
-/* mapa dos três problemas */
-.probs{margin-top:1.5rem;max-width:var(--col)}
-.prob{
-  display:grid;gap:.15rem .9rem;padding:.85rem 0;border-top:1px solid var(--rule);
-  text-decoration:none;color:inherit;transition:border-color var(--step);
-}
-.prob:last-child{border-bottom:1px solid var(--rule)}
-@media (min-width:560px){.prob{grid-template-columns:1fr auto;align-items:baseline}}
-.prob .t{font-size:1rem}
-.prob .g{font-family:var(--mono);font-size:.64rem;color:var(--ink-soft);letter-spacing:.03em;white-space:nowrap}
-.prob:hover{border-color:var(--accent)}
-.prob:hover .t{color:var(--accent)}
-.prob:hover .g{color:var(--ink)}
-
-/* diagramação: sem palavra órfã na última linha */
-h1,h2,h3,h4,summary,.ask,.q em,.hint,.wlabel,.simhead,.marker,
-.tabbody .one,.row .k,.tl .d,.temas span{text-wrap:balance}
-p,li,.lede,.dbody p,.tech-note,.row .v,.readout{text-wrap:pretty}
-p,li,.lede{hyphens:none}
+.mt{margin-top:1.5rem}.mb{margin-bottom:1.5rem}.quiet{color:var(--fg3)}.small{font-size:.85rem}
 </style>
 </head>
-
 <body>
 
-<button class="tema" id="tema" type="button" aria-label="Alternar tema"></button>
+<!-- ═══ HEADER ═══ -->
+<header>
+  <div class="wrap">
+    <a href="https://1pedroosilva.github.io/" class="back">&larr; pedro oliveira</a>
+    <h1>Pipeline de dados financeiros da CVM</h1>
+    <p class="subtitle">
+      Demonstrações financeiras de companhias abertas brasileiras — da fonte pública até tabela consultável, em arquitetura medalhão no Databricks.
+    </p>
+    <div class="status-badge">em curso — Bronze e Silver operacionais, Gold em construção</div>
+  </div>
+</header>
 
-<button class="topo" id="topo" type="button"><span>&#8593;</span> topo</button>
+<nav class="toc">
+  <div class="wrap">
+    <a href="#dados">os dados</a>
+    <a href="#arquitetura">arquitetura</a>
+    <a href="#negocio">negócio</a>
+    <a href="#qualidade">qualidade</a>
+    <a href="#operacao">operação</a>
+    <a href="#infra">infraestrutura</a>
+    <a href="#decisoes">decisões</a>
+    <a href="#aberto">em aberto</a>
+  </div>
+</nav>
 
-<div class="railbar">
-  <span id="railLabel">o projeto</span>
-  <span class="bar"><i id="railFill"></i></span>
-</div>
+<!-- ═══ OS DADOS ═══ -->
+<section id="dados">
+  <div class="wrap">
+    <div class="section-label">a fonte</div>
+    <h2>O que entra no pipeline</h2>
+    <p>
+      Toda companhia aberta entrega à <strong>CVM</strong> (Comissão de Valores Mobiliários), uma vez por ano, as demonstrações financeiras do exercício anterior. A CVM reúne essas entregas em pacotes anuais e os disponibiliza para download direto, sem cadastro. Hoje o pipeline processa três desses pacotes.
+    </p>
 
-<div class="shell">
-  <nav class="index" aria-label="Etapas do pipeline">
-    <ol>
-      <li><a href="#fonte"><span class="num">··</span> a fonte</a></li>
-      <li><a href="#captura"><span class="num">01</span> captura</a></li>
-      <li><a href="#historico"><span class="num">02</span> histórico</a></li>
-      <li><a href="#tratamento"><span class="num">03</span> tratamento</a></li>
-      <li><a href="#entrega"><span class="num">04</span> entrega</a></li>
-      <li class="gap"></li>
-      <li><a href="#transversal"><span class="num">··</span> o que atravessa</a></li>
-      <li><a href="#decisoes"><span class="num">··</span> decisões</a></li>
-      <li><a href="#aberto"><span class="num">··</span> em aberto</a></li>
-    </ol>
-  </nav>
+    <div class="numbers">
+      <div class="n"><div class="val">3</div><div class="lbl">demonstrações</div></div>
+      <div class="n"><div class="val">~700</div><div class="lbl">companhias por ano</div></div>
+      <div class="n"><div class="val">6</div><div class="lbl">exercícios (2021–2026)</div></div>
+      <div class="n"><div class="val">~540 mil</div><div class="lbl">registros estimados</div></div>
+    </div>
 
-  <main>
-
-    <section class="hero" id="topo">
-      <a class="back reveal" href="/">&#8592; pedro oliveira</a>
-      <p class="marker reveal"><b>1.01</b> &nbsp;projeto</p>
-      <h1 class="reveal">Pipeline de demonstrações financeiras da CVM</h1>
-      <p class="pstatus reveal">&#9679; <b>em curso</b> &nbsp;·&nbsp; três etapas já rodam agendadas</p>
-      <p class="ask reveal">
-        Como um pipeline que roda sozinho entregaria o valor certo, se a CVM republica o pacote
-        de um exercício com valores corrigidos, mas o arquivo não informa o que foi alterado?
-      </p>
-    </section>
-
-    <section id="fonte">
-      <p class="marker">a fonte</p>
-      <h2>O que a CVM publica</h2>
-      <p class="lede" style="margin-top:.8rem">
-        Toda companhia aberta entrega à CVM, uma vez por ano, a demonstração financeira do
-        exercício anterior. A CVM reúne essas entregas em um pacote por exercício, substituído a
-        cada reentrega, e disponibiliza para download direto, sem cadastro. O pipeline pega esse
-        pacote e o leva até virar tabela consultável, em quatro etapas.
-      </p>
-
-      <div class="chain">
-        <a href="#captura"><span class="dot">&#9679;</span> 01 captura <span class="ar">&#8595;</span></a>
-        <a href="#historico"><span class="dot">&#9679;</span> 02 histórico <span class="ar">&#8595;</span></a>
-        <a href="#tratamento"><span class="dot">&#9679;</span> 03 tratamento <span class="ar">&#8595;</span></a>
-        <a class="off" href="#entrega"><span class="dot">&#9675;</span> 04 entrega <span class="ar">&#8595;</span></a>
+    <details class="reveal">
+      <summary>DRE — Demonstração do Resultado do Exercício</summary>
+      <div class="inner">
+        <p>Receitas, custos, despesas e lucro. Fluxo de um período — tem data de início e de fim do exercício. É a demonstração que responde quanto a empresa ganhou ou perdeu.</p>
+        <p><strong>Bronze:</strong> <code>101_dre_dfp</code> &nbsp; <strong>Silver:</strong> <code>201_dre_dfp</code> — 24 colunas, particionada por ano</p>
       </div>
-      <p class="hint"><span style="color:var(--rule)">&#9675;</span> ainda não construída</p>
-
-      <div class="temas"><em>termos</em><span>arquitetura medalhão</span><span>ingestão em lote</span><span>schema drift</span></div>
-    </section>
-
-    <section id="captura">
-      <div class="stage"><span class="n">01</span><h2>Captura</h2></div>
-      <p class="passo">
-        <a href="#fonte">&#8593; mapa das etapas</a>
-        <span class="segue">
-          <a href="#historico">próxima &#8595;</a>
-        </span>
-      </p>
-      <p class="q"><em>o problema</em>
-        O pipeline precisa dos pacotes no ambiente antes de qualquer outra coisa. Baixar todos
-        eles a cada execução é desperdício, porque quase nunca mudam. Baixar uma vez só e nunca
-        mais é pior, porque a CVM substitui o pacote de um ano quando uma companhia reentrega
-        sua demonstração. A captura precisa saber o que já tem e o que mudou na origem.
-      </p>
-
-      <div class="sim">
-        <div class="simhead">captura · execução <span class="tag">simulação</span></div>
-        <div class="btns" id="capBtns">
-          <button type="button" data-cap="0" aria-pressed="true">1ª execução</button>
-          <button type="button" data-cap="1" aria-pressed="false">rodar de novo</button>
-          <button type="button" data-cap="2" aria-pressed="false">a CVM republica 2024</button>
-        </div>
-        <div class="log" id="capLog"></div>
+    </details>
+    <details class="reveal">
+      <summary>BPA — Balanço Patrimonial Ativo</summary>
+      <div class="inner">
+        <p>Bens e direitos da companhia num ponto no tempo. Snapshot de posição — sem data de início. É por isso que o DDL da BPA não tem a coluna <code>DT_INI_EXERC</code>: diferença sutil que o pipeline trata.</p>
+        <p><strong>Bronze:</strong> <code>102_bpa_dfp</code> &nbsp; <strong>Silver:</strong> <code>202_bpa_dfp</code></p>
       </div>
-
-      <div class="temas"><em>termos</em><span>landing zone</span><span>imutabilidade</span><span>carga incremental</span><span>watermark</span></div>
-
-      <div class="acc">
-        <details class="first">
-          <summary><h4>como funciona</h4></summary>
-          <div class="dbody">
-            <p>A captura grava cada arquivo exatamente como chegou. Não corrige, não renomeia,
-            não converte. Se essa etapa já limpasse alguma coisa, deixaria de existir um registro
-            do que a CVM de fato publicou.</p>
-            <p>Uma tabela de controle anota quando cada arquivo mudou na origem. Na execução
-            seguinte, só o que mudou desce de novo.</p>
-            <p class="tech-note">Landing zone em volume do <b>Unity Catalog</b>. Tabela de
-            controle guardando o cabeçalho <b>Last-Modified</b> da origem, o que permite
-            reprocessamento seletivo em vez de recarga completa.</p>
-          </div>
-        </details>
-        <details>
-          <summary><h4>quem olha para a fonte, e quando</h4></summary>
-          <div class="dbody">
-            <p>Perguntar à CVM se algo mudou é uma tarefa diária e barata. Processar os dados é
-            uma tarefa pesada e mais espaçada. Juntar as duas faz a segunda esperar pela primeira
-            toda vez, e deixa o pipeline refém da origem estar no ar no momento exato em que ele
-            precisa rodar.</p>
-            <p>Uma rotina separada acorda todo dia, pergunta à origem se o pacote de cada
-            exercício mudou e, quando mudou, guarda a versão antiga antes de trazer a nova. Nada
-            do que já estava ali é sobrescrito sem cópia.</p>
-            <p class="tech-note">Notebook diário de verificação da landing: requisição
-            <b>HEAD</b> por exercício, comparação com os metadados gravados ao lado do arquivo,
-            arquivamento da versão anterior com carimbo de tempo e download da nova. As etapas de
-            processamento não fazem chamada de rede à origem.</p>
-          </div>
-        </details>
+    </details>
+    <details class="reveal">
+      <summary>BPP — Balanço Patrimonial Passivo</summary>
+      <div class="inner">
+        <p>Obrigações e patrimônio líquido. Complemento do ativo — juntos, BPA e BPP formam o balanço completo. Mesma estrutura do BPA, mesma lógica de processamento.</p>
+        <p><strong>Bronze:</strong> <code>103_bpp_dfp</code> &nbsp; <strong>Silver:</strong> <code>203_bpp_dfp</code></p>
       </div>
-    </section>
+    </details>
 
-    <section id="historico">
-      <div class="stage"><span class="n">02</span><h2>Histórico</h2></div>
-      <p class="passo">
-        <a href="#fonte">&#8593; mapa das etapas</a>
-        <span class="segue">
-          <a href="#captura">&#8593; anterior</a>
-          <a href="#tratamento">próxima &#8595;</a>
-        </span>
-      </p>
-      <p class="q"><em>o problema</em>
-        Uma companhia entrega a demonstração de 2024 em março de 2025. Em julho, reentrega o mesmo
-        exercício com o lucro corrigido. Em novembro, corrige outra vez. Nada no arquivo avisa que
-        aquilo é uma correção. Ficar com a primeira entrega deixa o valor errado, e ficar só com a
-        última apaga o fato de que houve correção.
-      </p>
+    <p class="small quiet mt">
+      A CVM publica mais três demonstrações (DFC, DVA, DMPL). A estrutura modular do pipeline as acomoda sem mudança de arquitetura — seguiriam a numeração 104/204, 105/205, 106/206.
+    </p>
+  </div>
+</section>
 
-      <div class="sim">
-        <div class="simhead">lucro do exercício de 2024 <span class="tag">simulação</span></div>
-        <div style="padding:1rem .95rem 1.05rem">
-          <input type="range" id="rp" min="0" max="9" value="9" step="1" aria-label="Data da consulta">
-          <div class="scale"><span>mar 2025</span><span>dez 2025</span></div>
-          <div class="readout">
-            <span class="meta">consultando em <b id="rpDate">dez 2025</b>, o pipeline responderia</span>
-            <span class="big" id="rpVal">1.234.567</span>
-            <span class="meta" id="rpMeta">versão 3, entregue em 18 nov 2025</span>
-          </div>
-        </div>
+<!-- ═══ ARQUITETURA ═══ -->
+<section id="arquitetura">
+  <div class="wrap">
+    <div class="section-label">desenho</div>
+    <h2>Arquitetura medalhão</h2>
+    <p>
+      O dado passa por quatro estágios, cada um com papel definido. O que entra bruto no primeiro sai tipado, normalizado e enriquecido no terceiro — pronto para análise sem que o consumidor precise saber de onde veio ou como foi limpo.
+    </p>
+
+    <div class="pipeline-flow">
+      <span class="step done">CVM</span><span class="arrow">&rarr;</span>
+      <span class="step done">Landing Zone</span><span class="arrow">&rarr;</span>
+      <span class="step done">Bronze</span><span class="arrow">&rarr;</span>
+      <span class="step done">Silver</span><span class="arrow">&rarr;</span>
+      <span class="step pending">Gold</span><span class="arrow">&rarr;</span>
+      <span class="step pending">Consumo</span>
+    </div>
+
+    <details class="reveal">
+      <summary>Landing Zone — preservação dos arquivos originais</summary>
+      <div class="inner">
+        <p>Os ZIPs originais ficam em <strong>Unity Catalog Volumes</strong>, cada um com um <code>_metadata.json</code> gravando o <code>Last-Modified</code> HTTP da origem. Versões anteriores vão para <code>archive/</code> com carimbo de tempo antes de qualquer sobrescrita.</p>
+        <p>Uma rotina diária faz requisição <strong>HEAD</strong> por exercício — compara com os metadados locais e só baixa o que mudou. Os notebooks de processamento nunca fazem chamada de rede à CVM.</p>
+<pre>/Volumes/.../landing/dfp/
+├── 2023/
+│   ├── dfp_cia_aberta_2023.zip
+│   ├── _metadata.json
+│   └── archive/
+│       └── dfp_cia_aberta_2023_20260815_063012.zip
+├── 2024/
+│   ├── dfp_cia_aberta_2024.zip
+│   └── _metadata.json</pre>
       </div>
+    </details>
 
-      <table>
-        <thead><tr><th>versão</th><th>entregue em</th><th>lucro divulgado</th></tr></thead>
-        <tbody>
-          <tr data-v="1"><td>1</td><td>12 mar 2025</td><td>1.198.402</td></tr>
-          <tr data-v="2"><td>2</td><td>04 jul 2025</td><td>1.221.870</td></tr>
-          <tr data-v="3" data-on="true"><td>3</td><td>18 nov 2025</td><td>1.234.567</td></tr>
-        </tbody>
-      </table>
+    <details class="reveal">
+      <summary>Bronze — dado bruto com rastreio completo</summary>
+      <div class="inner">
+        <p>Preserva a estrutura original da CVM sem nenhuma transformação. Cada ingestão adiciona quatro colunas de rastreio e grava em <strong>append-only</strong>. Nenhuma versão publicada pela CVM é apagada.</p>
+<pre>df_bronze = df_validado \
+    .withColumn("_versao_ingestao", lit(versao_atual)) \
+    .withColumn("_last_modified_cvm", lit(last_modified_cvm)) \
+    .withColumn("_ingest_ts", current_timestamp()) \
+    .withColumn("_source_file", lit(f"dfp_cia_aberta_DRE_con_{ano}.csv"))</pre>
+        <p>Idempotência via <code>controle_ingestao</code>: mesma versão CVM processada duas vezes não gera duplicata — o notebook verifica fonte + ano + last_modified + status antes de processar.</p>
+      </div>
+    </details>
 
-      <div class="temas"><em>termos</em><span>append-only</span><span>particionamento</span><span>escrita atômica</span><span>Delta Lake</span></div>
+    <details class="reveal">
+      <summary>Silver — dado padronizado e enriquecido</summary>
+      <div class="inner">
+        <p>Window Function seleciona a versão mais recente da Bronze. Tipos são convertidos, a escala monetária é normalizada, e cinco colunas hierárquicas são derivadas da estrutura contábil. Gravação atômica via <code>REPLACE WHERE</code>.</p>
+<pre>df_silver.write \
+    .format("delta") \
+    .mode("overwrite") \
+    .option("replaceWhere", f"ANO = {ano}") \
+    .saveAsTable(f"{SCHEMA_SILVER}.201_dre_dfp")</pre>
+        <p>A partição inteira é substituída numa operação atômica — ou tudo muda ou nada muda. Elimina a janela de vulnerabilidade que existia no antigo DELETE+APPEND.</p>
+      </div>
+    </details>
 
-      <div class="acc">
-        <details class="first">
-          <summary><h4>como funciona</h4></summary>
-          <div class="dbody">
-            <p>Guardar só a primeira entrega deixa o valor desatualizado. Sobrescrever a cada nova
-            entrega apaga o fato de que houve correção, e o tamanho dela. O histórico acumula
-            todas as versões, cada uma com a data em que chegou.</p>
-            <p>Para saber o valor vigente, o pipeline procura a versão mais recente, em vez
-            de ter apagado as anteriores.</p>
-            <p class="tech-note">Escrita que acumula por chave de negócio mais data de entrega.
-            Nenhuma versão é sobrescrita, e a vigente é resolvida na leitura.</p>
-            <div class="code">
-              <div class="file">01_bronze/<b>101_cvm_dfp_dre.py</b></div>
-<pre><span class="cm"># CARGA APPEND-ONLY: nenhuma versão é sobrescrita</span>
-df_bronze = df_validado \
-    .withColumn(<span class="st">"_versao_ingestao"</span>, lit(versao_atual)) \
-    .withColumn(<span class="st">"_last_modified_cvm"</span>, lit(last_modified_cvm)) \
-    .withColumn(<span class="st">"_ingest_ts"</span>, current_timestamp())
+    <details class="reveal">
+      <summary>Gold — análise de negócio (em construção)</summary>
+      <div class="inner">
+        <p>Métricas de negócio, KPIs por empresa, comparações setoriais e evolução temporal. Primeiro item da fila — depende da Silver normalizada, que ficou pronta em setembro.</p>
+      </div>
+    </details>
 
-df_bronze.write \
-    .format(<span class="st">"delta"</span>) \
-    .mode(<span class="st">"append"</span>) \
-    .saveAsTable(f<span class="st">"{SCHEMA_BRONZE}.101_dre_dfp"</span>)</pre>
+    <div class="numbers">
+      <div class="n"><div class="val">16</div><div class="lbl">tabelas Delta</div></div>
+      <div class="n"><div class="val">15</div><div class="lbl">notebooks</div></div>
+      <div class="n"><div class="val">24</div><div class="lbl">colunas na Silver</div></div>
+      <div class="n"><div class="val">3</div><div class="lbl">jobs agendados</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NEGÓCIO ═══ -->
+<section id="negocio">
+  <div class="wrap">
+    <div class="section-label">tratamento</div>
+    <h2>Três problemas que a Silver resolve</h2>
+    <p>Os dados saem da CVM com problemas que a fonte não corrige. O pipeline os resolve na Silver, antes que cheguem a qualquer consumidor.</p>
+
+    <!-- ── ESCALA DEMO ── -->
+    <h3>Escala monetária misturada</h3>
+    <p>Cerca de 540 companhias reportam em <strong>milhares</strong> e 15 em <strong>unidades</strong>. Sem conversão, qualquer ranking entre elas está errado.</p>
+
+    <div class="demo-box">
+      <div class="demo-header">
+        <span class="demo-title">Lucro do exercício de 2024</span>
+        <span class="demo-badge">interativo</span>
+      </div>
+      <div class="demo-body">
+        <div class="scale-demo" id="scaleDemo">
+          <div class="scale-row">
+            <div class="scale-company a" id="compA">
+              <div class="name">Companhia A · escala <span id="compA_esc">MIL</span></div>
+              <div class="value" id="compA_val">1.234.567</div>
+              <div class="escala-tag" id="compA_tag">como chega da CVM</div>
+              <div class="bar" id="compA_bar" style="width:14%"></div>
+            </div>
+            <div class="scale-company b" id="compB">
+              <div class="name">Companhia B · escala <span id="compB_esc">UNIDADE</span></div>
+              <div class="value" id="compB_val">890.412.300</div>
+              <div class="escala-tag" id="compB_tag">como chega da CVM</div>
+              <div class="bar" id="compB_bar" style="width:100%"></div>
             </div>
           </div>
-        </details>
-      </div>
-    </section>
-
-    <section id="tratamento">
-      <div class="stage"><span class="n">03</span><h2>Tratamento</h2></div>
-      <p class="passo">
-        <a href="#fonte">&#8593; mapa das etapas</a>
-        <span class="segue">
-          <a href="#historico">&#8593; anterior</a>
-          <a href="#entrega">próxima &#8595;</a>
-        </span>
-      </p>
-      <p class="q"><em>o problema</em>
-        O valor de uma conta chega em um campo, e a escala em que ele foi reportado chega em
-        outro. Uma companhia informa em milhares, a vizinha informa em unidades, e a coluna de
-        valor não distingue as duas. Somar ou ordenar essa coluna sem antes aplicar a escala
-        devolve resultado errado.
-      </p>
-
-      <div class="sim">
-        <div class="simhead">arraste para aplicar a escala <span class="tag">simulação</span></div>
-        <div class="diff" id="diff">
-          <div class="pane b">
-            <span class="co">Companhia A · lucro de 2024</span><br>
-            <span class="vl">1.234.567.000,00</span><br><br>
-            <span class="co">Companhia B · lucro de 2024</span><br>
-            <span class="vl">890.412.300,00</span>
-            <span class="note">com a escala aplicada, A é maior que B.<br>a ordem entre as duas se inverte.</span>
+          <div class="scale-toggle">
+            <button class="active" onclick="setScale('raw')">como chega</button>
+            <button onclick="setScale('normalized')">com escala aplicada</button>
           </div>
-          <div class="pane a" id="paneA">
-            <span class="co">Companhia A · lucro de 2024</span><br>
-            <span class="co">escala MIL</span><br>
-            <span class="vl">1.234.567</span><br><br>
-            <span class="co">Companhia B · lucro de 2024</span><br>
-            <span class="co">escala UNIDADE</span><br>
-            <span class="vl">890.412.300</span>
-            <span class="note warn">lado a lado, B parece setecentas<br>vezes maior do que A.</span>
+          <div class="scale-caption" id="scaleCap">Lado a lado, B parece setecentas vezes maior que A.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REPUBLICATION ── -->
+    <h3>Republicação silenciosa</h3>
+    <p>
+      Uma companhia entrega a DRE de 2024 em março. Em julho, reentrega com o lucro corrigido. A CVM substitui o pacote do exercício sem avisar o que mudou. O pipeline guarda <strong>todas</strong> as versões na Bronze e resolve a vigente na Silver via Window Function.
+    </p>
+
+    <details class="reveal">
+      <summary>Como o versionamento funciona na prática</summary>
+      <div class="inner">
+        <p>A Bronze grava cada versão com <code>_versao_ingestao</code> crescente. A Silver aplica:</p>
+<pre>window_spec = Window.partitionBy(
+    "CNPJ_CIA", "DT_REFER", "CD_CONTA", "ORDEM_EXERC"
+).orderBy(col("_versao_ingestao").desc())
+
+df_versao_atual = df_bronze \
+    .withColumn("_row_num", row_number().over(window_spec)) \
+    .filter(col("_row_num") == 1)</pre>
+        <p>Resultado: a Silver sempre tem o valor mais recente, mas a Bronze preserva o histórico completo — é possível comparar a versão de março com a de julho.</p>
+      </div>
+    </details>
+
+    <!-- ── HIERARCHY ── -->
+    <h3>Estrutura hierárquica contábil</h3>
+    <p>
+      A CVM publica contas em hierarquia por notação de pontos: <code>3</code> → <code>3.01</code> → <code>3.01.01</code>. O valor do pai é a soma dos filhos. Sem enriquecimento, o consumidor precisa remontar essa estrutura a cada consulta. A Silver deriva cinco colunas que tornam a hierarquia consultável diretamente.
+    </p>
+
+    <div class="demo-box">
+      <div class="demo-header">
+        <span class="demo-title">Exemplo de hierarquia — DRE</span>
+        <span class="demo-badge">estrutura real</span>
+      </div>
+      <div class="demo-body">
+        <div class="hier-tree">
+          <div class="hier-root">
+            <span class="node-label">
+              <span class="code">3</span>
+              <span class="desc">Resultado Bruto</span>
+              <span class="meta">nível 1 · totalizadora · raiz</span>
+            </span>
+            <div class="node">
+              <span class="node-label">
+                <span class="code">3.01</span>
+                <span class="desc">Receita Líquida</span>
+                <span class="meta">nível 2 · totalizadora · aditiva</span>
+              </span>
+              <div class="node">
+                <span class="node-label">
+                  <span class="code">3.01.01</span>
+                  <span class="desc">Receita de Venda</span>
+                  <span class="meta">nível 3 · analítica</span>
+                </span>
+              </div>
+              <div class="node">
+                <span class="node-label">
+                  <span class="code">3.01.02</span>
+                  <span class="desc">Deduções</span>
+                  <span class="meta">nível 3 · analítica</span>
+                </span>
+              </div>
+            </div>
+            <div class="node">
+              <span class="node-label">
+                <span class="code">3.02</span>
+                <span class="desc">Custo dos Bens Vendidos</span>
+                <span class="meta">nível 2 · totalizadora · derivada</span>
+              </span>
+            </div>
           </div>
         </div>
-        <div style="padding:.7rem .95rem .95rem">
-          <input type="range" id="wipe" min="0" max="100" value="62" step="1" aria-label="Comparar antes e depois da conversão de escala">
-          <div class="scale"><span>como chega</span><span>com a escala aplicada</span></div>
+      </div>
+    </div>
+
+    <details class="reveal">
+      <summary>As cinco colunas derivadas na Silver</summary>
+      <div class="inner">
+        <p><code>NIVEL_CONTA</code> — profundidade na hierarquia (1 a 5), derivado da contagem de pontos no código.</p>
+        <p><code>CD_CONTA_PAI</code> — conta pai: tudo antes do último ponto. <code>3.01.01</code> → <code>3.01</code>. NULL para nível 1.</p>
+        <p><code>CD_CONTA_RAIZ</code> — primeiro segmento: <code>3.01.01</code> → <code>3</code>.</p>
+        <p><code>TIPO_CONTA</code> — <strong>totalizadora</strong> (até 2 níveis) ou <strong>analítica</strong> (3+ níveis). Dashboard deve filtrar por nível para evitar double-counting.</p>
+        <p><code>TIPO_ESTRUTURAL</code> — <strong>aditiva</strong> (pai = soma dos filhos) ou <strong>derivada</strong> (contas como 3.02, 3.03 que são calculadas). Diferença relevante para validações contábeis.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ═══ QUALIDADE ═══ -->
+<section id="qualidade">
+  <div class="wrap">
+    <div class="section-label">proteção</div>
+    <h2>Guardrails e observabilidade</h2>
+    <p>
+      Os guardrails validam <strong>antes</strong> de modificar qualquer tabela. Se a validação falha, os dados ficam intactos. Cada verificação é registrada com UUID na tabela de observabilidade.
+    </p>
+
+    <div class="demo-box">
+      <div class="demo-header">
+        <span class="demo-title">O que acontece quando um arquivo chega com problema</span>
+        <span class="demo-badge">interativo</span>
+      </div>
+      <div class="demo-body">
+        <div class="guard-buttons">
+          <button class="active" onclick="setGuard('ok')">arquivo normal</button>
+          <button onclick="setGuard('empty')">arquivo vazio</button>
+          <button onclick="setGuard('schema')">coluna faltando</button>
+          <button onclick="setGuard('count')">contagem diverge</button>
+        </div>
+        <div class="guard-sim mt" id="guardSim">
+          <div class="guard-step pass" id="g1"><span class="icon">✓</span><span class="text"><strong>Arquivo existe</strong> — ZIP encontrado na Landing Zone</span></div>
+          <div class="guard-step pass" id="g2"><span class="icon">✓</span><span class="text"><strong>Arquivo não vazio</strong> — CSV tem registros</span></div>
+          <div class="guard-step pass" id="g3"><span class="icon">✓</span><span class="text"><strong>Schema válido</strong> — todas as 15 colunas essenciais presentes</span></div>
+          <div class="guard-step pass" id="g4"><span class="icon">✓</span><span class="text"><strong>Contagem reconcilia</strong> — extração = Spark = validação = gravação</span></div>
+          <div class="guard-step pass" id="g5"><span class="icon">✓</span><span class="text"><strong>Gravação</strong> — dados escritos na tabela Delta</span></div>
         </div>
       </div>
+    </div>
 
-      <div class="temas"><em>termos</em><span>normalização</span><span>EDA</span><span>viés de amostragem</span><span>validação de consistência</span></div>
-
-      <div class="acc">
-        <details class="first">
-          <summary><h4>como funciona</h4></summary>
-          <div class="dbody">
-            <p>Sem aplicar a conversão, nenhuma soma e nenhum ranking sobre a coluna fecha. É
-            aqui que uma regra de contabilidade vira linha de código, e errar nessa passagem não
-            derruba nada: só devolve número errado.</p>
-            <p class="tech-note">Conversão de escala aplicada antes de qualquer agregação. A
-            gravação recebe uma projeção explícita das colunas da camada, então uma coluna nova
-            que apareça na origem é descartada em vez de derrubar a etapa.</p>
-            <div class="code">
-              <div class="file">02_silver/<b>201_cvm_dfp_dre.py</b></div>
-<pre><span class="cm"># PROJEÇÃO EXPLÍCITA: Garante que DataFrame corresponde ao schema Silver</span>
-<span class="cm"># Qualquer coluna extra no DataFrame é automaticamente descartada</span>
-<span class="cm"># Se Bronze mudar, Silver não quebra</span>
-df_silver = df_transformado.select(
-    <span class="st">"CNPJ_CIA"</span>,
-    <span class="st">"DT_REFER"</span>,
-    <span class="st">"VERSAO"</span>,
-    <span class="cm"># ... 15 colunas</span>
-)</pre>
-            </div>
-          </div>
-        </details>
-        <details>
-          <summary><h4>a validação que passava sempre</h4></summary>
-          <div class="dbody">
-            <p>Uma checagem de consistência contábil que eu tinha escrito vinha passando sempre.
-            O motivo não era o dado estar correto: a amostra que eu usava não era representativa,
-            e nela a verificação não tinha como falhar. Se a verificação não tem como falhar,
-            ela não está verificando nada, só dando a impressão de que está.</p>
-            <p class="tech-note">Premissa oculta em validação hierárquica, encontrada na análise
-            exploratória. A correção exigiu identificar antes uma amostra em que a hierarquia
-            pudesse de fato ser testada.</p>
-          </div>
-        </details>
+    <details class="reveal">
+      <summary>Quatro tabelas de observabilidade</summary>
+      <div class="inner">
+        <p><code>controle_ingestao</code> — cada ingestão fonte/ano, com <code>last_modified_cvm</code> e status. É a base para detecção inteligente de anos pendentes.</p>
+        <p><code>observabilidade_execucoes</code> — cada execução de notebook, com <code>job_id</code>, <code>run_id</code>, <code>task_key</code>, duração e contagem de registros.</p>
+        <p><code>observabilidade_guardrails</code> — cada verificação de guardrail, com tipo de check, resultado (PASS/FAIL/WARN) e detalhes.</p>
+        <p><code>observabilidade_jobs</code> — cada run de job via MERGE idempotente: a primeira task grava o início, a última atualiza o fim. Status monotônico — uma vez ERROR, sempre ERROR.</p>
       </div>
-    </section>
+    </details>
 
-    <section id="entrega">
-      <div class="stage"><span class="n">04</span><h2>Entrega</h2></div>
-      <p class="passo">
-        <a href="#fonte">&#8593; mapa das etapas</a>
-        <span class="segue">
-          <a href="#tratamento">&#8593; anterior</a>
-          <a href="#transversal">próxima &#8595;</a>
-        </span>
-      </p>
-      <p class="q"><em>o que seria</em>
-        A entrega é onde o dado tratado viraria tabela pronta para análise, organizada para quem
-        vai consultar e não para quem processou. Ela existe hoje na estrutura de pastas e na
-        declaração de ambiente, e os notebooks dela não foram escritos. É o próximo item da
-        fila. Só fazia sentido depois da conversão de escala, que ficou pronta em setembro.
-      </p>
-      <div class="temas"><em>termos</em><span>modelagem dimensional</span><span>esquema estrela</span><span>tabela fato</span></div>
-    </section>
-
-    <section id="transversal">
-      <p class="marker">em todas as etapas</p>
-      <h2>Execução autônoma</h2>
-      <p class="passo">
-        <a href="#fonte">&#8593; mapa das etapas</a>
-        <span class="segue">
-          <a href="#entrega">&#8593; anterior</a>
-          <a href="#decisoes">próxima &#8595;</a>
-        </span>
-      </p>
-      <p class="lede" style="margin-top:.8rem">
-        As quatro etapas acima rodam em horário agendado. Uma quebra é fácil de ver. O risco
-        está no que termina com sucesso e entrega número errado em silêncio.
-      </p>
-      <p style="margin-top:1.2rem">
-        Suponha que um arquivo chegue sem uma coluna que o pipeline espera encontrar. O que
-        acontece a partir daí depende de uma escolha que eu fiz no desenho.
-      </p>
-
-      <div class="sim">
-        <div class="simhead">um arquivo chega sem uma coluna obrigatória <span class="tag">simulação</span></div>
-        <div class="btns" id="gdBtns">
-          <button type="button" data-gd="0" aria-pressed="true">com guardrail</button>
-          <button type="button" data-gd="1" aria-pressed="false">sem guardrail</button>
-        </div>
-        <div class="log" id="gdLog"></div>
+    <details class="reveal">
+      <summary>Reconciliação em quatro pontos (Bronze)</summary>
+      <div class="inner">
+        <p>A Bronze verifica a contagem em quatro momentos do pipeline e para se qualquer deles divergir:</p>
+<pre>count_extraido = len(df_pandas)           # 1. extração do CSV
+count_spark    = df_raw.count()            # 2. conversão para Spark
+count_validado = df_validado.count()       # 3. pós-validação de schema
+count_tabela   = spark.table(...).count()  # 4. pós-gravação na Delta</pre>
+        <p>Se o número muda entre dois pontos, o guardrail registra a divergência e interrompe o processamento daquele ano — sem afetar os demais.</p>
       </div>
+    </details>
+  </div>
+</section>
 
-      <p class="hint" style="margin-top:2rem">seis escolhas sustentam a execução agendada</p>
-      <div class="tabs" role="tablist" aria-label="Escolhas de execução autônoma">
-        <button type="button" role="tab" data-tab="verificação" aria-selected="true">verificação</button>
-        <button type="button" role="tab" data-tab="interrupção" aria-selected="false">interrupção</button>
-        <button type="button" role="tab" data-tab="detecção" aria-selected="false">detecção</button>
-        <button type="button" role="tab" data-tab="observabilidade" aria-selected="false">observabilidade</button>
-        <button type="button" role="tab" data-tab="ambiente" aria-selected="false">ambiente</button>
-        <button type="button" role="tab" data-tab="reprocessamento" aria-selected="false">reprocessamento</button>
+<!-- ═══ OPERAÇÃO ═══ -->
+<section id="operacao">
+  <div class="wrap">
+    <div class="section-label">execução</div>
+    <h2>Como o pipeline roda</h2>
+    <p>Três jobs separados, cada um com papel definido, declarados em YAML e orquestrados por <strong>Databricks Asset Bundles</strong>.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>Verificação diária · 6h</h4>
+        <p>Requisição HEAD à CVM por exercício. Compara <code>Last-Modified</code> com metadados locais. Se mudou, arquiva versão atual e baixa a nova.</p>
+        <div class="tags"><span class="tag">004_verificacao_diaria</span><span class="tag">cron 6h BRT</span></div>
       </div>
-      <div class="tabbody">
-        <div class="tabpanel" data-tabpanel="interrupção" hidden>
-          <h4>Interrupção antes da gravação, não depois</h4>
-          <p class="one">para na etapa em que o problema nasceu</p>
-          <p>A checagem de estrutura acontece antes da escrita. Faltando informação essencial, a
-          execução para na etapa em que o problema nasceu, e não três camadas adiante, onde a
-          causa já se perdeu.</p>
-          <p class="tech-note">Validações de ingestão e de transformação com falha explícita,
-          processamento granular por período e rastreamento de erro. A documentação inclui uma
-          seção sobre <b>quando não usar guardrail</b>, já que nem toda verificação compensa o
-          custo de manter.</p>
-          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>fail-fast</span><span>validação de schema</span><span>guardrails de qualidade</span></div>
-        </div>
-        <div class="tabpanel" data-tabpanel="detecção" hidden>
-          <h4>Decidir sozinho o que precisa ser processado</h4>
-          <p class="one">três perguntas, nenhuma delas feita à origem</p>
-          <p>Antes de processar, o pipeline precisa saber o que processar. Ele faz três perguntas
-          sobre cada exercício: este ano já foi processado alguma vez, a execução anterior
-          registrou sucesso mas não deixou linha na tabela, e o arquivo guardado aqui ainda é o
-          mesmo que a origem publicou. Se alguma das três respostas não fecha, o ano volta para
-          a fila.</p>
-          <p>A segunda pergunta existe porque registro de sucesso não é prova de dado gravado.
-          Confiar só no registro de sucesso deixa um exercício faltando na base, sem nada
-          indicando isso.</p>
-          <p class="tech-note">Detecção por leitura local, sem chamada de rede em tempo de
-          execução. O estado de republicação vem de comparar os metadados gravados ao lado do
-          arquivo com o que a tabela de controle registrou, e o estado de dado ausente vem de
-          conferir a tabela de destino, não a flag. Seis fontes cobertas, três de histórico e
-          três de tratamento.</p>
-          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>detecção de mudança</span><span>reconciliação</span><span>watermark</span><span>carga incremental</span></div>
-        </div>
-        <div class="tabpanel" data-tabpanel="observabilidade" hidden>
-          <h4>Cada execução deixa registro do que fez</h4>
-          <p class="one">dá para consultar as execuções passadas como qualquer tabela</p>
-          <p>Log de execução rola para fora da tela e não responde pergunta comparativa. Quantos
-          arquivos vieram naquela noite, quanto tempo a rotina levou em relação à semana passada,
-          em que ponto ela parou quando parou: isso se responde com uma consulta, e não rolando
-          o log até achar. Por isso o registro de execução fica em tabela.</p>
-          <p class="tech-note">Cada execução grava um registro em tabela: identificação do job e
-          da task, janela de tempo, duração, volume processado, resultado e mensagem de erro.</p>
-          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>observabilidade</span><span>métricas de pipeline</span><span>rastreabilidade de execução</span></div>
-        </div>
-        <div class="tabpanel" data-tabpanel="verificação">
-          <h4>Verificação automática a cada alteração de código</h4>
-          <p class="one">a quebra aparece no momento da alteração</p>
-          <p>Nenhuma alteração entra sem passar por checagem automática. A quebra aparece no momento
-          da mudança, e não na próxima execução agendada.</p>
-          <p class="tech-note"><b>GitHub Actions</b> em cada push e pull request na main:
-          <b>Ruff</b> para padrão de código e <b>pytest</b> nos testes das funções puras de
-          configuração. Em job separado, um teste ponta a ponta sobe o pipeline num ambiente
-          isolado e o executa sobre o arquivo real da CVM, conferindo cinco validações no
-          resultado.</p>
-          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>CI/CD</span><span>linting</span><span>testes unitários</span><span>teste de integração</span></div>
-        </div>
-        <div class="tabpanel" data-tabpanel="ambiente" hidden>
-          <h4>Ambiente reproduzível a partir do repositório</h4>
-          <p class="one">quem clonar sobe o mesmo pipeline</p>
-          <p>O ambiente e os jobs estão declarados em arquivo versionado. Quem clonar o repositório
-          sobe o mesmo pipeline sem depender de nada configurado na interface. Os dados não vêm
-          junto: o pipeline baixa da CVM na execução.</p>
-          <p class="tech-note"><b>Databricks Asset Bundles</b> com targets de desenvolvimento,
-          integração contínua e produção. Jobs declarados em YAML, com notificação de falha por
-          e-mail.</p>
-          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>infraestrutura como código</span><span>orquestração de jobs</span><span>dev/test/prod</span></div>
-        </div>
-        <div class="tabpanel" data-tabpanel="reprocessamento" hidden>
-          <h4>Reprocessamento sem duplicação</h4>
-          <p class="one">rodar de novo entrega a versão correta e só ela</p>
-          <p>Reprocessar um exercício já carregado é rotina: quando a CVM republica um arquivo
-          corrigido, quando a regra muda e o histórico precisa ser refeito, ou quando a execução
-          anterior parou no meio. Em qualquer um deles, rodar de novo entrega a versão correta e
-          só ela, sem somar linha em cima do que já estava lá.</p>
-          <p class="tech-note">Sobrescrita atômica por predicado sobre a partição de ano
-          (<b>replaceWhere</b>), substituindo a estratégia anterior de apagar e reinserir, que
-          deixava uma janela com a tabela incompleta.</p>
-          <div class="temas" style="margin-top:1.2rem"><em>termos</em><span>idempotência</span><span>backfill</span><span>replaceWhere</span><span>escrita atômica</span></div>
-        </div>
+      <div class="card">
+        <h4>Pipeline semanal · segunda 7h</h4>
+        <p>Bronze e Silver para as três demonstrações em <strong>trilhos paralelos</strong>. DRE, BPA e BPP rodam ao mesmo tempo — cada par Bronze→Silver é cadeia independente.</p>
+        <div class="tags"><span class="tag">7 tasks</span><span class="tag">paralelo</span><span class="tag">timeout 2h</span></div>
       </div>
-    </section>
-
-    <section id="decisoes">
-      <p class="marker">registro</p>
-      <h2>Decisões</h2>
-      <p class="passo">
-        <a href="#fonte">&#8593; mapa das etapas</a>
-        <span class="segue">
-          <a href="#transversal">&#8593; anterior</a>
-          <a href="#aberto">próxima &#8595;</a>
-        </span>
-      </p>
-      <p class="lede" style="margin-top:.8rem">
-        Cada decisão fica registrada no repositório, inclusive as que desfizeram uma escolha
-        anterior, marcadas em terracota.
-      </p>
-      <ul class="tl">
-        <li data-undo="true">
-          <details>
-            <summary><span class="d">20 set</span><h4>Registrei a estratégia e não o que ela protegia</h4></summary>
-            <div class="dbody">
-              <p>A forma de gravar o histórico tinha mudado duas vezes em dois meses. Fui entender
-              por quê e o problema não estava em nenhuma das duas escolhas: estava no que eu tinha
-              deixado escrito. Registrei &ldquo;uso esta estratégia&rdquo; e não o que ela existia
-              para garantir. Anotada assim, ela cai no primeiro bug, porque quem lê não sabe o que
-              perde ao trocá-la. Reescrevi dizendo o que não pode ser perdido: toda versão
-              publicada pela CVM fica guardada, e nenhuma linha é apagada para evitar duplicata.</p>
-              <p class="tech-note">O histórico preserva toda versão publicada pela origem, e a
-              garantia de não duplicar vem da verificação prévia do <b>Last-Modified</b>, nunca de
-              apagar linha. Quem sustenta o critério é o mecanismo de verificação, que por isso
-              precisa de teste próprio.</p>
-            </div>
-          </details>
-        </li>
-        <li data-undo="true">
-          <details>
-            <summary><span class="d">20 set</span><h4>Tirei a chamada à origem de dentro da execução</h4></summary>
-            <div class="dbody">
-              <p>Quem descobre que a fonte mudou não pode ser a mesma rotina que já assumiu que nada
-              mudou. Era o que estava acontecendo, e por isso o pipeline não tinha como enxergar um
-              exercício republicado depois de já processado.</p>
-              <p class="tech-note">Duas funções que faziam requisição HTTP em tempo de execução foram
-              removidas. A detecção ganhou um terceiro estado, resolvido por leitura local.</p>
-            </div>
-          </details>
-        </li>
-        <li>
-          <details>
-            <summary><span class="d">19 set</span><h4>Converti a escala antes de qualquer soma</h4></summary>
-            <div class="dbody">
-              <p>Cerca de quinhentas e quarenta companhias reportam em milhares e quinze em unidades.
-              Enquanto a conversão não existiu, qualquer ranking entre elas estava errado por um fator
-              de mil, sem nada na tabela denunciando isso.</p>
-              <p class="tech-note">Conversão aplicada na camada de padronização, não na de entrega,
-              para que nenhum consumidor precise conferir a escala. A coluna original permanece.</p>
-            </div>
-          </details>
-        </li>
-        <li data-undo="true">
-          <details>
-            <summary><span class="d">19 set</span><h4>Descobri que meu laço rodava só a última volta</h4></summary>
-            <div class="dbody">
-              <p>O laço que percorria os exercícios estava escrito ao longo de várias células, e só a
-              primeira delas repetia. As outras rodavam uma vez, com o último ano. Faltavam três
-              exercícios inteiros na base e nenhuma execução tinha acusado erro.</p>
-              <p class="tech-note">Laço consolidado em célula única, padrão que já existia em um dos
-              notebooks e não tinha sido propagado.</p>
-            </div>
-          </details>
-        </li>
-        <li data-undo="true">
-          <details>
-            <summary><span class="d">19 ago</span><h4>Troquei a forma de regravar os dados</h4></summary>
-            <div class="dbody">
-              <p>A original apagava o período e reescrevia em duas operações, e entre uma e outra
-              existia um instante com a base incompleta. A nova troca o período inteiro numa
-              operação só, e esse instante deixa de existir.</p>
-              <p class="tech-note">De DELETE seguido de APPEND para <b>replaceWhere</b>.</p>
-            </div>
-          </details>
-        </li>
-        <li data-undo="true">
-          <details>
-            <summary><span class="d">19 ago</span><h4>Parei de configurar o ambiente na mão</h4></summary>
-            <div class="dbody">
-              <p>O agendamento tinha sido montado clicando na interface. Isso não é versionável nem
-              replicável.</p>
-              <p class="tech-note">Migração para <b>Databricks Asset Bundles</b>, com três targets.</p>
-            </div>
-          </details>
-        </li>
-        <li data-undo="true">
-          <details>
-            <summary><span class="d">17 ago</span><h4>Descobri que uma verificação minha estava errada</h4></summary>
-            <div class="dbody">
-              <p>Uma checagem de consistência vinha passando sempre, e o motivo era a amostra: não era
-              representativa, então não tinha como falhar.</p>
-              <p class="tech-note">Premissa oculta em validação hierárquica, encontrada na EDA.</p>
-            </div>
-          </details>
-        </li>
-        <li>
-          <details>
-            <summary><span class="d">15 ago</span><h4>Separei um pedaço em projeto próprio</h4></summary>
-            <div class="dbody">
-              <p>As instruções que eu escrevia para o assistente de código nasceram aqui dentro. Como
-              servem para qualquer projeto, passaram a viver sozinhas.</p>
-              <p class="tech-note">Extração das skills para repositório independente.</p>
-            </div>
-          </details>
-        </li>
-</ul>
-    </section>
-
-    <section id="aberto">
-      <p class="marker">próximos passos</p>
-      <h2>O que está aberto</h2>
-      <p class="passo">
-        <a href="#fonte">&#8593; mapa das etapas</a>
-        <span class="segue">
-          <a href="#decisoes">&#8593; anterior</a>
-        </span>
-      </p>
-      <p class="lede" style="margin-top:.8rem">
-        A investigação de qualidade da base reúne quinze achados numerados. Estes são os que
-        ainda estão na fila.
-      </p>
-      <div class="rows">
-        <div class="row"><div class="k">em construção</div><div class="v">Contas contábeis ainda sem classificação de hierarquia</div></div>
-        <div class="row"><div class="k">em construção</div><div class="v">O mecanismo que sustenta a preservação do histórico não tem teste próprio. Ele já foi removido duas vezes em ajustes pequenos, e nas duas o pipeline deixou de enxergar republicação sem acusar nada</div></div>
-        <div class="row"><div class="k">em construção</div><div class="v">A janela de anos processados entrega seis exercícios onde a configuração diz cinco. Está identificado, documentado e não corrigido, porque seis não atrapalha</div></div>
-        <div class="row"><div class="k">em construção</div><div class="v">Camada de entrega</div></div>
+      <div class="card">
+        <h4>Testes de integração · sob demanda</h4>
+        <p>Pipeline completo em schemas isolados (<code>proj_cvm_test_*</code>) com exercício 2021. Cinco validações por demonstração: existência, contagem, reconciliação, PKs únicas e metadados.</p>
+        <div class="tags"><span class="tag">10 tasks</span><span class="tag">GitHub Actions</span><span class="tag">fail-fast</span></div>
       </div>
+    </div>
 
-      <p class="go">
-        <a class="main" href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros" target="_blank" rel="noopener noreferrer">
-          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-          repositório
-        </a>
-        <a href="/">voltar para a home</a>
-      </p>
-    </section>
+    <details class="reveal">
+      <summary>Detecção inteligente de anos pendentes</summary>
+      <div class="inner">
+        <p>Antes de processar, o pipeline consolida o que está pendente em <strong>seis fontes</strong> (três Bronze + três Silver), cruzando com a tabela de controle. O resultado é a lista <code>ANOS_PROCESSAR</code> — filtrada pela janela temporal relevante (últimos 5 anos).</p>
+        <p>Prioridade de override: widget Databricks → variável de ambiente → detecção inteligente → fallback (ano atual). Se <code>CARGA=completa</code>, todos os anos disponíveis são forçados.</p>
+      </div>
+    </details>
+  </div>
+</section>
 
-    <footer>
-      <p><a href="/">pedro oliveira</a><a href="https://www.linkedin.com/in/1pedroosilva/" target="_blank" rel="noopener noreferrer">linkedin</a><a href="https://github.com/1pedroosilva" target="_blank" rel="noopener noreferrer">github</a></p>
-    </footer>
+<!-- ═══ INFRAESTRUTURA ═══ -->
+<section id="infra">
+  <div class="wrap">
+    <div class="section-label">engenharia</div>
+    <h2>Infraestrutura como código</h2>
 
-  </main>
-</div>
+    <div class="card-grid two">
+      <div class="card">
+        <h4>Três ambientes</h4>
+        <p><code>ambientes.json</code> declara dev, test e prod com composição dinâmica de schemas. Fora do Databricks, o config degrada para dev sem quebrar pytest no CI.</p>
+      </div>
+      <div class="card">
+        <h4>Databricks Asset Bundles</h4>
+        <p>Jobs, tasks, schedules e parâmetros em YAML versionado. Deploy via <code>bundle deploy --target</code>. Três targets: dev, test, prod.</p>
+      </div>
+      <div class="card">
+        <h4>CI no GitHub Actions</h4>
+        <p>Dois workflows: <strong>CI</strong> (Ruff + pytest a cada push) e <strong>testes E2E</strong> (bundle deploy + pipeline real no Databricks, sob demanda).</p>
+      </div>
+      <div class="card">
+        <h4>Compatível com Serverless</h4>
+        <p>APIs Python padrão direto com UC Volumes. Sem staging em <code>/tmp</code>, sem <code>dbutils.fs</code> obrigatório. Funciona em Spark Connect.</p>
+      </div>
+    </div>
+
+    <details class="reveal">
+      <summary>Composição de schemas (ambientes.json)</summary>
+      <div class="inner">
+<pre>{
+  "composicao": { "schema": "{prefixo}_{ordem}_{camada}" },
+  "ambientes": {
+    "dev":  { "prefixo": "proj_cvm_dev",  "existe": true  },
+    "test": { "prefixo": "proj_cvm_test", "existe": true  },
+    "prod": { "prefixo": "proj_cvm_prod", "existe": false }
+  }
+}
+// dev  → workspace.proj_cvm_dev_01_bronze.101_dre_dfp
+// test → workspace.proj_cvm_test_01_bronze.101_dre_dfp</pre>
+        <p>Prod está declarado mas não instanciado (<code>existe: false</code>). O config recusa com mensagem explícita. Sem consumidor real, prod separado seria over-engineering — mas a arquitetura comporta sem mudança de código.</p>
+      </div>
+    </details>
+
+    <p class="mt small quiet">
+      Stack: <strong>Databricks</strong> · <strong>PySpark</strong> · <strong>Delta Lake</strong> · <strong>Unity Catalog</strong> · <strong>Python</strong> · <strong>GitHub Actions</strong> · <strong>Ruff</strong> · <strong>pytest</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ═══ DECISÕES ═══ -->
+<section id="decisoes">
+  <div class="wrap">
+    <div class="section-label">registro</div>
+    <h2>Decisões</h2>
+    <p>Cada decisão fica no <a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros/blob/main/00_documentacao/evolucao_projeto.md">registro de evolução</a> do repositório, inclusive as que desfizeram uma escolha anterior.</p>
+
+    <div class="timeline">
+      <div class="timeline-item"><div class="date">24 ago</div><div class="desc">Testes de integração E2E no Databricks real — 10 tasks, schemas isolados, cinco validações por demonstração.</div></div>
+      <div class="timeline-item"><div class="date">23 ago</div><div class="desc">CI/CD com GitHub Actions — Ruff para linting e pytest para funções puras.</div></div>
+      <div class="timeline-item"><div class="date">19 ago</div><div class="desc">Migração para Databricks Asset Bundles — jobs declarados em YAML com três targets.</div></div>
+      <div class="timeline-item"><div class="date">19 ago</div><div class="desc">Gravação atômica na Silver via <code>REPLACE WHERE</code>, eliminando a janela do DELETE+APPEND.</div></div>
+      <div class="timeline-item"><div class="date">17 ago</div><div class="desc">Premissa oculta em validação hierárquica — a checagem passava sempre porque a amostra não era representativa.</div></div>
+      <div class="timeline-item"><div class="date">10 ago</div><div class="desc">Terceira demonstração (BPP) adicionada. Padrão modular: 103→203, mesma arquitetura.</div></div>
+      <div class="timeline-item"><div class="date">3 ago</div><div class="desc">Bronze idempotente com append-only e versionamento, eliminando duplicatas estruturais.</div></div>
+      <div class="timeline-item"><div class="date">31 jul</div><div class="desc">Refatoração para Spark Connect/Serverless — sem staging em <code>/tmp</code>.</div></div>
+      <div class="timeline-item"><div class="date">31 jul</div><div class="desc">Limitação real do Delta Lake documentada: ALTER COLUMN TYPE não suportado.</div></div>
+      <div class="timeline-item"><div class="date">22 jul</div><div class="desc">Landing Zone em UC Volumes com detecção de atualizações via Last-Modified HTTP.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EM ABERTO ═══ -->
+<section id="aberto">
+  <div class="wrap">
+    <div class="section-label">próximos passos</div>
+    <h2>O que está aberto</h2>
+    <div class="card-grid">
+      <div class="card"><h4>Camada Gold</h4><p>Métricas de negócio, KPIs por empresa, rankings setoriais. Primeiro item da fila.</p></div>
+      <div class="card"><h4>Visualização</h4><p>Dashboards para consumo dos dados da Gold. Genie Spaces ou qualquer BI sobre Unity Catalog.</p></div>
+      <div class="card"><h4>Mais demonstrações</h4><p>DFC (fluxo de caixa), DVA (valor adicionado), DMPL (mutações do patrimônio).</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros">repositório</a>
+    <a href="https://1pedroosilva.github.io/">home</a>
+    <a href="https://www.linkedin.com/in/1pedroosilva/">linkedin</a>
+    <a href="https://github.com/1pedroosilva">github</a>
+  </div>
+</footer>
 
 <script>
-/* ── 01 captura ── */
-const CAP=[
- {ln:[['2021','baixado','hit'],['2022','baixado','hit'],['2023','baixado','hit'],['2024','baixado','hit'],['2025','baixado','hit']],
-  sum:'<b>5</b> pacotes baixados · 0 ignorados'},
- {ln:[['2021','sem mudança na origem','mut'],['2022','sem mudança na origem','mut'],['2023','sem mudança na origem','mut'],['2024','sem mudança na origem','mut'],['2025','sem mudança na origem','mut']],
-  sum:'0 baixados · <b>5</b> ignorados · nada foi reescrito'},
- {ln:[['2021','sem mudança na origem','mut'],['2022','sem mudança na origem','mut'],['2023','sem mudança na origem','mut'],['2024','Last-Modified mudou · baixado','hit'],['2025','sem mudança na origem','mut']],
-  sum:'<b>1</b> baixado · 4 ignorados · só a partição de 2024 é reescrita'}
-];
-const capLog=document.getElementById('capLog'),capBtns=[...document.querySelectorAll('#capBtns button')];
-function pintaCap(i){
-  const d=CAP[i];
-  capLog.innerHTML=d.ln.map((l,k)=>
-    '<div class="ln '+l[2]+'" style="animation-delay:'+(k*45)+'ms"><span class="y">'+l[0]+'</span><span class="s">'+l[1]+'</span></div>'
-  ).join('')+'<span class="sum">'+d.sum+'</span>';
-  capBtns.forEach((b,k)=>b.setAttribute('aria-pressed',String(k===i)));
+/* ── Scale demo ── */
+function setScale(mode) {
+  const btns = document.querySelectorAll('.scale-toggle button');
+  btns.forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const valA = document.getElementById('compA_val');
+  const valB = document.getElementById('compB_val');
+  const tagA = document.getElementById('compA_tag');
+  const tagB = document.getElementById('compB_tag');
+  const escA = document.getElementById('compA_esc');
+  const barA = document.getElementById('compA_bar');
+  const barB = document.getElementById('compB_bar');
+  const cap = document.getElementById('scaleCap');
+
+  if (mode === 'raw') {
+    valA.textContent = '1.234.567';
+    valB.textContent = '890.412.300';
+    tagA.textContent = 'como chega da CVM';
+    tagB.textContent = 'como chega da CVM';
+    escA.textContent = 'MIL';
+    barA.style.width = '14%';
+    barB.style.width = '100%';
+    cap.textContent = 'Lado a lado, B parece setecentas vezes maior que A.';
+  } else {
+    valA.textContent = '1.234.567.000';
+    valB.textContent = '890.412.300';
+    tagA.textContent = '× 1.000 (escala aplicada)';
+    tagB.textContent = 'já em unidades';
+    escA.textContent = 'MIL → convertida';
+    barA.style.width = '100%';
+    barB.style.width = '72%';
+    cap.textContent = 'Com a escala aplicada, A é maior que B. A ordem se inverte.';
+  }
 }
-capBtns.forEach((b,k)=>b.addEventListener('click',()=>pintaCap(k)));
-pintaCap(0);
 
-/* ── guardrail ── */
-const GD=[
- {ln:[['01','captura · arquivo recebido','mut'],['02','validação de schema · coluna obrigatória ausente','bad'],['··','execução interrompida','bad'],['··','nada foi gravado','hit']],
-  sum:'falha na etapa em que o problema nasceu · <b>alguém é avisado</b>'},
- {ln:[['01','captura · arquivo recebido','mut'],['02','tratamento · concluído','mut'],['03','gravação · concluída','mut'],['··','execução finalizada com sucesso','mut']],
-  sum:'tabela publicada com a coluna vazia · <b>ninguém é avisado</b>'}
-];
-const gdLog=document.getElementById('gdLog'),gdBtns=[...document.querySelectorAll('#gdBtns button')];
-function pintaGd(i){
-  const d=GD[i];
-  gdLog.innerHTML=d.ln.map((l,k)=>
-    '<div class="ln '+l[2]+'" style="animation-delay:'+(k*70)+'ms"><span class="y">'+l[0]+'</span><span class="s">'+l[1]+'</span></div>'
-  ).join('')+'<span class="sum">'+d.sum+'</span>';
-  gdBtns.forEach((b,k)=>b.setAttribute('aria-pressed',String(k===i)));
-}
-gdBtns.forEach((b,k)=>b.addEventListener('click',()=>pintaGd(k)));
-pintaGd(0);
+/* ── Guardrail sim ── */
+function setGuard(scenario) {
+  const btns = document.querySelectorAll('.guard-buttons button');
+  btns.forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
 
-/* ── abas dos pilares ── */
-const tb=[...document.querySelectorAll('.tabs button')];
-const tp=[...document.querySelectorAll('[data-tabpanel]')];
-tb.forEach(b=>b.addEventListener('click',()=>{
-  tp.forEach(p=>{p.hidden = p.getAttribute('data-tabpanel')!==b.dataset.tab;});
-  tb.forEach(o=>o.setAttribute('aria-selected',String(o===b)));
-}));
+  const steps = [
+    document.getElementById('g1'),
+    document.getElementById('g2'),
+    document.getElementById('g3'),
+    document.getElementById('g4'),
+    document.getElementById('g5'),
+  ];
 
-/* ── republicação ── */
-const MESES=['mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-const VERS=[
-  {ate:3,v:1,val:'1.198.402',ent:'12 mar 2025'},
-  {ate:7,v:2,val:'1.221.870',ent:'04 jul 2025'},
-  {ate:9,v:3,val:'1.234.567',ent:'18 nov 2025'}
-];
-const rp=document.getElementById('rp');
-function pintaRepub(){
-  const i=+rp.value,cur=VERS.find(x=>i<=x.ate);
-  document.getElementById('rpDate').textContent=MESES[i]+' 2025';
-  document.getElementById('rpVal').textContent=cur.val;
-  document.getElementById('rpMeta').textContent='versão '+cur.v+', entregue em '+cur.ent;
-  document.querySelectorAll('tbody tr').forEach(tr=>tr.setAttribute('data-on',String(+tr.dataset.v===cur.v)));
-}
-rp.addEventListener('input',pintaRepub); pintaRepub();
+  const configs = {
+    ok: [
+      { cls: 'pass', icon: '✓', html: '<strong>Arquivo existe</strong> — ZIP encontrado na Landing Zone' },
+      { cls: 'pass', icon: '✓', html: '<strong>Arquivo não vazio</strong> — CSV tem 30.127 registros' },
+      { cls: 'pass', icon: '✓', html: '<strong>Schema válido</strong> — 15 colunas essenciais presentes' },
+      { cls: 'pass', icon: '✓', html: '<strong>Contagem reconcilia</strong> — 30.127 em todos os 4 pontos' },
+      { cls: 'pass', icon: '✓', html: '<strong>Gravação</strong> — dados escritos, controle atualizado' },
+    ],
+    empty: [
+      { cls: 'pass', icon: '✓', html: '<strong>Arquivo existe</strong> — ZIP encontrado' },
+      { cls: 'fail', icon: '✗', html: '<strong>Arquivo vazio</strong> — CSV tem 0 registros. Processamento interrompido.' },
+      { cls: 'skip', icon: '—', html: '<strong>Schema</strong> — não executado (etapa anterior falhou)' },
+      { cls: 'skip', icon: '—', html: '<strong>Contagem</strong> — não executado' },
+      { cls: 'skip', icon: '—', html: '<strong>Gravação</strong> — não executada. Dados anteriores preservados.' },
+    ],
+    schema: [
+      { cls: 'pass', icon: '✓', html: '<strong>Arquivo existe</strong> — ZIP encontrado' },
+      { cls: 'pass', icon: '✓', html: '<strong>Arquivo não vazio</strong> — CSV tem registros' },
+      { cls: 'fail', icon: '✗', html: '<strong>Schema inválido</strong> — coluna VL_CONTA faltando. Processamento interrompido.' },
+      { cls: 'skip', icon: '—', html: '<strong>Contagem</strong> — não executado' },
+      { cls: 'skip', icon: '—', html: '<strong>Gravação</strong> — não executada. Dados anteriores preservados.' },
+    ],
+    count: [
+      { cls: 'pass', icon: '✓', html: '<strong>Arquivo existe</strong> — ZIP encontrado' },
+      { cls: 'pass', icon: '✓', html: '<strong>Arquivo não vazio</strong> — CSV tem 30.127 registros' },
+      { cls: 'pass', icon: '✓', html: '<strong>Schema válido</strong> — 15 colunas presentes' },
+      { cls: 'fail', icon: '✗', html: '<strong>Contagem diverge</strong> — gravados: 30.127, na tabela: 30.098. Diferença de 29 registros.' },
+      { cls: 'skip', icon: '—', html: '<strong>Gravação revertida</strong> — erro registrado em observabilidade_guardrails.' },
+    ],
+  };
 
-/* ── escala ── */
-const wipe=document.getElementById('wipe'),paneA=document.getElementById('paneA');
-function pintaWipe(){paneA.style.clipPath='inset(0 '+(100-(+wipe.value))+'% 0 0)';}
-wipe.addEventListener('input',pintaWipe); pintaWipe();
-
-/* ── tema ── */
-const btema=document.getElementById('tema');
-function pintaTema(t){
-  document.documentElement.dataset.tema=t;
-  btema.textContent = t==='escuro' ? 'claro' : 'escuro';
-  btema.setAttribute('aria-pressed', String(t==='escuro'));
-  try{localStorage.setItem('tema',t);}catch(e){}
-}
-pintaTema(document.documentElement.dataset.tema||'claro');
-btema.addEventListener('click',()=>pintaTema(document.documentElement.dataset.tema==='escuro'?'claro':'escuro'));
-
-/* ── botão de topo ── */
-const btopo=document.getElementById('topo');
-btopo.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
-
-/* ── rail ── */
-const links=[...document.querySelectorAll('.index a')];
-const label=document.getElementById('railLabel'),fill=document.getElementById('railFill');
-const obs=new IntersectionObserver(es=>{
-  es.forEach(en=>{
-    if(!en.isIntersecting)return;
-    const id=en.target.id;
-    links.forEach(a=>a.setAttribute('aria-current',String(a.getAttribute('href')==='#'+id)));
-    const hit=links.find(a=>a.getAttribute('href')==='#'+id);
-    label.textContent=hit?hit.textContent.trim().replace(/^\S+\s/,''):'o projeto';
+  const scenario_steps = configs[scenario];
+  steps.forEach((el, i) => {
+    const cfg = scenario_steps[i];
+    el.className = 'guard-step ' + cfg.cls;
+    el.querySelector('.icon').textContent = cfg.icon;
+    el.querySelector('.text').innerHTML = cfg.html;
   });
-},{rootMargin:'-40% 0px -50% 0px'});
-[...document.querySelectorAll('main section')].forEach(s=>obs.observe(s));
-addEventListener('scroll',()=>{
-  const max=document.body.scrollHeight-innerHeight;
-  fill.style.width=(max>0?(scrollY/max)*100:0)+'%';
-  btopo.classList.toggle('on', scrollY>700);
-},{passive:true});
+}
 </script>
 </body>
 </html>
