@@ -1,0 +1,535 @@
+/* ==========================================================================
+   base.css · design system do portfólio de Pedro Oliveira
+   Fonte de referência: página do projeto CVM (projeto-cvm/index.html)
+   Contrato completo em base.md
+   ========================================================================== */
+
+/* ── 1. tokens ─────────────────────────────────────────────────────────── */
+:root{
+  /* cor · tema claro */
+  --paper:#E4E7E3;        /* fundo da página */
+  --panel:#EDEFEC;        /* superfície elevada: simulação, widget, aba */
+  --panel-deep:#D9DDD8;   /* superfície rebaixada: código, estado "antes" */
+  --ink:#16201C;          /* texto principal */
+  --ink-soft:#5A6560;     /* texto secundário, rótulos */
+  --rule:#BFC6C0;         /* fios, bordas, estado desligado */
+  --accent:#0F4C42;       /* ação, estado atual, acerto */
+  --flag:#9C4A2F;         /* decisão desfeita, alerta, falha */
+  --on-accent:var(--panel); /* texto sobre fundo accent */
+
+  /* tipografia */
+  --serif:"Newsreader",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --fs-sm:.95rem;   /* corpo dentro de acordeão, aba, linha do tempo */
+  --fs-md:1.02rem;  /* bloco de problema, título de acordeão */
+  --fs-lg:1.06rem;  /* lede, título de aba, h3 */
+  --fs-xl:1.14rem;  /* pergunta central (.ask) */
+
+  --fs-mono-2xs:.6rem;   /* etiqueta "simulação", prefixo "termos" */
+  --fs-mono-xs:.64rem;   /* botões, escala, código, etiquetas de termo */
+  --fs-mono-sm:.68rem;   /* navegação, log, tabela, nota técnica */
+  --fs-mono-md:.72rem;   /* marcador, voltar, rodapé, CTA */
+  --fs-mono-lg:.85rem;   /* h4 mono, valores numéricos em painel */
+  --fs-mono-display:1.5rem; /* número em destaque (readout) */
+
+  /* medida e espaço */
+  --col:31.5rem;         /* largura máxima de texto corrido (leitura) */
+  --col-wide:62rem;      /* largura de blocos de dado: tabela, matriz, gráfico */
+  --row-key:132px;       /* coluna de rótulo do .row (ajustável por página) */
+  --page-max:1040px;
+  --gutter:clamp(1.15rem,4vw,3rem);
+  --rail-w:186px;        /* coluna do índice lateral (≥1000px) */
+  --rail-gap:3.6rem;
+  --space-section:3.6rem;
+  --space-block:1.6rem;  /* distância entre um texto e o componente que o segue */
+  --space-inner:1rem;    /* padding interno de painel */
+
+  /* forma */
+  --radius:2px;
+  --line:1px solid var(--rule);
+  --blur:blur(9px);
+
+  /* movimento */
+  --step:220ms;
+  --ease-out:cubic-bezier(.2,.7,.3,1);
+}
+html[data-tema="escuro"]{
+  --paper:#151B19; --panel:#1C2321; --panel-deep:#111716;
+  --ink:#DCE3DE; --ink-soft:#8B9891; --rule:#2C3633;
+  --accent:#79C4B0; --flag:#D4785C;
+  --on-accent:#101614;
+}
+@media (prefers-reduced-motion:reduce){
+  :root{--step:1ms}
+  *,*::before,*::after{animation-duration:1ms!important;transition-duration:1ms!important}
+}
+
+/* ── 2. base ───────────────────────────────────────────────────────────── */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--serif);font-size:17px;line-height:1.62;
+  font-optical-sizing:auto;-webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent);text-underline-offset:.22em;text-decoration-thickness:.055em}
+a:hover{color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:var(--radius)}
+
+h1,h2,h3,h4{font-weight:500;line-height:1.2;letter-spacing:-.012em;margin:0}
+h1{font-size:clamp(1.95rem,5.2vw,3rem);font-weight:400}
+h2{font-size:clamp(1.4rem,3.6vw,1.85rem)}
+h3{font-size:var(--fs-lg)}
+h4{font-family:var(--mono);font-size:var(--fs-mono-lg);font-weight:500}
+p{margin:0 0 1em;max-width:var(--col)}
+p:last-child{margin-bottom:0}
+
+h1,h2,h3,h4,summary,.ask,.q em,.hint,.wlabel,.simhead,.marker,
+.tabbody .one,.row .k,.tl .d,.temas span{text-wrap:balance}
+p,li,.lede,.dbody p,.tech-note,.row .v,.readout{text-wrap:pretty}
+p,li,.lede{hyphens:none}
+
+@media (max-width:520px){ body{font-size:16px} }
+
+/* ── 3. estrutura da página ────────────────────────────────────────────── */
+.shell{
+  max-width:var(--page-max);margin:0 auto;padding:0 var(--gutter);
+  display:grid;grid-template-columns:minmax(0,1fr);
+}
+@media (min-width:1000px){
+  .shell{grid-template-columns:var(--rail-w) minmax(0,1fr);column-gap:var(--rail-gap)}
+}
+main{padding-bottom:4rem;min-width:0}
+section{padding:var(--space-section) 0;border-top:var(--line);min-width:0}
+section:first-of-type{border-top:0}
+
+/* índice lateral (desktop) */
+.index{display:none}
+@media (min-width:1000px){
+  .index{display:block;position:sticky;top:0;align-self:start;height:100vh;padding-top:7.5rem;overflow:hidden}
+  .index ol{list-style:none;margin:0;padding:0;border-left:var(--line)}
+  .index a{
+    display:flex;gap:.5rem;padding:.3rem 0 .3rem .8rem;margin-left:-1px;border-left:1px solid transparent;
+    font-family:var(--mono);font-size:var(--fs-mono-sm);letter-spacing:.03em;color:var(--ink-soft);
+    text-decoration:none;transition:color var(--step),border-color var(--step);
+  }
+  .index a[aria-current="true"]{color:var(--ink);border-left-color:var(--accent)}
+  .index a:hover{color:var(--ink)}
+  .index .num{color:var(--rule);font-variant-numeric:tabular-nums}
+  .index a[aria-current="true"] .num{color:var(--accent)}
+  .index .gap{height:.75rem}
+}
+
+/* barra de progresso (mobile) */
+.railbar{
+  position:sticky;top:0;z-index:40;display:flex;align-items:center;
+  padding:.55rem var(--gutter);
+  background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:var(--blur);
+  border-bottom:var(--line);
+  font-family:var(--mono);font-size:var(--fs-mono-sm);letter-spacing:.05em;color:var(--ink-soft);
+}
+.railbar .bar{position:absolute;left:0;right:0;bottom:-1px;height:1px;pointer-events:none}
+.railbar .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width 90ms linear}
+
+/* faixa de navegação do site: fina, no topo de toda página, mesma em todas.
+   marca o destino atual com aria-current no <a> (via data-atual no <body>). */
+.sitenav{
+  position:sticky;top:0;z-index:45;
+  background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:var(--blur);
+  border-bottom:var(--line);
+}
+.sitenav ul{
+  max-width:var(--page-max);margin:0 auto;padding:.5rem var(--gutter);
+  display:flex;gap:1.4rem;list-style:none;
+  font-family:var(--mono);font-size:var(--fs-mono-md);letter-spacing:.03em;
+}
+.sitenav a{color:var(--ink-soft);text-decoration:none;padding:.1rem 0;border-bottom:1.5px solid transparent;transition:color var(--step),border-color var(--step)}
+.sitenav a:hover{color:var(--ink)}
+.sitenav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+/* quando há sitenav, a barra de progresso encosta abaixo dela */
+.sitenav+.railbar{top:calc(1px + 1.5rem)}
+
+/* trilha de navegação: caminho hierárquico da página, declarado por ela.
+   fica no topo do conteúdo, no lugar do antigo "voltar". */
+.trilha{
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .45rem;
+  font-family:var(--mono);font-size:var(--fs-mono-md);letter-spacing:.03em;color:var(--ink-soft);
+  margin-bottom:2rem;
+}
+.trilha a{color:var(--ink-soft);text-decoration:none;transition:color var(--step)}
+.trilha a:hover{color:var(--accent)}
+.trilha .sep{color:var(--rule)}
+.trilha [aria-current="page"]{color:var(--ink)}
+@media (min-width:1000px){.railbar{display:none}}
+
+/* controles fixos */
+.tema,.topo{
+  position:fixed;right:clamp(.8rem,3vw,1.6rem);
+  font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.04em;cursor:pointer;
+  background:color-mix(in srgb,var(--paper) 85%,transparent);backdrop-filter:var(--blur);
+  color:var(--ink-soft);border:var(--line);border-radius:var(--radius);
+  transition:opacity var(--step),transform var(--step),color var(--step),border-color var(--step);
+}
+.tema:hover,.topo:hover{color:var(--ink);border-color:var(--ink-soft)}
+.tema{top:.5rem;z-index:60;padding:.34rem .6rem}
+.topo{
+  bottom:1.1rem;z-index:55;display:flex;align-items:center;gap:.4rem;padding:.45rem .7rem;
+  opacity:0;pointer-events:none;transform:translateY(6px);
+}
+.topo.on{opacity:1;pointer-events:auto;transform:none}
+
+/* rodapé: só ícones, herdam a cor do tema. igual em todas as páginas. */
+footer{border-top:var(--line);padding:2.2rem 0 4rem}
+footer .redes{display:flex;gap:1.4rem;align-items:center}
+footer .redes a{display:inline-flex;color:var(--ink-soft);transition:color var(--step)}
+footer .redes a:hover{color:var(--accent)}
+footer .redes svg{width:20px;height:20px;fill:currentColor;display:block}
+footer .nota{margin-top:1.3rem;font-family:var(--mono);font-size:var(--fs-mono-md);color:var(--ink-soft)}
+
+/* ── 4. abertura (hero) ────────────────────────────────────────────────── */
+.back{
+  display:inline-flex;gap:.45rem;font-family:var(--mono);font-size:var(--fs-mono-md);letter-spacing:.03em;
+  text-decoration:none;color:var(--ink-soft);margin-bottom:2rem;
+}
+.back:hover{color:var(--ink)}
+.hero{padding:6.5rem 0 3.4rem}
+.hero h1{margin-bottom:.2rem;max-width:22ch}
+.pstatus{font-family:var(--mono);font-size:var(--fs-mono-sm);color:var(--ink-soft);letter-spacing:.03em;margin:.7rem 0 0}
+.pstatus b{color:var(--ink);font-weight:500}
+.ask{
+  margin:2rem 0 0;padding:.1rem 0 .1rem 1.15rem;border-left:2px solid var(--accent);
+  font-size:var(--fs-xl);line-height:1.5;color:var(--ink);max-width:var(--col);
+}
+@media (max-width:520px){
+  .hero{padding:5rem 0 3rem}
+  .ask{font-size:1.04rem}
+}
+
+/* entrada orquestrada: só no hero */
+.reveal{opacity:0;transform:translateY(9px);animation:rise .6s var(--ease-out) forwards}
+.reveal:nth-child(2){animation-delay:.06s}
+.reveal:nth-child(3){animation-delay:.13s}
+.reveal:nth-child(4){animation-delay:.2s}
+.reveal:nth-child(5){animation-delay:.27s}
+@keyframes rise{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;animation:none}}
+
+/* ── 5. cabeçalhos de seção ────────────────────────────────────────────── */
+.marker{font-family:var(--mono);font-size:var(--fs-mono-md);letter-spacing:.06em;color:var(--ink-soft);margin-bottom:.5rem}
+.marker b{color:var(--ink);font-weight:500}
+.lede{font-size:var(--fs-lg);color:var(--ink-soft);max-width:var(--col);margin-top:.8rem}
+.hint{font-family:var(--mono);font-size:var(--fs-mono-sm);color:var(--ink-soft);margin-top:.8rem;max-width:var(--col)}
+
+.stage{display:flex;align-items:baseline;gap:1rem;margin-bottom:.35rem;max-width:var(--col)}
+.stage .n{font-family:var(--mono);font-size:var(--fs-mono-md);color:var(--accent);letter-spacing:.06em;flex:0 0 auto;padding-top:.1rem}
+@media (max-width:520px){.stage{gap:.7rem}}
+
+.q{margin:.7rem 0 1.4rem;max-width:var(--col);font-size:var(--fs-md)}
+.q em{
+  display:block;font-family:var(--mono);font-style:normal;font-size:var(--fs-mono-xs);
+  letter-spacing:.07em;color:var(--ink-soft);margin-bottom:.4rem;
+}
+
+/* navegação sequencial entre seções: duas setas de ícone, no início da seção.
+   substitui o antigo .passo (anterior/próxima/mapa) em todo o site. */
+.navsec{display:flex;gap:.4rem;margin:.1rem 0 1.5rem}
+.navsec a,.navsec span{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:2rem;height:2rem;border:var(--line);border-radius:var(--radius);
+  color:var(--ink-soft);text-decoration:none;
+  transition:color var(--step),border-color var(--step);
+}
+.navsec a:hover{color:var(--accent);border-color:var(--ink-soft)}
+.navsec svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+/* extremos: a seta que não se aplica fica apagada e inerte */
+.navsec .off{color:var(--rule);border-color:var(--rule);pointer-events:none}
+
+/* mapa de etapas */
+.chain{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:var(--space-block);max-width:var(--col)}
+.chain a{
+  flex:1 1 0;min-width:max-content;white-space:nowrap;text-align:center;
+  font-family:var(--mono);font-size:var(--fs-mono-sm);padding:.42rem .55rem;text-decoration:none;
+  color:var(--ink-soft);border:var(--line);border-radius:var(--radius);
+  transition:color var(--step),border-color var(--step);
+}
+.chain a:hover{color:var(--ink);border-color:var(--ink-soft)}
+.chain a .dot{color:var(--accent)}
+.chain a.off,.chain a.off .dot{color:var(--rule)}
+.chain a .ar{color:var(--rule);margin-left:.15rem;display:inline-block;transition:transform var(--step),color var(--step)}
+.chain a:hover .ar{color:var(--accent);transform:translateY(2px)}
+
+/* etiquetas de termos */
+.temas{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem;margin-top:1.4rem;max-width:var(--col)}
+.temas em{font-family:var(--mono);font-size:var(--fs-mono-2xs);font-style:normal;letter-spacing:.06em;color:var(--rule);margin-right:.2rem}
+.temas span{
+  font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.02em;color:var(--ink-soft);
+  border:var(--line);border-radius:var(--radius);padding:.22rem .5rem;
+}
+
+/* ── 6. blocos de conteúdo ─────────────────────────────────────────────── */
+p.tech-note,:is(.dbody,.tabbody,.tl) p.tech-note{
+  font-family:var(--mono);font-size:var(--fs-mono-sm);line-height:1.85;color:var(--ink-soft);
+  margin-top:1.1rem;padding-left:.9rem;border-left:2px solid var(--rule);max-width:var(--col);
+}
+.tech-note b{color:var(--ink);font-weight:500}
+
+.code{margin-top:1.2rem;border:var(--line);border-radius:var(--radius);background:var(--panel-deep);overflow:hidden}
+.code .file{
+  display:flex;align-items:center;gap:.5rem;padding:.5rem .85rem;border-bottom:var(--line);
+  font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.03em;color:var(--ink-soft);
+}
+.code .file b{color:var(--ink);font-weight:500}
+.code pre{margin:0;padding:.85rem .85rem .95rem;overflow-x:auto;font-family:var(--mono);font-size:var(--fs-mono-xs);line-height:1.85;color:var(--ink)}
+.code .cm,.code .st{color:var(--ink-soft)}
+.code .kw{color:var(--accent)}
+
+/* acordeão */
+.acc{margin-top:1.8rem;max-width:var(--col)}
+details{border-bottom:var(--line)}
+details.first{border-top:var(--line)}
+summary{cursor:pointer;list-style:none;padding:.9rem 0;display:flex;gap:.9rem;align-items:baseline}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;color:var(--ink-soft);font-family:var(--mono);font-size:.9rem}
+details[open] summary::after{content:"\2212";color:var(--accent)}
+summary:hover{color:var(--accent)}
+summary h4{font-family:var(--serif);font-size:var(--fs-md);font-weight:500;letter-spacing:-.01em}
+.dbody{padding:0 0 1.3rem}
+.dbody p{font-size:var(--fs-sm)}
+
+/* linhas chave/valor */
+.rows{margin-top:1.3rem}
+.row{display:grid;gap:.25rem 2rem;padding:.8rem 0;border-top:var(--line)}
+@media (min-width:640px){.row{grid-template-columns:var(--row-key) 1fr}}
+.row .k{font-family:var(--mono);font-size:var(--fs-mono-md);color:var(--ink-soft);letter-spacing:.03em;padding-top:.22em}
+.row .v{max-width:var(--col);min-width:0}
+.row .v small{display:block;color:var(--ink-soft);font-size:var(--fs-sm);margin-top:.15rem}
+
+/* lista de problemas com link */
+.probs{margin-top:1.5rem;max-width:var(--col)}
+.prob{display:grid;gap:.15rem .9rem;padding:.85rem 0;border-top:var(--line);text-decoration:none;color:inherit;transition:border-color var(--step)}
+.prob:last-child{border-bottom:var(--line)}
+@media (min-width:560px){.prob{grid-template-columns:1fr auto;align-items:baseline}}
+.prob .t{font-size:1rem}
+.prob .g{font-family:var(--mono);font-size:var(--fs-mono-xs);color:var(--ink-soft);letter-spacing:.03em;white-space:nowrap}
+.prob:hover{border-color:var(--accent)}
+.prob:hover .t{color:var(--accent)}
+.prob:hover .g{color:var(--ink)}
+
+/* linha do tempo de decisões */
+.tl{margin-top:var(--space-block);border-left:var(--line);padding-left:1.4rem}
+.tl ul{margin:0;padding:0}
+.tl li{list-style:none;position:relative;padding-bottom:1.15rem}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{
+  content:"";position:absolute;left:calc(-1.4rem - 4px);top:.55rem;
+  width:7px;height:7px;border-radius:50%;background:var(--paper);border:1px solid var(--ink-soft);
+}
+.tl li[data-undo="true"]::before{background:var(--flag);border-color:var(--flag)}
+.tl .d{font-family:var(--mono);font-size:var(--fs-mono-xs);color:var(--ink-soft);letter-spacing:.04em}
+.tl h4{margin:0;font-family:var(--serif);font-size:var(--fs-md);font-weight:500;letter-spacing:-.01em}
+.tl p{font-size:var(--fs-sm)}
+.tl details{border:0}
+.tl summary{padding:0 0 .1rem;gap:.9rem}
+.tl summary::after{font-size:.85rem}
+.tl .dbody{padding:.55rem 0 0}
+
+/* chamadas para ação */
+.go{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:2.2rem}
+.go a{
+  display:inline-flex;align-items:center;gap:.45rem;
+  font-family:var(--mono);font-size:var(--fs-mono-md);padding:.58rem .95rem;text-decoration:none;
+  border:var(--line);border-radius:var(--radius);color:var(--ink-soft);
+  transition:background var(--step),color var(--step),border-color var(--step);
+}
+.go a:hover{color:var(--ink);border-color:var(--ink-soft)}
+.go a.main{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.go a.main:hover{background:transparent;color:var(--ink);border-color:var(--ink-soft)}
+.go a svg{width:14px;height:14px;fill:currentColor;flex:0 0 auto}
+
+/* ── 7. componentes interativos ────────────────────────────────────────── */
+/* contêiner de simulação */
+.sim{margin-top:var(--space-block);border:var(--line);border-radius:var(--radius);background:var(--panel);max-width:var(--col);overflow:hidden}
+.simhead{
+  display:flex;align-items:center;gap:.6rem;padding:.6rem .95rem;border-bottom:var(--line);
+  font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.04em;color:var(--ink-soft);
+}
+.tag{
+  margin-left:auto;font-family:var(--mono);font-size:var(--fs-mono-2xs);letter-spacing:.07em;padding:.12rem .38rem;
+  border:var(--line);border-radius:var(--radius);color:var(--ink-soft);
+}
+.sim-body{padding:var(--space-inner) .95rem 1.05rem}
+
+/* grupo de botões alternáveis e abas: mesma aparência */
+.btns{display:flex;flex-wrap:wrap;gap:.35rem;padding:.8rem .95rem 0}
+.tabs{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:1.7rem;max-width:var(--col)}
+.btns button,.tabs button{
+  font-family:var(--mono);font-size:var(--fs-mono-xs);padding:.36rem .6rem;cursor:pointer;
+  background:transparent;color:var(--ink-soft);border:var(--line);border-radius:var(--radius);
+  transition:background var(--step),color var(--step),border-color var(--step);
+}
+.tabs button{font-size:var(--fs-mono-sm);padding:.45rem .75rem}
+.btns button:hover,.tabs button:hover{color:var(--ink);border-color:var(--ink-soft)}
+.btns button[aria-pressed="true"],
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+
+.tabbody{margin-top:.75rem;max-width:var(--col);border:var(--line);border-radius:var(--radius);background:var(--panel);padding:1.2rem 1.25rem}
+.tabbody h4{font-family:var(--serif);font-size:var(--fs-lg);font-weight:500;letter-spacing:-.01em}
+.tabbody .one{font-family:var(--mono);font-size:var(--fs-mono-md);color:var(--ink-soft);margin:.3rem 0 .9rem}
+.tabbody p{font-size:var(--fs-sm)}
+.tabpanel[hidden]{display:none}
+.tabpanel{animation:fadein var(--step) ease-out}
+@keyframes fadein{from{opacity:.35}to{opacity:1}}
+
+/* log de execução */
+.log{padding:.9rem .95rem 1.05rem;font-family:var(--mono);font-size:var(--fs-mono-sm);line-height:1.95}
+.log .ln{display:flex;gap:.7rem;opacity:0;animation:slidein .3s ease-out forwards}
+.log .ln .y{color:var(--ink-soft);flex:0 0 3.4em;font-variant-numeric:tabular-nums}
+.log .ln .s{color:var(--ink)}
+.log .ln.mut .s{color:var(--ink-soft)}
+.log .ln.hit .s{color:var(--accent)}
+.log .ln.bad .s{color:var(--flag)}
+.log .sum{display:block;margin-top:.75rem;padding-top:.6rem;border-top:var(--line);color:var(--ink-soft);opacity:0;animation:slidein .3s .18s ease-out forwards}
+.log .sum b{color:var(--ink);font-weight:500}
+@keyframes slidein{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.log .ln,.log .sum{animation:none;opacity:1}}
+
+/* controle deslizante */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--rule);border-radius:var(--radius);outline:none;cursor:pointer;margin:.2rem 0}
+input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:6px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--accent);border:3px solid var(--panel);cursor:grab}
+input[type=range]::-moz-range-thumb{width:17px;height:17px;border-radius:50%;background:var(--accent);border:3px solid var(--panel);cursor:grab}
+.scale{display:flex;justify-content:space-between;font-family:var(--mono);font-size:var(--fs-mono-xs);color:var(--ink-soft);margin-top:.35rem}
+.readout{margin-top:var(--space-inner);padding-top:.9rem;border-top:var(--line);font-family:var(--mono);font-size:var(--fs-mono-md);line-height:1.85}
+.readout .big{font-size:var(--fs-mono-display);color:var(--ink);letter-spacing:-.01em;display:block;margin:.15rem 0 .35rem;font-variant-numeric:tabular-nums}
+.readout .meta{color:var(--ink-soft)}
+
+/* tabela de dados */
+table{border-collapse:collapse;width:100%;margin-top:1.2rem;font-family:var(--mono);font-size:var(--fs-mono-sm);max-width:var(--col)}
+th{text-align:left;font-weight:400;color:var(--ink-soft);letter-spacing:.04em;padding:.45rem .6rem .45rem 0;border-bottom:var(--line)}
+td{padding:.5rem .6rem .5rem 0;border-bottom:var(--line);color:var(--ink-soft);font-variant-numeric:tabular-nums;transition:color var(--step)}
+tr[data-on="true"] td{color:var(--ink)}
+tr[data-on="true"] td:first-child::before{content:"\25B8 ";color:var(--accent)}
+.table-wrap{overflow-x:auto;max-width:var(--col)}
+
+/* comparador antes/depois */
+.diff{display:grid;position:relative;border:var(--line);border-radius:var(--radius);overflow:hidden;background:var(--panel)}
+.pane{grid-area:1/1;padding:1.1rem 1.15rem;font-family:var(--mono);font-size:var(--fs-mono-sm);line-height:1.95}
+.pane.b{background:var(--panel-deep)}
+.pane.a{background:var(--panel);border-right:2px solid var(--accent)}
+.pane .co{color:var(--ink-soft);letter-spacing:.03em}
+.pane .vl{color:var(--ink);font-variant-numeric:tabular-nums;font-size:var(--fs-mono-lg)}
+.pane .note{display:block;margin-top:.9rem;color:var(--ink-soft);line-height:1.7}
+.pane .warn{color:var(--flag)}
+@media (max-width:520px){.pane{font-size:var(--fs-mono-xs);padding:.9rem}}
+
+/* ── 8. perfis de página ───────────────────────────────────────────────── */
+/* projeto: padrão, nada a declarar.
+   perfil (home) e relatório (avaliação) habilitam blocos abaixo.
+   um bloco largo pede a classe .wide, que troca --col por --col-wide. */
+.wide{max-width:var(--col-wide)}
+main[data-perfil="relatorio"]{--col:var(--col-wide)}
+
+/* hero de perfil: papel acima do nome, manifesto abaixo */
+.role{font-family:var(--mono);font-size:var(--fs-mono-md);letter-spacing:.05em;color:var(--accent);margin-bottom:2rem}
+.stmt{font-size:var(--fs-xl);max-width:var(--col);margin-bottom:2.4rem}
+.hero .links{display:flex;flex-wrap:wrap;gap:1.4rem;font-family:var(--mono);font-size:var(--fs-mono-md)}
+@media (max-width:520px){.stmt{font-size:1.08rem}}
+
+/* subtítulo do hero de projeto: uma linha em mono sob o h1 */
+.sub{font-family:var(--mono);font-size:var(--fs-mono-md);letter-spacing:.03em;color:var(--ink-soft);margin:.55rem 0 0;max-width:var(--col)}
+
+/* ── 9. componentes novos ──────────────────────────────────────────────── */
+
+/* mapa de trabalho: grade de cartões-atalho, um em destaque (.forte) */
+.mapa{display:grid;gap:1px;margin-top:2.4rem;background:var(--rule);border:var(--line)}
+@media (min-width:860px){.mapa{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.mp{display:flex;flex-direction:column;gap:.3rem;padding:1.15rem 1.2rem 1.3rem;background:var(--paper);text-decoration:none;transition:background var(--step)}
+.mp:hover{background:var(--panel)}
+.mp .et{font-family:var(--mono);font-size:var(--fs-mono-2xs);letter-spacing:.08em;text-transform:lowercase;color:var(--ink-soft);overflow-wrap:anywhere}
+.mp .tt{font-size:1rem;color:var(--accent);line-height:1.3}
+.mp:hover .tt{color:var(--ink)}
+.mp .ds{font-size:var(--fs-sm);line-height:1.5;color:var(--ink-soft)}
+.mp.forte{background:var(--panel)}
+.mp.forte:hover{background:var(--panel-deep)}
+.mp.forte .et{color:var(--accent)}
+.mp.forte .tt::after{content:" \2192";font-family:var(--mono);font-size:.82em}
+
+/* barra de atalhos: navegação horizontal, some no desktop; vira abas no mobile via JS */
+.atalhos{display:flex;gap:1.15rem;position:sticky;top:2.15rem;z-index:35;padding:.6rem 0 .65rem;margin:0;overflow-x:auto;scrollbar-width:none;background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:var(--blur);border-bottom:var(--line)}
+.atalhos::-webkit-scrollbar{display:none}
+.atalhos a{flex:0 0 auto;font-family:var(--mono);font-size:var(--fs-mono-md);letter-spacing:.02em;padding:.3rem 0 .35rem;text-decoration:none;color:var(--ink-soft);border-bottom:1.5px solid transparent;transition:color var(--step),border-color var(--step)}
+.atalhos a:hover{color:var(--ink)}
+.atalhos a[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.atalhos a.fora,.index a.fora{color:var(--accent)}
+.atalhos a.fora:hover,.index a.fora:hover{color:var(--ink)}
+@media (min-width:1000px){.atalhos{display:none}}
+main[data-abas-mobile] section[hidden]{display:none}
+
+/* prancha: ilustração de abertura com troca clara/escura */
+.prancha{margin-top:2.4rem;border:var(--line);background:var(--panel);max-width:var(--col-wide)}
+.prancha img{display:block;width:100%;height:auto}
+.prancha figcaption{padding:.7rem 1rem;border-top:var(--line);font-family:var(--mono);font-size:var(--fs-mono-md);color:var(--ink-soft)}
+.prancha .escura{display:none}
+html[data-tema="escuro"] .prancha .clara{display:none}
+html[data-tema="escuro"] .prancha .escura{display:block}
+
+/* braços: tronco comum e dois braços de um experimento */
+.bracos{margin-top:var(--space-block);max-width:var(--col);border:var(--line);border-radius:var(--radius);background:var(--panel);font-family:var(--mono);font-size:var(--fs-mono-xs);line-height:1.8}
+.bracos .comum{padding:.8rem .95rem;color:var(--ink-soft);text-align:center;text-wrap:balance}
+.bracos .par{display:grid;grid-template-columns:1fr 1fr;border-top:var(--line);border-bottom:var(--line)}
+.bracos .arm{padding:1rem .95rem 1.1rem}
+.bracos .arm+.arm{border-left:var(--line)}
+.bracos .ak{font-size:var(--fs-mono-2xs);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 .35rem}
+.bracos .arm.on .ak{color:var(--accent)}
+.bracos .av{font-family:var(--serif);font-size:1rem;line-height:1.4;color:var(--ink);margin:0}
+
+/* rede: grafo SVG com cartão de leitura; dados sempre na página */
+.rede{margin-top:1.8rem}
+.rede svg{width:100%;height:auto;display:block;overflow:visible}
+.rede .ed{stroke:var(--rule);stroke-width:1;transition:stroke var(--step),stroke-width var(--step)}
+.rede .nd{cursor:pointer;outline:none}
+.rede .nd .hit,.rede .nd .hitxt{fill:transparent;stroke:none;pointer-events:all}
+.rede .nd .dot{fill:var(--accent);opacity:.85;pointer-events:none;transition:opacity var(--step)}
+.rede .nd text{font-family:var(--mono);font-size:16px;fill:var(--ink-soft);transition:fill var(--step);pointer-events:none;user-select:none}
+.rede .nd.iso .dot{fill:var(--paper);stroke:var(--ink-soft);stroke-width:1.4;opacity:.8}
+.rede.ativa .nd .dot{opacity:.18}
+.rede.ativa .nd.iso .dot{opacity:.25}
+.rede.ativa .nd text{fill:var(--rule)}
+.rede.ativa .ed{stroke:color-mix(in srgb,var(--rule) 40%,transparent)}
+.rede .nd.on .dot{opacity:1}
+.rede .nd.on.iso .dot{opacity:1;stroke:var(--accent)}
+.rede .nd.on text{fill:var(--ink)}
+.rede .nd .halo{fill:none;stroke:var(--accent);stroke-width:1.6;opacity:0;pointer-events:none;transition:opacity var(--step)}
+.rede .nd.sel .halo{opacity:1}
+.rede .nd.sel .dot{fill:var(--ink)}
+.rede .nd.sel.iso .dot{fill:var(--ink);stroke:var(--ink)}
+.rede .nd.sel text{font-weight:500;fill:var(--ink)}
+.rede .ed.on{stroke:var(--accent);stroke-width:1.7}
+.redecard{margin-top:1.4rem;max-width:var(--col);min-height:118px;border-left:2px solid var(--accent);padding:.2rem 0 .2rem 1.15rem}
+.rcdom{font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.05em;color:var(--ink-soft);margin-bottom:.25rem}
+.redecard h3{font-family:var(--mono);font-size:var(--fs-mono-lg);font-weight:500;margin-bottom:.5rem}
+.redecard .rctxt{font-size:var(--fs-sm);color:var(--ink)}
+.rcdica{font-family:var(--mono);font-size:var(--fs-mono-sm);letter-spacing:.03em;color:var(--ink-soft);margin-top:.9rem;padding-top:.65rem;border-top:var(--line)}
+.rcdica[hidden]{display:none}
+@media (max-width:620px){.rede .nd text{font-size:24px}.redecard{min-height:160px}}
+
+/* placar: cartão de resultado numérico (variante do readout, com moldura) */
+.placar{margin-top:var(--space-block);border:var(--line);border-radius:var(--radius);background:var(--panel);max-width:var(--col)}
+.plcab{padding:.6rem .95rem;border-bottom:var(--line);font-family:var(--mono);font-size:var(--fs-mono-xs);letter-spacing:.04em;color:var(--ink-soft)}
+.placar .corpo{padding:var(--space-inner) .95rem 1.05rem;font-family:var(--mono);font-size:var(--fs-mono-md);line-height:1.85}
+.placar .big{display:block;font-size:var(--fs-mono-display);color:var(--ink);letter-spacing:-.01em;margin:.15rem 0 .35rem;font-variant-numeric:tabular-nums}
+.placar .meta{color:var(--ink-soft)}
+
+/* matriz: grade de células clicáveis (sessões, execuções); dados na página */
+.matriz{margin-top:var(--space-block);max-width:var(--col-wide);border-top:var(--line);border-left:var(--line)}
+.mcab{display:grid;font-family:var(--mono);font-size:var(--fs-mono-xs);color:var(--ink-soft);letter-spacing:.03em}
+.matriz .lin{display:grid}
+.cel{padding:.5rem .55rem;border-right:var(--line);border-bottom:var(--line);font-family:var(--mono);font-size:var(--fs-mono-sm);color:var(--ink-soft);font-variant-numeric:tabular-nums;background:var(--panel);text-align:left}
+.cel.head{background:transparent}
+a.cel,button.cel{cursor:pointer;text-decoration:none;transition:background var(--step),color var(--step)}
+a.cel:hover,button.cel:hover{background:var(--panel-deep);color:var(--ink)}
+.cel.on{color:var(--accent)}
+.cel.sel{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
