@@ -59,8 +59,9 @@ header{padding:4rem 0 2rem;border-bottom:1px solid var(--border)}
 header .back{font-size:.85rem;color:var(--fg3);display:inline-block;margin-bottom:1rem}
 header h1{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:600;line-height:1.25;letter-spacing:-.01em}
 header .subtitle{margin-top:.75rem;font-size:.95rem;color:var(--fg2);line-height:1.6;max-width:34em}
-.status-badge{display:inline-flex;align-items:center;gap:.4em;font-size:.8rem;font-weight:500;color:var(--green);margin-top:1rem}
-.status-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green)}
+/* [1] badge sutil */
+.status-badge{display:inline-flex;align-items:center;gap:.4em;font-size:.8rem;font-weight:500;color:var(--fg3);margin-top:1rem}
+.status-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--fg3)}
 
 /* ── nav ── */
 nav.toc{position:sticky;top:env(safe-area-inset-top,0);z-index:10;background:var(--bg);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;padding:.6rem 0}
@@ -124,7 +125,7 @@ p code,li code{background:var(--code-bg);padding:.15rem .35rem;border-radius:3px
 .demo-box .demo-header .demo-badge{font-size:.7rem;font-weight:500;padding:.15rem .5rem;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
 .demo-box .demo-body{padding:1.5rem 1.2rem}
 
-/* ── scale demo ── */
+/* ── [6] scale demo with slider ── */
 .scale-demo{display:grid;gap:1rem}
 .scale-row{display:flex;align-items:stretch;gap:1rem;flex-wrap:wrap}
 @media(min-width:500px){.scale-row{flex-wrap:nowrap}}
@@ -135,10 +136,31 @@ p code,li code{background:var(--code-bg);padding:.15rem .35rem;border-radius:3px
 .scale-company .bar{height:6px;border-radius:3px;margin-top:.6rem;transition:width .6s ease}
 .scale-company.a .bar{background:var(--accent)}
 .scale-company.b .bar{background:var(--green)}
-.scale-toggle{display:flex;gap:.5rem;justify-content:center;margin-top:1rem}
-.scale-toggle button{font-family:var(--sans);font-size:.8rem;font-weight:500;padding:.5rem 1rem;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--fg2);cursor:pointer;transition:all .15s}
-.scale-toggle button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.scale-slider-wrap{display:flex;align-items:center;gap:.75rem;margin-top:1rem;font-size:.78rem;color:var(--fg3)}
+.scale-slider-wrap span{white-space:nowrap;min-width:max-content}
+.scale-slider-wrap input[type=range]{flex:1;accent-color:var(--accent);cursor:pointer;height:6px}
 .scale-caption{text-align:center;font-size:.8rem;color:var(--fg3);margin-top:.75rem;min-height:2.5em;transition:opacity .3s}
+
+/* ── [6] versioning demo ── */
+.version-display{text-align:center;margin:1rem 0}
+.version-query{font-size:.85rem;color:var(--fg2)}
+.version-query em{color:var(--fg);font-style:normal;font-weight:600}
+.version-big{font-family:var(--serif);font-size:2rem;font-weight:600;color:var(--fg);margin:.5rem 0;line-height:1.2}
+.version-meta{font-size:.78rem;color:var(--fg3)}
+.version-table{width:100%;border-collapse:collapse;margin-top:1.25rem;font-size:.8rem}
+.version-table th{text-align:left;padding:.5rem .6rem;color:var(--fg3);font-weight:500;border-bottom:1px solid var(--border)}
+.version-table td{padding:.5rem .6rem;color:var(--fg2);border-bottom:1px solid var(--border)}
+.version-table tr.active td{color:var(--fg);font-weight:500;background:var(--accent-soft)}
+
+/* ── [6] capture demo ── */
+.capture-list{margin:.75rem 0;font-family:var(--mono);font-size:.82rem}
+.capture-list .row{display:flex;gap:1rem;padding:.3rem 0;color:var(--fg2)}
+.capture-list .row .yr{min-width:3em}
+.capture-list .row .st{font-weight:500}
+.capture-list .row .st.ok{color:var(--green)}
+.capture-list .row .st.skip{color:var(--fg3)}
+.capture-list .row .st.new{color:var(--amber)}
+.capture-summary{font-size:.82rem;color:var(--fg3);margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--border)}
 
 /* ── hierarchy demo ── */
 .hier-tree{font-family:var(--mono);font-size:.8rem;line-height:2;color:var(--fg2);padding:0 .5rem}
@@ -151,6 +173,11 @@ p code,li code{background:var(--code-bg);padding:.15rem .35rem;border-radius:3px
 .hier-tree .node-label .meta{font-size:.68rem;padding:.1rem .4rem;border-radius:3px;background:var(--tag-bg);color:var(--tag-fg)}
 .hier-root{padding-left:0;border-left:none;margin-left:0}
 .hier-root::before{display:none}
+/* [7] hierarchy table */
+.hier-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.75rem;font-family:var(--mono);overflow-x:auto;display:block}
+.hier-table th{text-align:left;padding:.45rem .5rem;color:var(--fg3);font-weight:500;border-bottom:2px solid var(--border);white-space:nowrap}
+.hier-table td{padding:.45rem .5rem;color:var(--fg2);border-bottom:1px solid var(--border);white-space:nowrap}
+.hier-table td.accent{color:var(--accent);font-weight:600}
 
 /* ── guardrail sim ── */
 .guard-sim{display:grid;gap:.75rem}
@@ -173,6 +200,12 @@ p code,li code{background:var(--code-bg);padding:.15rem .35rem;border-radius:3px
 .timeline-item .date{font-size:.75rem;color:var(--fg3);font-weight:500}
 .timeline-item .desc{font-size:.85rem;color:var(--fg2);margin-top:.15rem}
 
+/* ── [3] section nav ── */
+.section-nav{display:flex;justify-content:space-between;align-items:center;margin-top:2.5rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.8rem}
+.section-nav a{display:inline-flex;align-items:center;gap:.35rem;color:var(--fg3);font-weight:500;padding:.35rem .6rem;border-radius:6px;transition:color .15s,background .15s}
+.section-nav a:hover{color:var(--fg);background:var(--code-bg);text-decoration:none}
+.section-nav .top{font-size:.75rem}
+
 /* ── footer ── */
 footer{padding:2.5rem 0;font-size:.82rem;color:var(--fg3)}
 footer .wrap{display:flex;flex-wrap:wrap;gap:1.5rem}
@@ -191,11 +224,12 @@ footer a{color:var(--fg3)}footer a:hover{color:var(--fg)}
     <p class="subtitle">
       Demonstrações financeiras de companhias abertas brasileiras — da fonte pública até tabela consultável, em arquitetura medalhão no Databricks.
     </p>
-    <div class="status-badge">em curso — Bronze e Silver operacionais, Gold em construção</div>
+    <!-- [1] badge sutil, sem verde -->
+    <div class="status-badge">em curso</div>
   </div>
 </header>
 
-<nav class="toc">
+<nav class="toc" id="topo">
   <div class="wrap">
     <a href="#dados">os dados</a>
     <a href="#arquitetura">arquitetura</a>
@@ -211,51 +245,62 @@ footer a{color:var(--fg3)}footer a:hover{color:var(--fg)}
 <!-- ═══ OS DADOS ═══ -->
 <section id="dados">
   <div class="wrap">
-    <div class="section-label">a fonte</div>
+    <!-- [4] label = nav -->
+    <div class="section-label">os dados</div>
     <h2>O que entra no pipeline</h2>
     <p>
       Toda companhia aberta entrega à <strong>CVM</strong> (Comissão de Valores Mobiliários), uma vez por ano, as demonstrações financeiras do exercício anterior. A CVM reúne essas entregas em pacotes anuais e os disponibiliza para download direto, sem cadastro. Hoje o pipeline processa três desses pacotes.
     </p>
 
+    <!-- [2] contagens reais -->
     <div class="numbers">
       <div class="n"><div class="val">3</div><div class="lbl">demonstrações</div></div>
       <div class="n"><div class="val">~700</div><div class="lbl">companhias por ano</div></div>
       <div class="n"><div class="val">6</div><div class="lbl">exercícios (2021–2026)</div></div>
-      <div class="n"><div class="val">~540 mil</div><div class="lbl">registros estimados</div></div>
+      <div class="n"><div class="val">~2,6 mi</div><div class="lbl">registros na Bronze</div></div>
+      <div class="n"><div class="val">~1 mi</div><div class="lbl">registros na Silver</div></div>
     </div>
 
     <details class="reveal">
       <summary>DRE — Demonstração do Resultado do Exercício</summary>
       <div class="inner">
         <p>Receitas, custos, despesas e lucro. Fluxo de um período — tem data de início e de fim do exercício. É a demonstração que responde quanto a empresa ganhou ou perdeu.</p>
-        <p><strong>Bronze:</strong> <code>101_dre_dfp</code> &nbsp; <strong>Silver:</strong> <code>201_dre_dfp</code> — 24 colunas, particionada por ano</p>
+        <p><strong>Bronze:</strong> <code>101_dre_dfp</code> — 428.532 registros &nbsp; <strong>Silver:</strong> <code>201_dre_dfp</code> — 163.013 registros, 24 colunas</p>
       </div>
     </details>
     <details class="reveal">
       <summary>BPA — Balanço Patrimonial Ativo</summary>
       <div class="inner">
         <p>Bens e direitos da companhia num ponto no tempo. Snapshot de posição — sem data de início. É por isso que o DDL da BPA não tem a coluna <code>DT_INI_EXERC</code>: diferença sutil que o pipeline trata.</p>
-        <p><strong>Bronze:</strong> <code>102_bpa_dfp</code> &nbsp; <strong>Silver:</strong> <code>202_bpa_dfp</code></p>
+        <p><strong>Bronze:</strong> <code>102_bpa_dfp</code> — 815.877 registros &nbsp; <strong>Silver:</strong> <code>202_bpa_dfp</code> — 309.246 registros</p>
       </div>
     </details>
     <details class="reveal">
       <summary>BPP — Balanço Patrimonial Passivo</summary>
       <div class="inner">
         <p>Obrigações e patrimônio líquido. Complemento do ativo — juntos, BPA e BPP formam o balanço completo. Mesma estrutura do BPA, mesma lógica de processamento.</p>
-        <p><strong>Bronze:</strong> <code>103_bpp_dfp</code> &nbsp; <strong>Silver:</strong> <code>203_bpp_dfp</code></p>
+        <p><strong>Bronze:</strong> <code>103_bpp_dfp</code> — 1.394.995 registros &nbsp; <strong>Silver:</strong> <code>203_bpp_dfp</code> — 528.874 registros</p>
       </div>
     </details>
 
     <p class="small quiet mt">
       A CVM publica mais três demonstrações (DFC, DVA, DMPL). A estrutura modular do pipeline as acomoda sem mudança de arquitetura — seguiriam a numeração 104/204, 105/205, 106/206.
     </p>
+
+    <!-- [3] nav -->
+    <div class="section-nav">
+      <span></span>
+      <a href="#topo" class="top">↑ início</a>
+      <a href="#arquitetura">arquitetura →</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══ ARQUITETURA ═══ -->
 <section id="arquitetura">
   <div class="wrap">
-    <div class="section-label">desenho</div>
+    <!-- [4] label = nav -->
+    <div class="section-label">arquitetura</div>
     <h2>Arquitetura medalhão</h2>
     <p>
       O dado passa por quatro estágios, cada um com papel definido. O que entra bruto no primeiro sai tipado, normalizado e enriquecido no terceiro — pronto para análise sem que o consumidor precise saber de onde veio ou como foi limpo.
@@ -326,55 +371,91 @@ footer a{color:var(--fg3)}footer a:hover{color:var(--fg)}
       <div class="n"><div class="val">24</div><div class="lbl">colunas na Silver</div></div>
       <div class="n"><div class="val">3</div><div class="lbl">jobs agendados</div></div>
     </div>
+
+    <!-- [3] nav -->
+    <div class="section-nav">
+      <a href="#dados">← os dados</a>
+      <a href="#topo" class="top">↑ início</a>
+      <a href="#negocio">negócio →</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══ NEGÓCIO ═══ -->
 <section id="negocio">
   <div class="wrap">
-    <div class="section-label">tratamento</div>
+    <!-- [4] label = nav -->
+    <div class="section-label">negócio</div>
     <h2>Três problemas que a Silver resolve</h2>
     <p>Os dados saem da CVM com problemas que a fonte não corrige. O pipeline os resolve na Silver, antes que cheguem a qualquer consumidor.</p>
 
-    <!-- ── ESCALA DEMO ── -->
-    <h3>Escala monetária misturada</h3>
+    <!-- [5] numeração + [6] slider -->
+    <h3>1 · Escala monetária misturada</h3>
     <p>Cerca de 540 companhias reportam em <strong>milhares</strong> e 15 em <strong>unidades</strong>. Sem conversão, qualquer ranking entre elas está errado.</p>
 
     <div class="demo-box">
       <div class="demo-header">
-        <span class="demo-title">Lucro do exercício de 2024</span>
-        <span class="demo-badge">interativo</span>
+        <span class="demo-title">arraste para aplicar a escala</span>
+        <span class="demo-badge">simulação</span>
       </div>
       <div class="demo-body">
         <div class="scale-demo" id="scaleDemo">
           <div class="scale-row">
             <div class="scale-company a" id="compA">
-              <div class="name">Companhia A · escala <span id="compA_esc">MIL</span></div>
+              <div class="name">Companhia A · lucro de 2024</div>
+              <div class="escala-tag" id="compA_tag">escala MIL</div>
               <div class="value" id="compA_val">1.234.567</div>
-              <div class="escala-tag" id="compA_tag">como chega da CVM</div>
               <div class="bar" id="compA_bar" style="width:14%"></div>
             </div>
             <div class="scale-company b" id="compB">
-              <div class="name">Companhia B · escala <span id="compB_esc">UNIDADE</span></div>
+              <div class="name">Companhia B · lucro de 2024</div>
+              <div class="escala-tag" id="compB_tag">escala UNIDADE</div>
               <div class="value" id="compB_val">890.412.300</div>
-              <div class="escala-tag" id="compB_tag">como chega da CVM</div>
               <div class="bar" id="compB_bar" style="width:100%"></div>
             </div>
           </div>
-          <div class="scale-toggle">
-            <button class="active" onclick="setScale('raw')">como chega</button>
-            <button onclick="setScale('normalized')">com escala aplicada</button>
+          <div class="scale-caption" id="scaleCap">lado a lado, B parece setecentas vezes maior do que A.</div>
+          <div class="scale-slider-wrap">
+            <span>como chega</span>
+            <input type="range" min="0" max="100" value="0" id="scaleSlider" oninput="onScaleSlide(this.value)">
+            <span>com a escala aplicada</span>
           </div>
-          <div class="scale-caption" id="scaleCap">Lado a lado, B parece setecentas vezes maior que A.</div>
         </div>
       </div>
     </div>
 
-    <!-- ── REPUBLICATION ── -->
-    <h3>Republicação silenciosa</h3>
+    <!-- [5] numeração + [6] versioning demo -->
+    <h3>2 · Republicação silenciosa</h3>
     <p>
       Uma companhia entrega a DRE de 2024 em março. Em julho, reentrega com o lucro corrigido. A CVM substitui o pacote do exercício sem avisar o que mudou. O pipeline guarda <strong>todas</strong> as versões na Bronze e resolve a vigente na Silver via Window Function.
     </p>
+
+    <div class="demo-box">
+      <div class="demo-header">
+        <span class="demo-title">lucro do exercício de 2024</span>
+        <span class="demo-badge">simulação</span>
+      </div>
+      <div class="demo-body">
+        <div class="scale-slider-wrap mb">
+          <span>mar 2025</span>
+          <input type="range" min="0" max="2" value="0" step="1" id="versionSlider" oninput="onVersionSlide(this.value)">
+          <span>dez 2025</span>
+        </div>
+        <div class="version-display">
+          <div class="version-query">consultando em <em id="versionMonth">mar 2025</em>, o pipeline responderia</div>
+          <div class="version-big" id="versionBig">1.198.402</div>
+          <div class="version-meta" id="versionMeta">versão 1, entregue em 12 mar 2025</div>
+        </div>
+        <table class="version-table">
+          <thead><tr><th>versão</th><th>entregue em</th><th>lucro divulgado</th></tr></thead>
+          <tbody id="versionRows">
+            <tr class="active" id="vr0"><td>►1</td><td>12 mar 2025</td><td>1.198.402</td></tr>
+            <tr id="vr1"><td>2</td><td>04 jul 2025</td><td>1.221.870</td></tr>
+            <tr id="vr2"><td>3</td><td>18 nov 2025</td><td>1.234.567</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
     <details class="reveal">
       <summary>Como o versionamento funciona na prática</summary>
@@ -391,8 +472,8 @@ df_versao_atual = df_bronze \
       </div>
     </details>
 
-    <!-- ── HIERARCHY ── -->
-    <h3>Estrutura hierárquica contábil</h3>
+    <!-- [5] numeração + [7] hierarchy table -->
+    <h3>3 · Estrutura hierárquica contábil</h3>
     <p>
       A CVM publica contas em hierarquia por notação de pontos: <code>3</code> → <code>3.01</code> → <code>3.01.01</code>. O valor do pai é a soma dos filhos. Sem enriquecimento, o consumidor precisa remontar essa estrutura a cada consulta. A Silver deriva cinco colunas que tornam a hierarquia consultável diretamente.
     </p>
@@ -440,6 +521,18 @@ df_versao_atual = df_bronze \
             </div>
           </div>
         </div>
+
+        <!-- [7] como fica na tabela Silver -->
+        <table class="hier-table">
+          <thead><tr><th>CD_CONTA</th><th>DS_CONTA</th><th>NIVEL</th><th>PAI</th><th>RAIZ</th><th>TIPO</th><th>ESTRUT.</th></tr></thead>
+          <tbody>
+            <tr><td class="accent">3</td><td>Resultado Bruto</td><td>1</td><td>NULL</td><td>3</td><td>TOTALIZ.</td><td>ADITIVA</td></tr>
+            <tr><td class="accent">3.01</td><td>Receita Líquida</td><td>2</td><td>3</td><td>3</td><td>TOTALIZ.</td><td>ADITIVA</td></tr>
+            <tr><td class="accent">3.01.01</td><td>Receita de Venda</td><td>3</td><td>3.01</td><td>3</td><td>ANALÍT.</td><td>—</td></tr>
+            <tr><td class="accent">3.01.02</td><td>Deduções</td><td>3</td><td>3.01</td><td>3</td><td>ANALÍT.</td><td>—</td></tr>
+            <tr><td class="accent">3.02</td><td>Custo dos Bens Vend.</td><td>2</td><td>3</td><td>3</td><td>TOTALIZ.</td><td>DERIVADA</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -453,13 +546,21 @@ df_versao_atual = df_bronze \
         <p><code>TIPO_ESTRUTURAL</code> — <strong>aditiva</strong> (pai = soma dos filhos) ou <strong>derivada</strong> (contas como 3.02, 3.03 que são calculadas). Diferença relevante para validações contábeis.</p>
       </div>
     </details>
+
+    <!-- [3] nav -->
+    <div class="section-nav">
+      <a href="#arquitetura">← arquitetura</a>
+      <a href="#topo" class="top">↑ início</a>
+      <a href="#qualidade">qualidade →</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══ QUALIDADE ═══ -->
 <section id="qualidade">
   <div class="wrap">
-    <div class="section-label">proteção</div>
+    <!-- [4] label = nav -->
+    <div class="section-label">qualidade</div>
     <h2>Guardrails e observabilidade</h2>
     <p>
       Os guardrails validam <strong>antes</strong> de modificar qualquer tabela. Se a validação falha, os dados ficam intactos. Cada verificação é registrada com UUID na tabela de observabilidade.
@@ -508,13 +609,21 @@ count_tabela   = spark.table(...).count()  # 4. pós-gravação na Delta</pre>
         <p>Se o número muda entre dois pontos, o guardrail registra a divergência e interrompe o processamento daquele ano — sem afetar os demais.</p>
       </div>
     </details>
+
+    <!-- [3] nav -->
+    <div class="section-nav">
+      <a href="#negocio">← negócio</a>
+      <a href="#topo" class="top">↑ início</a>
+      <a href="#operacao">operação →</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══ OPERAÇÃO ═══ -->
 <section id="operacao">
   <div class="wrap">
-    <div class="section-label">execução</div>
+    <!-- [4] label = nav -->
+    <div class="section-label">operação</div>
     <h2>Como o pipeline roda</h2>
     <p>Três jobs separados, cada um com papel definido, declarados em YAML e orquestrados por <strong>Databricks Asset Bundles</strong>.</p>
 
@@ -543,13 +652,21 @@ count_tabela   = spark.table(...).count()  # 4. pós-gravação na Delta</pre>
         <p>Prioridade de override: widget Databricks → variável de ambiente → detecção inteligente → fallback (ano atual). Se <code>CARGA=completa</code>, todos os anos disponíveis são forçados.</p>
       </div>
     </details>
+
+    <!-- [3] nav -->
+    <div class="section-nav">
+      <a href="#qualidade">← qualidade</a>
+      <a href="#topo" class="top">↑ início</a>
+      <a href="#infra">infraestrutura →</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══ INFRAESTRUTURA ═══ -->
 <section id="infra">
   <div class="wrap">
-    <div class="section-label">engenharia</div>
+    <!-- [4] label = nav -->
+    <div class="section-label">infraestrutura</div>
     <h2>Infraestrutura como código</h2>
 
     <div class="card-grid two">
@@ -591,13 +708,21 @@ count_tabela   = spark.table(...).count()  # 4. pós-gravação na Delta</pre>
     <p class="mt small quiet">
       Stack: <strong>Databricks</strong> · <strong>PySpark</strong> · <strong>Delta Lake</strong> · <strong>Unity Catalog</strong> · <strong>Python</strong> · <strong>GitHub Actions</strong> · <strong>Ruff</strong> · <strong>pytest</strong>
     </p>
+
+    <!-- [3] nav -->
+    <div class="section-nav">
+      <a href="#operacao">← operação</a>
+      <a href="#topo" class="top">↑ início</a>
+      <a href="#decisoes">decisões →</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══ DECISÕES ═══ -->
 <section id="decisoes">
   <div class="wrap">
-    <div class="section-label">registro</div>
+    <!-- [4] label = nav -->
+    <div class="section-label">decisões</div>
     <h2>Decisões</h2>
     <p>Cada decisão fica no <a href="https://github.com/1pedroosilva/projeto-cvm-dados-financeiros/blob/main/00_documentacao/evolucao_projeto.md">registro de evolução</a> do repositório, inclusive as que desfizeram uma escolha anterior.</p>
 
@@ -613,18 +738,33 @@ count_tabela   = spark.table(...).count()  # 4. pós-gravação na Delta</pre>
       <div class="timeline-item"><div class="date">31 jul</div><div class="desc">Limitação real do Delta Lake documentada: ALTER COLUMN TYPE não suportado.</div></div>
       <div class="timeline-item"><div class="date">22 jul</div><div class="desc">Landing Zone em UC Volumes com detecção de atualizações via Last-Modified HTTP.</div></div>
     </div>
+
+    <!-- [3] nav -->
+    <div class="section-nav">
+      <a href="#infra">← infraestrutura</a>
+      <a href="#topo" class="top">↑ início</a>
+      <a href="#aberto">em aberto →</a>
+    </div>
   </div>
 </section>
 
 <!-- ═══ EM ABERTO ═══ -->
 <section id="aberto">
   <div class="wrap">
-    <div class="section-label">próximos passos</div>
+    <!-- [4] label = nav -->
+    <div class="section-label">em aberto</div>
     <h2>O que está aberto</h2>
     <div class="card-grid">
       <div class="card"><h4>Camada Gold</h4><p>Métricas de negócio, KPIs por empresa, rankings setoriais. Primeiro item da fila.</p></div>
       <div class="card"><h4>Visualização</h4><p>Dashboards para consumo dos dados da Gold. Genie Spaces ou qualquer BI sobre Unity Catalog.</p></div>
       <div class="card"><h4>Mais demonstrações</h4><p>DFC (fluxo de caixa), DVA (valor adicionado), DMPL (mutações do patrimônio).</p></div>
+    </div>
+
+    <!-- [3] nav -->
+    <div class="section-nav">
+      <a href="#decisoes">← decisões</a>
+      <a href="#topo" class="top">↑ início</a>
+      <span></span>
     </div>
   </div>
 </section>
@@ -639,90 +779,107 @@ count_tabela   = spark.table(...).count()  # 4. pós-gravação na Delta</pre>
 </footer>
 
 <script>
-/* ── Scale demo ── */
-function setScale(mode) {
-  const btns = document.querySelectorAll('.scale-toggle button');
-  btns.forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+/* ── [6] Scale demo with slider ── */
+function onScaleSlide(val) {
+  var t = val / 100;
+  var valA = document.getElementById('compA_val');
+  var valB = document.getElementById('compB_val');
+  var tagA = document.getElementById('compA_tag');
+  var tagB = document.getElementById('compB_tag');
+  var barA = document.getElementById('compA_bar');
+  var barB = document.getElementById('compB_bar');
+  var cap = document.getElementById('scaleCap');
 
-  const valA = document.getElementById('compA_val');
-  const valB = document.getElementById('compB_val');
-  const tagA = document.getElementById('compA_tag');
-  const tagB = document.getElementById('compB_tag');
-  const escA = document.getElementById('compA_esc');
-  const barA = document.getElementById('compA_bar');
-  const barB = document.getElementById('compB_bar');
-  const cap = document.getElementById('scaleCap');
-
-  if (mode === 'raw') {
+  if (t < 0.5) {
     valA.textContent = '1.234.567';
     valB.textContent = '890.412.300';
-    tagA.textContent = 'como chega da CVM';
-    tagB.textContent = 'como chega da CVM';
-    escA.textContent = 'MIL';
+    tagA.textContent = 'escala MIL';
+    tagB.textContent = 'escala UNIDADE';
     barA.style.width = '14%';
     barB.style.width = '100%';
-    cap.textContent = 'Lado a lado, B parece setecentas vezes maior que A.';
+    cap.textContent = 'lado a lado, B parece setecentas vezes maior do que A.';
   } else {
     valA.textContent = '1.234.567.000';
     valB.textContent = '890.412.300';
     tagA.textContent = '× 1.000 (escala aplicada)';
     tagB.textContent = 'já em unidades';
-    escA.textContent = 'MIL → convertida';
     barA.style.width = '100%';
     barB.style.width = '72%';
-    cap.textContent = 'Com a escala aplicada, A é maior que B. A ordem se inverte.';
+    cap.textContent = 'com a escala aplicada, A é maior que B. A ordem se inverte.';
+  }
+}
+
+/* ── [6] Versioning demo with slider ── */
+var versionData = [
+  { month: 'mar 2025', big: '1.198.402', meta: 'versão 1, entregue em 12 mar 2025', active: 0 },
+  { month: 'jul 2025', big: '1.221.870', meta: 'versão 2, entregue em 04 jul 2025', active: 1 },
+  { month: 'dez 2025', big: '1.234.567', meta: 'versão 3, entregue em 18 nov 2025', active: 2 }
+];
+function onVersionSlide(val) {
+  var d = versionData[val];
+  document.getElementById('versionMonth').textContent = d.month;
+  document.getElementById('versionBig').textContent = d.big;
+  document.getElementById('versionMeta').textContent = d.meta;
+  for (var i = 0; i <= 2; i++) {
+    var row = document.getElementById('vr' + i);
+    if (i <= d.active) {
+      row.className = i === d.active ? 'active' : '';
+      row.cells[0].textContent = i === d.active ? '►' + (i+1) : (i+1);
+    } else {
+      row.className = '';
+      row.cells[0].textContent = (i+1);
+    }
   }
 }
 
 /* ── Guardrail sim ── */
 function setGuard(scenario) {
-  const btns = document.querySelectorAll('.guard-buttons button');
-  btns.forEach(b => b.classList.remove('active'));
+  var btns = document.querySelectorAll('.guard-buttons button');
+  btns.forEach(function(b) { b.classList.remove('active'); });
   event.target.classList.add('active');
 
-  const steps = [
+  var steps = [
     document.getElementById('g1'),
     document.getElementById('g2'),
     document.getElementById('g3'),
     document.getElementById('g4'),
-    document.getElementById('g5'),
+    document.getElementById('g5')
   ];
 
-  const configs = {
+  var configs = {
     ok: [
       { cls: 'pass', icon: '✓', html: '<strong>Arquivo existe</strong> — ZIP encontrado na Landing Zone' },
       { cls: 'pass', icon: '✓', html: '<strong>Arquivo não vazio</strong> — CSV tem 30.127 registros' },
       { cls: 'pass', icon: '✓', html: '<strong>Schema válido</strong> — 15 colunas essenciais presentes' },
       { cls: 'pass', icon: '✓', html: '<strong>Contagem reconcilia</strong> — 30.127 em todos os 4 pontos' },
-      { cls: 'pass', icon: '✓', html: '<strong>Gravação</strong> — dados escritos, controle atualizado' },
+      { cls: 'pass', icon: '✓', html: '<strong>Gravação</strong> — dados escritos, controle atualizado' }
     ],
     empty: [
       { cls: 'pass', icon: '✓', html: '<strong>Arquivo existe</strong> — ZIP encontrado' },
       { cls: 'fail', icon: '✗', html: '<strong>Arquivo vazio</strong> — CSV tem 0 registros. Processamento interrompido.' },
       { cls: 'skip', icon: '—', html: '<strong>Schema</strong> — não executado (etapa anterior falhou)' },
       { cls: 'skip', icon: '—', html: '<strong>Contagem</strong> — não executado' },
-      { cls: 'skip', icon: '—', html: '<strong>Gravação</strong> — não executada. Dados anteriores preservados.' },
+      { cls: 'skip', icon: '—', html: '<strong>Gravação</strong> — não executada. Dados anteriores preservados.' }
     ],
     schema: [
       { cls: 'pass', icon: '✓', html: '<strong>Arquivo existe</strong> — ZIP encontrado' },
       { cls: 'pass', icon: '✓', html: '<strong>Arquivo não vazio</strong> — CSV tem registros' },
       { cls: 'fail', icon: '✗', html: '<strong>Schema inválido</strong> — coluna VL_CONTA faltando. Processamento interrompido.' },
       { cls: 'skip', icon: '—', html: '<strong>Contagem</strong> — não executado' },
-      { cls: 'skip', icon: '—', html: '<strong>Gravação</strong> — não executada. Dados anteriores preservados.' },
+      { cls: 'skip', icon: '—', html: '<strong>Gravação</strong> — não executada. Dados anteriores preservados.' }
     ],
     count: [
       { cls: 'pass', icon: '✓', html: '<strong>Arquivo existe</strong> — ZIP encontrado' },
       { cls: 'pass', icon: '✓', html: '<strong>Arquivo não vazio</strong> — CSV tem 30.127 registros' },
       { cls: 'pass', icon: '✓', html: '<strong>Schema válido</strong> — 15 colunas presentes' },
       { cls: 'fail', icon: '✗', html: '<strong>Contagem diverge</strong> — gravados: 30.127, na tabela: 30.098. Diferença de 29 registros.' },
-      { cls: 'skip', icon: '—', html: '<strong>Gravação revertida</strong> — erro registrado em observabilidade_guardrails.' },
-    ],
+      { cls: 'skip', icon: '—', html: '<strong>Gravação revertida</strong> — erro registrado em observabilidade_guardrails.' }
+    ]
   };
 
-  const scenario_steps = configs[scenario];
-  steps.forEach((el, i) => {
-    const cfg = scenario_steps[i];
+  var scenario_steps = configs[scenario];
+  steps.forEach(function(el, i) {
+    var cfg = scenario_steps[i];
     el.className = 'guard-step ' + cfg.cls;
     el.querySelector('.icon').textContent = cfg.icon;
     el.querySelector('.text').innerHTML = cfg.html;
