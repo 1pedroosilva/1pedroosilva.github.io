@@ -177,7 +177,7 @@ Do topo para baixo: a faixa de navegação do site (`.sitenav`), os controles fi
     <li><a href="/" data-nav="inicio">início</a></li>
     <li><a href="/projeto-databricks-skills/" data-nav="skills">genie code</a></li>
     <li><a href="/projeto-cvm/" data-nav="cvm">CVM</a></li>
-    <li><a href="/genie-skills-eval/" data-nav="avaliacao">avaliação</a></li>
+    <li><a href="/avaliacao/" data-nav="avaliacao">avaliação</a></li>
   </ul>
 </nav>
 
