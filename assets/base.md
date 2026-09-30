@@ -175,8 +175,8 @@ Do topo para baixo: a faixa de navegação do site (`.sitenav`), os controles fi
 <nav class="sitenav" aria-label="Navegação do site">
   <ul>
     <li><a href="/" data-nav="inicio">início</a></li>
+    <li><a href="/projeto-databricks-skills/" data-nav="skills">genie code</a></li>
     <li><a href="/projeto-cvm/" data-nav="cvm">CVM</a></li>
-    <li><a href="/projeto-databricks-skills/" data-nav="skills">skills</a></li>
     <li><a href="/genie-skills-eval/" data-nav="avaliacao">avaliação</a></li>
   </ul>
 </nav>
@@ -211,7 +211,7 @@ Numeração no índice: `01`, `02`... só quando as seções formam uma sequênc
 
 Estes três são iguais em todas as páginas (a trilha é o único que cada página declara por si) e dão a sensação de site único. As duas navegações contam coisas diferentes: a faixa diz para onde se pode ir; a trilha diz onde se está.
 
-**Faixa de navegação do site (`.sitenav`).** Lista os quatro destinos fixos, na mesma ordem em toda página: início · CVM · skills · avaliação. A escolha é editorial, não estrutural: a avaliação aparece na faixa mesmo sendo um aprofundamento de skills, por ser peça de destaque do portfólio. Cada `<a>` traz um `data-nav`; o `base.js` acende o atual lendo `data-atual` no `<body>`:
+**Faixa de navegação do site (`.sitenav`).** Lista os quatro destinos fixos, na mesma ordem em toda página: início · genie code · CVM · avaliação. A escolha é editorial, não estrutural: genie code aparece primeiro por ser a peça de destaque; a avaliação aparece na faixa mesmo sendo um aprofundamento de genie code. Cada `<a>` traz um `data-nav`; o `base.js` acende o atual lendo `data-atual` no `<body>`:
 
 ```html
 <body data-atual="cvm">
@@ -225,13 +225,13 @@ Só isto muda por página. Um destino sem correspondência (uma página fora dos
 <nav class="trilha" aria-label="Trilha">
   <a href="/">início</a>
   <span class="sep">/</span>
-  <a href="/projeto-databricks-skills/">skills</a>
+  <a href="/projeto-databricks-skills/">genie code</a>
   <span class="sep">/</span>
   <span aria-current="page">a avaliação</span>
 </nav>
 ```
 
-Por página: a home não tem trilha (é a raiz); a CVM tem `início / pipeline da CVM`; skills tem `início / skills`; a avaliação tem `início / skills / a avaliação`. Quem chega de fora, direto numa página funda, vê o caminho inteiro e sobe por ele, mesmo sem ter passado pelos níveis acima. A trilha reflete a estrutura real, ainda que a faixa seja editorial.
+Por página: a home não tem trilha (é a raiz); a CVM tem `início / pipeline da CVM`; genie code tem `início / genie code`; a avaliação tem `início / genie code / a avaliação`. Quem chega de fora, direto numa página funda, vê o caminho inteiro e sobe por ele, mesmo sem ter passado pelos níveis acima. A trilha reflete a estrutura real, ainda que a faixa seja editorial.
 
 **Rodapé (`footer`).** Só ícones, sem texto visível, herdando a cor do tema. Cada link leva um `aria-label`, porque um ícone sozinho não se anuncia a um leitor de tela. Os três SVG (LinkedIn, GitHub, envelope) estão em 7.1-ter, para copiar:
 
