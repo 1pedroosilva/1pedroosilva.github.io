@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cronologia dos projetos · Pedro Oliveira</title>
+
+<meta name="robots" content="index, follow">
+<meta name="author" content="Pedro Oliveira">
+<meta name="description" content="Como o pipeline da CVM, as skills para o Genie Code e o experimento de avaliação se desenvolveram — e se alimentaram — ao longo do tempo.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://1pedroosilva.github.io/timeline/">
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://1pedroosilva.github.io/timeline/">
+<meta property="og:title" content="Cronologia dos projetos · Pedro Oliveira">
+<meta property="og:description" content="Como o pipeline da CVM, as skills para o Genie Code e o experimento de avaliação se desenvolveram ao longo do tempo.">
+<meta property="og:image" content="https://1pedroosilva.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<meta name="color-scheme" content="light dark">
+<script>
+(function(){
+  var t=null;
+  try{t=localStorage.getItem('tema');}catch(e){}
+  if(!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'escuro' : 'claro';
+  document.documentElement.dataset.tema=t;
+})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/base.css">
+
+<style>
+/* ── componentes locais da cronologia ── */
+
+.tl-outer {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--panel);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: var(--space-block);
+}
+
+.tl-status {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--fs-mono-sm);
+  color: var(--ink-soft);
+}
+
+.tl-nota {
+  margin-top: .5rem;
+  font-size: var(--fs-mono-2xs);
+  color: var(--ink-soft);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.tl-legend {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-top: var(--space-block);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--fs-mono-xs);
+  color: var(--ink-soft);
+}
+.tl-legend-item {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+}
+.tl-legend-pip {
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+}
+
+/* dots e marcos: interativos */
+.tl-dot, .tl-mil {
+  cursor: pointer;
+  transition: transform 120ms var(--ease-out, ease);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+.tl-dot:hover  { transform: scale(2); }
+.tl-mil:hover  { opacity: .7; }
+.tl-dot:focus-visible,
+.tl-mil:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* tooltip */
+.tl-tip {
+  position: fixed;
+  z-index: 200;
+  pointer-events: none;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: .55rem .75rem;
+  max-width: 300px;
+  font-family: 'JetBrains Mono', monospace;
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+}
+.tl-tip-head {
+  font-size: var(--fs-mono-xs);
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: .35rem;
+}
+.tl-tip-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tl-tip-list li {
+  font-size: var(--fs-mono-xs);
+  color: var(--ink-soft);
+  margin-top: .2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+.tl-tip-list a {
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+.tl-tip-list a:hover { color: var(--accent); }
+.tl-tip-hint {
+  margin-top: .35rem;
+  font-size: var(--fs-mono-2xs);
+  color: var(--rule);
+}
+</style>
+</head>
+
+<body>
+
+<nav class="sitenav" aria-label="Navegação do site">
+  <ul>
+    <li><a href="/" data-nav="inicio">início</a></li>
+    <li><a href="/projeto-databricks-skills/" data-nav="skills">genie code</a></li>
+    <li><a href="/projeto-cvm/" data-nav="cvm">CVM</a></li>
+    <li><a href="/genie-skills-eval/" data-nav="avaliacao">avaliação</a></li>
+  </ul>
+</nav>
+
+<button class="tema" id="tema" type="button" aria-label="Alternar tema"></button>
+<button class="topo" id="topo" type="button"><span>&#8593;</span> topo</button>
+
+<div class="railbar">
+  <span id="railLabel" data-padrao="cronologia">cronologia</span>
+  <span class="bar"><i id="railFill"></i></span>
+</div>
+
+<div class="shell">
+  <nav class="index" aria-label="Seções da página">
+    <ol>
+      <li><a href="#cronologia"><span class="num">··</span> cronologia</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+    <section class="hero" id="inicio">
+      <nav class="trilha reveal" aria-label="Trilha">
+        <a href="/">início</a>
+        <span class="sep">/</span>
+        <span aria-current="page">cronologia</span>
+      </nav>
+      <p class="marker reveal"><b>··</b> &nbsp;integração</p>
+      <h1 class="reveal">Cronologia dos projetos</h1>
+      <p class="ask reveal">Como o pipeline da CVM, as skills para o Genie Code e o experimento de avaliação se desenvolveram — e se alimentaram — ao longo do tempo?</p>
+    </section>
+
+    <section id="cronologia">
+      <nav class="navsec" aria-label="Navegação entre seções"></nav>
+
+      <div class="tl-legend">
+        <span class="tl-legend-item"><span class="tl-legend-pip"></span>pipeline cvm</span>
+        <span class="tl-legend-item"><span class="tl-legend-pip"></span>skills</span>
+        <span class="tl-legend-item"><span class="tl-legend-pip"></span>avaliação</span>
+      </div>
+
+      <div class="tl-outer wide">
+        <div id="tl-wrap" class="tl-status">buscando commits na GitHub API…</div>
+      </div>
+      <p class="tl-nota" id="tl-nota"></p>
+    </section>
+
+    <footer>
+      <p class="redes">
+        <a href="https://www.linkedin.com/in/1pedroosilva/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
+        <a href="https://github.com/1pedroosilva" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58 0-.29-.01-1.24-.02-2.25-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.82 1.1.82 2.22 0 1.61-.02 2.9-.02 3.29 0 .32.22.7.83.58A12 12 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+        <a href="mailto:1pedro.osilva@gmail.com" aria-label="E-mail"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h20a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm10 9.13L2.4 6.5H2v.28l10 6.9 10-6.9V6.5h-.4L12 13.13zM2 8.6V18h20V8.6l-10 6.9-10-6.9z"/></svg></a>
+      </p>
+      <p class="nota">São Paulo, Brasil.</p>
+    </footer>
+
+  </main>
+</div>
+
+<!-- tooltip (desktop) -->
+<div class="tl-tip" id="tl-tip" hidden>
+  <p class="tl-tip-head" id="tl-tip-head"></p>
+  <ul class="tl-tip-list" id="tl-tip-list"></ul>
+  <p class="tl-tip-hint">clique para abrir no GitHub</p>
+</div>
+
+<script src="/assets/base.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   CONFIG — edite aqui para adicionar ou ajustar marcos
+   ═══════════════════════════════════════════════════════════ */
+const REPOS = [
+  { label: 'pipeline cvm', repo: '1pedroosilva/projeto-cvm-dados-financeiros' },
+  { label: 'skills',       repo: '1pedroosilva/databricks-genie-skills'       },
+  { label: 'avaliação',    repo: '1pedroosilva/genie-skills-eval'              },
+];
+
+// sha: prefixo de 7+ chars do commit  OU  date: 'YYYY-MM-DD'
+// above: true = rótulo acima da barra | false = abaixo
+const MILESTONES = [
+  { track: 0, date: '2025-08-01', label: 'primeiro commit\nbronze e silver',       above: true  },
+  { track: 0, date: '2025-08-14', label: 'bundles, ruff\ne pytest no CI',           above: false },
+  { track: 0, date: '2025-09-19', label: 'invariante da bronze\nescala monetária',  above: true  },
+  { track: 1, date: '2025-08-22', label: '3 hipóteses de acionamento\n3 refutadas', above: false },
+  { track: 1, sha:  '6c7933e',   label: '6c7933e congela\na versão avaliada',       above: true  },
+  { track: 2, date: '2025-09-12', label: '12 sessões com skills',                   above: true  },
+  { track: 2, date: '2025-09-16', label: '12 sessões sem',                          above: false },
+  { track: 2, date: '2025-09-21', label: 'achados publicados',                      above: true  },
+];
+
+/* ═══════════════════════════════════════════════════════════
+   API
+   ═══════════════════════════════════════════════════════════ */
+async function fetchCommits(repo) {
+  const out = [];
+  for (let p = 1; p <= 3; p++) {
+    const r = await fetch(
+      `https://api.github.com/repos/${repo}/commits?per_page=100&page=${p}`
+    );
+    if (!r.ok) throw new Error(`${repo}: HTTP ${r.status}`);
+    const d = await r.json();
+    out.push(...d);
+    if (d.length < 100) break;
+  }
+  return out;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DATAS
+   ═══════════════════════════════════════════════════════════ */
+const MO  = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MS  = 86400000;
+
+const addDays  = (d, n) => new Date(+d + n * MS);
+const diffDays = (a, b) => Math.round((+b - +a) / MS);
+const midnight = d => { const r = new Date(d); r.setUTCHours(0,0,0,0); return r; };
+const isoDay   = d => d.toISOString().slice(0,10);
+
+const dateLbl = d => d.getUTCDate() === 1
+  ? `1 ${MO[d.getUTCMonth()]}`
+  : String(d.getUTCDate());
+
+const fmtFull = d =>
+  `${d.getUTCDate()} ${MO[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+
+const esc = s => String(s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+const trunc = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
+
+/* ═══════════════════════════════════════════════════════════
+   MAPA DE COMMITS (interatividade)
+   ═══════════════════════════════════════════════════════════ */
+let commitMap = {}; // "${trackIdx}|${isoDate}" → [{sha, message, url}]
+
+/* ═══════════════════════════════════════════════════════════
+   SVG
+   ═══════════════════════════════════════════════════════════ */
+function buildSVG(allCommits) {
+  commitMap = {};
+
+  /* faixa de datas */
+  let minD = null, maxD = null;
+  allCommits.forEach(cs => cs.forEach(c => {
+    const d = new Date(c.commit.author.date);
+    if (!minD || d < minD) minD = d;
+    if (!maxD || d > maxD) maxD = d;
+  }));
+  if (!minD) return null;
+
+  const start    = midnight(addDays(minD, -5));
+  const end      = midnight(addDays(maxD, +12));
+  const spanDays = diffDays(start, end);
+
+  /* marcos */
+  const mils = MILESTONES.map(m => {
+    let date;
+    if (m.sha) {
+      const c = (allCommits[m.track] ?? []).find(c => c.sha.startsWith(m.sha));
+      date = c ? midnight(new Date(c.commit.author.date)) : null;
+    } else {
+      date = m.date ? new Date(m.date + 'T12:00:00Z') : null;
+    }
+    return { ...m, date };
+  }).filter(m => m.date);
+
+  /* dimensões */
+  const LBL_W  = 112;
+  const PAD_R  = 24;
+  const AXIS_H = 28;
+  const TRK_H  = 100;
+  const BAR_CY = 50;
+  const BAR_T  = 4;
+  const DOT_R  = 2.5;
+  const CALL   = 18;
+  const FS     = 9;
+  const LH     = 12;
+
+  const outer  = document.querySelector('.tl-outer');
+  const W      = Math.max(600, (outer?.offsetWidth ?? 900) - 2);
+  const chartW = W - LBL_W - PAD_R;
+  const H      = AXIS_H + REPOS.length * TRK_H + 16;
+
+  const toX = d => LBL_W + (diffDays(start, d) / spanDays) * chartW;
+
+  /* tokens CSS → valores concretos para uso dentro do SVG */
+  const cs  = getComputedStyle(document.documentElement);
+  const get = v => cs.getPropertyValue(v).trim();
+  const C = {
+    panel:  get('--panel'),
+    ink:    get('--ink'),
+    soft:   get('--ink-soft'),
+    rule:   get('--rule'),
+    accent: get('--accent'),
+  };
+
+  let s = [
+    `<svg xmlns="http://www.w3.org/2000/svg"`,
+    ` viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"`,
+    ` style="display:block;font-family:'JetBrains Mono',monospace;overflow:visible">`,
+    `<rect width="${W}" height="${H}" fill="${C.panel}"/>`,
+    /* linha do eixo */
+    `<line x1="${LBL_W}" y1="${AXIS_H}" x2="${W-PAD_R}" y2="${AXIS_H}"`,
+    ` stroke="${C.rule}" stroke-width="1"/>`,
+  ].join('');
+
+  /* ticks semanais (domingos) */
+  const step = spanDays <= 70 ? 7 : spanDays <= 130 ? 14 : 28;
+  let tick = new Date(start);
+  while (tick.getUTCDay() !== 0) tick = addDays(tick, 1);
+  while (tick <= end) {
+    const x = toX(tick);
+    s += `<line x1="${x}" y1="${AXIS_H}" x2="${x}" y2="${H-8}"`;
+    s += ` stroke="${C.rule}" stroke-width=".5" stroke-dasharray="3,4"/>`;
+    s += `<text x="${x}" y="${AXIS_H-7}" fill="${C.soft}" font-size="9"`;
+    s += ` text-anchor="middle">${esc(dateLbl(tick))}</text>`;
+    tick = addDays(tick, step);
+  }
+
+  /* faixas */
+  allCommits.forEach((commits, i) => {
+    const ty  = AXIS_H + i * TRK_H;
+    const bcy = ty + BAR_CY;
+
+    if (i > 0) {
+      s += `<line x1="0" y1="${ty}" x2="${W}" y2="${ty}"`;
+      s += ` stroke="${C.rule}" stroke-width=".5"/>`;
+    }
+
+    /* rótulo */
+    s += `<text x="${LBL_W-9}" y="${bcy+4}" fill="${C.ink}"`;
+    s += ` font-size="11" font-weight="500" text-anchor="end">${esc(REPOS[i].label)}</text>`;
+
+    if (!commits.length) return;
+
+    /* agrupa por dia */
+    const dayMap = {};
+    commits.forEach(c => {
+      const day = isoDay(midnight(new Date(c.commit.author.date)));
+      if (!dayMap[day]) dayMap[day] = [];
+      dayMap[day].push({
+        sha:     c.sha.slice(0, 7),
+        message: c.commit.message.split('\n')[0],
+        url:     c.html_url,
+      });
+    });
+
+    const dates  = commits.map(c => new Date(c.commit.author.date));
+    const firstD = midnight(new Date(Math.min(...dates)));
+    const lastD  = midnight(new Date(Math.max(...dates)));
+    const x1     = toX(firstD);
+    const x2     = toX(lastD);
+
+    /* barra */
+    s += `<line x1="${x1}" y1="${bcy}" x2="${x2}" y2="${bcy}"`;
+    s += ` stroke="${C.accent}" stroke-width="${BAR_T+8}" stroke-linecap="round" opacity=".06"/>`;
+    s += `<line x1="${x1}" y1="${bcy}" x2="${x2}" y2="${bcy}"`;
+    s += ` stroke="${C.accent}" stroke-width="${BAR_T}" stroke-linecap="round"/>`;
+
+    /* pontos de atividade (um por dia) */
+    Object.entries(dayMap).sort().forEach(([day, dayCommits]) => {
+      const d = new Date(day + 'T12:00:00Z');
+      if (d < firstD || d > lastD) return;
+      const dx  = toX(d);
+      const key = `${i}|${day}`;
+      commitMap[key] = dayCommits;
+
+      /* anel branco (fundo) + ponto */
+      s += `<circle class="tl-dot" data-key="${esc(key)}" tabindex="0"`;
+      s += ` cx="${dx}" cy="${bcy}" r="${DOT_R+1.5}" fill="${C.panel}"`;
+      s += ` aria-label="${day}: ${dayCommits.length} commit${dayCommits.length>1?'s':''}"/>`;
+      s += `<circle class="tl-dot" data-key="${esc(key)}"`;
+      s += ` cx="${dx}" cy="${bcy}" r="${DOT_R}" fill="${C.accent}" aria-hidden="true"/>`;
+    });
+
+    /* pontos de extremidade (primeiro e último commit) */
+    [[x1, firstD], [x2, lastD]].forEach(([x]) => {
+      s += `<circle cx="${x}" cy="${bcy}" r="${DOT_R+2}" fill="${C.accent}"/>`;
+    });
+
+    /* contagem */
+    const cntX = Math.min(x2 + 8, W - PAD_R - 20);
+    s += `<text x="${cntX}" y="${bcy+3.5}" fill="${C.soft}" font-size="9">${commits.length}</text>`;
+  });
+
+  /* marcos editoriais */
+  mils.forEach(m => {
+    const bcy   = AXIS_H + m.track * TRK_H + BAR_CY;
+    const mx    = toX(m.date);
+    const lines = m.label.split('\n');
+    const sha   = m.sha ?? 'null';
+    const repo  = REPOS[m.track]?.repo ?? '';
+
+    const y0 = m.above ? bcy - BAR_T/2 - 3 : bcy + BAR_T/2 + 3;
+    const y1 = m.above ? y0 - CALL          : y0 + CALL;
+
+    /* linha tracejada + tick */
+    s += `<line x1="${mx}" y1="${y0}" x2="${mx}" y2="${y1}"`;
+    s += ` stroke="${C.accent}" stroke-width="1" stroke-dasharray="2,2" opacity=".5"/>`;
+    s += `<line x1="${mx-3}" y1="${y1}" x2="${mx+3}" y2="${y1}"`;
+    s += ` stroke="${C.accent}" stroke-width="1" opacity=".5"/>`;
+
+    /* rótulo multi-linha */
+    lines.forEach((line, li) => {
+      const ty = m.above
+        ? y1 - 3 - (lines.length - 1 - li) * LH
+        : y1 + FS + li * LH;
+      s += `<text x="${mx}" y="${ty}" fill="${C.accent}" font-size="${FS}"`;
+      s += ` text-anchor="middle">${esc(line)}</text>`;
+    });
+
+    /* anel clicável no ponto do marco */
+    s += `<circle class="tl-mil" data-sha="${esc(sha)}" data-repo="${esc(repo)}"`;
+    s += ` tabindex="0" cx="${mx}" cy="${bcy}" r="${DOT_R+2}"`;
+    s += ` fill="${C.panel}" stroke="${C.accent}" stroke-width="1.5"`;
+    s += ` aria-label="${esc(lines.join(', '))}"/>`;
+  });
+
+  s += '</svg>';
+  return s;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INTERATIVIDADE
+   ═══════════════════════════════════════════════════════════ */
+function setupInteractivity() {
+  const tip     = document.getElementById('tl-tip');
+  const tipHead = document.getElementById('tl-tip-head');
+  const tipList = document.getElementById('tl-tip-list');
+
+  /* segue o cursor */
+  document.addEventListener('mousemove', e => {
+    if (tip.hidden) return;
+    const x = Math.min(e.clientX + 16, window.innerWidth - 316);
+    const y = Math.max(4, e.clientY - 8);
+    tip.style.left = x + 'px';
+    tip.style.top  = y + 'px';
+  });
+
+  function showTip(key) {
+    const commits = commitMap[key];
+    if (!commits?.length) return;
+    const [ti, day] = key.split('|');
+    const repoLabel = REPOS[+ti]?.label ?? '';
+    tipHead.textContent =
+      `${day} · ${repoLabel} · ${commits.length} commit${commits.length > 1 ? 's' : ''}`;
+    tipList.innerHTML = commits.slice(0, 6).map(c =>
+      `<li title="${esc(c.message)}">` +
+      `<a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">` +
+      `${esc(trunc(c.message, 52))}</a></li>`
+    ).join('');
+    tip.hidden = false;
+  }
+
+  function hideTip() { tip.hidden = true; }
+
+  /* pontos de atividade */
+  document.querySelectorAll('.tl-dot').forEach(el => {
+    el.addEventListener('mouseenter', () => showTip(el.dataset.key));
+    el.addEventListener('mouseleave', hideTip);
+
+    el.addEventListener('click', () => {
+      const commits = commitMap[el.dataset.key];
+      if (!commits?.length) return;
+      const url = commits.length === 1
+        ? commits[0].url
+        : `https://github.com/${REPOS[+el.dataset.key.split('|')[0]].repo}/commits`;
+      window.open(url, '_blank', 'noopener noreferrer');
+    });
+
+    /* teclado */
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        el.dispatchEvent(new MouseEvent('click'));
+      }
+    });
+  });
+
+  /* marcos */
+  document.querySelectorAll('.tl-mil').forEach(el => {
+    const sha  = el.dataset.sha;
+    const repo = el.dataset.repo;
+    const url  = sha && sha !== 'null'
+      ? `https://github.com/${repo}/commit/${sha}`
+      : `https://github.com/${repo}/commits`;
+
+    el.addEventListener('click', () => window.open(url, '_blank', 'noopener noreferrer'));
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.open(url, '_blank', 'noopener noreferrer'); }
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN
+   ═══════════════════════════════════════════════════════════ */
+async function main() {
+  const wrap = document.getElementById('tl-wrap');
+  const nota = document.getElementById('tl-nota');
+
+  try {
+    const all = await Promise.all(REPOS.map(r => fetchCommits(r.repo)));
+    const svg = buildSVG(all);
+    if (svg) {
+      wrap.className = '';
+      wrap.innerHTML = svg;
+      setupInteractivity();
+      nota.textContent = `github api · ${fmtFull(new Date())}`;
+    } else {
+      wrap.textContent = 'sem commits encontrados.';
+    }
+  } catch (err) {
+    wrap.textContent = `erro: ${err.message}`;
+    console.error(err);
+  }
+}
+
+main();
+</script>
+
+</body>
+</html>
