@@ -1,0 +1,354 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Timeline dos Projetos</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   TOKENS — dark único, estética terminal
+   Layout: page centered / header / timeline scrollável
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:     #09101c;
+  --surf:   #0e1825;
+  --brd:    #192738;
+  --fg:     #c0d4e8;
+  --muted:  #3f5568;
+  --accent: #1fc8bc;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  background: var(--bg);
+  color: var(--fg);
+  padding: 36px 20px 56px;
+}
+
+.page { max-width: 900px; margin: 0 auto; }
+
+/* ── header ── */
+header { margin-bottom: 24px; }
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+h1 {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.legend-pip {
+  width: 20px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* ── timeline wrapper ── */
+#tl-wrap {
+  border: 1px solid var(--brd);
+  border-radius: 4px;
+  background: var(--surf);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── loading / error ── */
+#status {
+  padding: 52px 20px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ── footer ── */
+.footer {
+  margin-top: 10px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+</style>
+
+<div class="page">
+  <header>
+    <p class="eyebrow">pedro oliveira · portfólio</p>
+    <h1>timeline dos projetos</h1>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-pip"></span>pipeline cvm</span>
+      <span class="legend-item"><span class="legend-pip"></span>skills</span>
+      <span class="legend-item"><span class="legend-pip"></span>avaliação</span>
+    </div>
+  </header>
+
+  <div id="tl-wrap">
+    <p id="status">buscando commits…</p>
+  </div>
+  <p class="footer" id="footer"></p>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   CONFIG — edite aqui para ajustar repositórios e marcos
+   ═══════════════════════════════════════════════════════════ */
+const REPOS = [
+  { label: 'pipeline cvm', repo: '1pedroosilva/projeto-cvm-dados-financeiros' },
+  { label: 'skills',       repo: '1pedroosilva/databricks-genie-skills'       },
+  { label: 'avaliação',    repo: '1pedroosilva/genie-skills-eval'              },
+];
+
+// sha: 7+ chars do prefixo do commit  OU  date: 'YYYY-MM-DD'
+// above: true = rótulo acima da barra | false = abaixo
+const MILESTONES = [
+  { track: 0, date: '2025-08-01', label: 'primeiro commit\nbronze e silver',       above: true  },
+  { track: 0, date: '2025-08-14', label: 'bundles, ruff\ne pytest no CI',           above: false },
+  { track: 0, date: '2025-09-19', label: 'invariante da bronze\nescala monetária',  above: true  },
+  { track: 1, date: '2025-08-22', label: '3 hipóteses de acionamento\n3 refutadas', above: false },
+  { track: 1, sha:  '6c7933e',   label: '6c7933e congela\na versão avaliada',       above: true  },
+  { track: 2, date: '2025-09-12', label: '12 sessões com skills',                   above: true  },
+  { track: 2, date: '2025-09-16', label: '12 sessões sem',                          above: false },
+  { track: 2, date: '2025-09-21', label: 'achados publicados',                      above: true  },
+];
+
+/* ═══════════════════════════════════════════════════════════
+   GITHUB API
+   ═══════════════════════════════════════════════════════════ */
+async function fetchCommits(repo) {
+  const out = [];
+  for (let p = 1; p <= 3; p++) {
+    const r = await fetch(
+      `https://api.github.com/repos/${repo}/commits?per_page=100&page=${p}`
+    );
+    if (!r.ok) throw new Error(`${repo}: HTTP ${r.status}`);
+    const d = await r.json();
+    out.push(...d);
+    if (d.length < 100) break;
+  }
+  return out;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   UTILIDADES DE DATA
+   ═══════════════════════════════════════════════════════════ */
+const MO  = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const MS  = 86400000;
+
+const addDays  = (d, n) => new Date(+d + n * MS);
+const diffDays = (a, b) => Math.round((+b - +a) / MS);
+const midnight = d => { const r = new Date(d); r.setUTCHours(0, 0, 0, 0); return r; };
+const isoDay   = d => d.toISOString().slice(0, 10);
+
+function dateLbl(d) {
+  return d.getUTCDate() === 1
+    ? `1 ${MO[d.getUTCMonth()]}`
+    : String(d.getUTCDate());
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONSTRUÇÃO DO SVG
+   ═══════════════════════════════════════════════════════════ */
+const esc = s => String(s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function buildSVG(allCommits) {
+  /* ── 1. faixa de datas ── */
+  let minD = null, maxD = null;
+  allCommits.forEach(cs => cs.forEach(c => {
+    const d = new Date(c.commit.author.date);
+    if (!minD || d < minD) minD = d;
+    if (!maxD || d > maxD) maxD = d;
+  }));
+  if (!minD) return '<p id="status">sem commits encontrados</p>';
+
+  const start    = midnight(addDays(minD, -5));
+  const end      = midnight(addDays(maxD, +10));
+  const spanDays = diffDays(start, end);
+
+  /* ── 2. resolve marcos ── */
+  const mils = MILESTONES.map(m => {
+    let date;
+    if (m.sha) {
+      const c = (allCommits[m.track] ?? []).find(c => c.sha.startsWith(m.sha));
+      date = c ? midnight(new Date(c.commit.author.date)) : null;
+    } else {
+      date = m.date ? new Date(m.date + 'T12:00:00Z') : null;
+    }
+    return { ...m, date };
+  }).filter(m => m.date);
+
+  /* ── 3. layout ── */
+  const LBL_W  = 112;   // coluna de rótulos
+  const PAD_R  = 22;
+  const AXIS_H = 28;    // altura do eixo de datas
+  const TRK_H  = 100;   // altura de cada faixa
+  const BAR_CY = 50;    // centro da barra dentro da faixa
+  const BAR_T  = 5;     // espessura da barra
+  const DOT_R  = 2.5;   // raio dos pontos de atividade
+  const CALL   = 18;    // comprimento da linha de chamada
+  const FS     = 9;     // tamanho da fonte dos rótulos de marcos
+  const LH     = 12;    // altura de linha para multi-linhas
+
+  const wrap = document.getElementById('tl-wrap');
+  const W = Math.max(600, Math.min(860, (wrap?.offsetWidth ?? 840) - 2));
+  const chartW = W - LBL_W - PAD_R;
+  const H = AXIS_H + REPOS.length * TRK_H + 14;
+
+  const toX = d => LBL_W + (diffDays(start, d) / spanDays) * chartW;
+
+  /* paleta inline (CSS vars não funcionam dentro de SVG gerado como string) */
+  const C = {
+    bg:     '#0e1825',
+    brd:    '#192738',
+    fg:     '#c0d4e8',
+    muted:  '#3f5568',
+    accent: '#1fc8bc',
+  };
+
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="display:block;font-family:'IBM Plex Mono',monospace">`;
+  s += `<rect width="${W}" height="${H}" fill="${C.bg}"/>`;
+
+  /* ── linha do eixo ── */
+  s += `<line x1="${LBL_W}" y1="${AXIS_H}" x2="${W - PAD_R}" y2="${AXIS_H}" stroke="${C.brd}" stroke-width="1"/>`;
+
+  /* ── ticks semanais (domingos) ── */
+  const tickStep = spanDays <= 70 ? 7 : spanDays <= 130 ? 14 : 28;
+  let tick = new Date(start);
+  while (tick.getUTCDay() !== 0) tick = addDays(tick, 1); // avança para domingo
+  while (tick <= end) {
+    const x = toX(tick);
+    s += `<line x1="${x}" y1="${AXIS_H}" x2="${x}" y2="${H - 8}" stroke="${C.brd}" stroke-width="0.5" stroke-dasharray="3,4" opacity="0.6"/>`;
+    s += `<text x="${x}" y="${AXIS_H - 7}" fill="${C.muted}" font-size="9" text-anchor="middle">${esc(dateLbl(tick))}</text>`;
+    tick = addDays(tick, tickStep);
+  }
+
+  /* ── faixas ── */
+  allCommits.forEach((commits, i) => {
+    const ty  = AXIS_H + i * TRK_H;
+    const bcy = ty + BAR_CY;
+
+    if (i > 0) {
+      s += `<line x1="0" y1="${ty}" x2="${W}" y2="${ty}" stroke="${C.brd}" stroke-width="0.5" opacity="0.5"/>`;
+    }
+
+    /* rótulo da faixa */
+    s += `<text x="${LBL_W - 9}" y="${bcy + 4}" fill="${C.fg}" font-size="11" font-weight="500" text-anchor="end">${esc(REPOS[i].label)}</text>`;
+
+    if (!commits.length) return;
+
+    const dates  = commits.map(c => new Date(c.commit.author.date));
+    const firstD = midnight(new Date(Math.min(...dates)));
+    const lastD  = midnight(new Date(Math.max(...dates)));
+    const x1     = toX(firstD);
+    const x2     = toX(lastD);
+    const actSet = new Set(dates.map(d => isoDay(midnight(d))));
+
+    /* brilho da barra */
+    s += `<line x1="${x1}" y1="${bcy}" x2="${x2}" y2="${bcy}" stroke="${C.accent}" stroke-width="${BAR_T + 8}" stroke-linecap="round" opacity="0.07"/>`;
+    /* barra */
+    s += `<line x1="${x1}" y1="${bcy}" x2="${x2}" y2="${bcy}" stroke="${C.accent}" stroke-width="${BAR_T}" stroke-linecap="round"/>`;
+
+    /* pontos de atividade (dias com commits) */
+    let d = new Date(firstD);
+    while (d <= lastD) {
+      if (actSet.has(isoDay(d))) {
+        const dx = toX(d);
+        s += `<circle cx="${dx}" cy="${bcy}" r="${DOT_R + 1.2}" fill="${C.bg}"/>`;
+        s += `<circle cx="${dx}" cy="${bcy}" r="${DOT_R}" fill="${C.accent}"/>`;
+      }
+      d = addDays(d, 1);
+    }
+
+    /* pontos de extremidade */
+    [x1, x2].forEach(x => {
+      s += `<circle cx="${x}" cy="${bcy}" r="${DOT_R + 2}" fill="${C.accent}"/>`;
+    });
+
+    /* contagem de commits */
+    const cntX = Math.min(x2 + 7, W - PAD_R - 28);
+    s += `<text x="${cntX}" y="${bcy + 3.5}" fill="${C.muted}" font-size="9">${commits.length}</text>`;
+  });
+
+  /* ── marcos ── */
+  mils.forEach(m => {
+    const bcy   = AXIS_H + m.track * TRK_H + BAR_CY;
+    const mx    = toX(m.date);
+    const lines = m.label.split('\n');
+
+    /* coordenadas da linha de chamada */
+    const y0 = m.above ? bcy - BAR_T / 2 - 3 : bcy + BAR_T / 2 + 3;
+    const y1 = m.above ? y0 - CALL : y0 + CALL;
+
+    /* linha tracejada */
+    s += `<line x1="${mx}" y1="${y0}" x2="${mx}" y2="${y1}" stroke="${C.accent}" stroke-width="1" stroke-dasharray="2.5,2" opacity="0.5"/>`;
+
+    /* tick horizontal */
+    s += `<line x1="${mx - 3}" y1="${y1}" x2="${mx + 3}" y2="${y1}" stroke="${C.accent}" stroke-width="1" opacity="0.5"/>`;
+
+    /* rótulo multi-linha */
+    lines.forEach((line, li) => {
+      let ty;
+      if (m.above) {
+        /* texto acima do y1: última linha em y1-3, linhas anteriores sobem */
+        ty = y1 - 3 - (lines.length - 1 - li) * LH;
+      } else {
+        /* texto abaixo do y1: primeira linha em y1+FS */
+        ty = y1 + FS + li * LH;
+      }
+      s += `<text x="${mx}" y="${ty}" fill="${C.accent}" font-size="${FS}" text-anchor="middle" opacity="0.9">${esc(line)}</text>`;
+    });
+
+    /* ponto do marco na barra (anel vazio) */
+    s += `<circle cx="${mx}" cy="${bcy}" r="${DOT_R + 2}" fill="${C.bg}" stroke="${C.accent}" stroke-width="1.5"/>`;
+  });
+
+  s += '</svg>';
+  return s;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN
+   ═══════════════════════════════════════════════════════════ */
+async function main() {
+  const wrap   = document.getElementById('tl-wrap');
+  const footer = document.getElementById('footer');
+
+  try {
+    const all = await Promise.all(REPOS.map(r => fetchCommits(r.repo)));
+    wrap.innerHTML = buildSVG(all);
+
+    const now = new Date();
+    footer.textContent = `github api · atualizado em ${now.getUTCDate()} ${MO[now.getUTCMonth()]} ${now.getUTCFullYear()}`;
+  } catch (err) {
+    wrap.innerHTML = `<p id="status">erro: ${esc(err.message)}</p>`;
+    console.error(err);
+  }
+}
+
+main();
+</script>
+
+</body></html>
